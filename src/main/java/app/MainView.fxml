@@ -20,7 +20,7 @@
         </HBox>
 
         <!-- UPC-A embedded weight controls (hidden unless UPC-A embedded selected) -->
-        <HBox fx:id="upcEmbeddedBox" alignment="CENTER" managed="false" spacing="8" visible="false">
+        <HBox fx:id="upcEmbeddedBox" alignment="CENTER" spacing="8" visible="true">
             <children>
                 <TextField fx:id="upcNumberSystem" prefWidth="120" promptText="Number System (default 2)" />
                 <TextField fx:id="manufacturerField" prefWidth="140" promptText="Manufacturer (5 digits)" />
@@ -29,7 +29,7 @@
         </HBox>
 
         <!-- GS1-128 inputs (hidden unless GS1-128 selected) -->
-        <HBox fx:id="gs1Box" alignment="CENTER" managed="false" spacing="8" visible="false">
+        <HBox fx:id="gs1Box" alignment="CENTER" spacing="8" visible="false">
             <children>
                 <TextField fx:id="gtinField" prefWidth="180" promptText="GTIN (up to 14 digits)" />
                 <TextField fx:id="gs1WeightField" prefWidth="160" promptText="Weight (kg, decimal allowed)" />
