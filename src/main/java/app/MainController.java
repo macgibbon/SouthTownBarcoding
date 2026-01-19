@@ -37,9 +37,6 @@ public class MainController {
     private ImageView barcodeView;
 
     @FXML
-    private ChoiceBox<String> barcodeType;
-
-    @FXML
     private TextField upcNumberSystem;
 
     @FXML
@@ -65,39 +62,7 @@ public class MainController {
 
     @FXML
     private void initialize() {
-        // Populate barcode type options
-        barcodeType.getItems().addAll(
-                "CODE_128",
-                "UPC-A (raw 11-digit payload)",
-                "UPC-A (embedded weight)",
-                "GS1-128 (GTIN + weight)"
-        );
-        barcodeType.setValue("CODE_128");
 
-        // Update UI depending on selection
-        barcodeType.setOnAction(e -> {
-            String sel = barcodeType.getValue();
-            boolean isUPCEmbedded = "UPC-A (embedded weight)".equals(sel);
-            boolean isGS1 = "GS1-128 (GTIN + weight)".equals(sel);
-
-            upcEmbeddedBox.setVisible(isUPCEmbedded);
-            upcEmbeddedBox.setManaged(isUPCEmbedded);
-
-            gs1Box.setVisible(isGS1);
-            gs1Box.setManaged(isGS1);
-
-            // Show barcodeField for non-embedded/non-GS1 modes
-            boolean showBarcodeField = !isUPCEmbedded && !isGS1;
-            barcodeField.setVisible(showBarcodeField);
-            barcodeField.setManaged(showBarcodeField);
-
-            // Update prompt for barcodeField for UPC-A raw mode
-            if ("UPC-A (raw 11-digit payload)".equals(sel)) {
-                barcodeField.setPromptText("Enter 11-digit UPC payload (digits only)");
-            } else {
-                barcodeField.setPromptText("Enter barcode text (or 11-digit UPC payload)");
-            }
-        });
 
         // Set sensible defaults for embedded controls
         upcNumberSystem.setText("2"); // 2 often used for variable-weight UPCs
@@ -111,34 +76,9 @@ public class MainController {
 
     @FXML
     private void onGenerateClicked(ActionEvent event) {
-        String type = barcodeType.getValue();
-        try {
-            String content;
-            if ("CODE_128".equals(type)) {
-                content = barcodeField.getText();
-                if (content == null || content.isBlank()) {
-                    messageLabel.setText("Please enter text for CODE_128.");
-                    return;
-                }
-                generateAndShowBarcode(content, BarcodeFormat.CODE_128, 480, 120);
-                messageLabel.setText("CODE_128 generated.");
-            } else if ("UPC-A (raw 11-digit payload)".equals(type)) {
-                String payload = barcodeField.getText();
-                if (payload == null) payload = "";
-                payload = payload.trim();
-                if (!payload.matches("\\d{11}")) {
-                    messageLabel.setText("UPC-A raw payload must be exactly 11 digits.");
-                    return;
-                }
-                int check = computeUPCACheckDigit(payload);
-                content = payload + check;
-                generateAndShowBarcode(content, BarcodeFormat.UPC_A, 360, 120);
-                messageLabel.setText("UPC-A generated: " + content);
-            } else if ("UPC-A (embedded weight)".equals(type)) {
+    	try {
                 handleUPCEmbedded();
-            } else { // GS1-128 (GTIN + weight)
-                handleGS1();
-            }
+
         } catch (WriterException we) {
             we.printStackTrace();
             messageLabel.setText("Error generating barcode: " + we.getMessage());
