@@ -117,7 +117,7 @@ public class MainController {
 		}
 		// Multiply by 10^decimals and round to integer (should be exact for typical
 		// inputs)
-		BigDecimal scaled = weight.movePointRight(2).setScale(0, RoundingMode.HALF_UP);
+		BigDecimal scaled = weight.movePointRight(3).setScale(0, RoundingMode.HALF_UP);
 		String formattedWeight = String.format("%05d", scaled.toBigInteger());
 
 		String productStr = productCodeField.getText();
