@@ -11,10 +11,10 @@ public class MainApp extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("MainView.fxml"));
-        Scene scene = new Scene(root, 400, 200);
+        Scene scene = new Scene(root, 600, 400);
         scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
 
-        stage.setTitle("JavaFX Sample");
+        stage.setTitle("Southtown Market Barcoder");
         stage.setScene(scene);
         stage.show();
     }

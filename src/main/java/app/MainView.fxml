@@ -1,42 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" spacing="12" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.MainController">
-    <children>
-        <Label fx:id="messageLabel" text="Welcome to JavaFX sample" />
-        <HBox alignment="CENTER" spacing="8">
-            <children>
-                <TextField fx:id="barcodeField" promptText="Enter barcode text (or 11-digit UPC payload)" />
-                <Button onAction="#onGenerateClicked" text="Generate" />
-                <Button onAction="#onPrintClicked" text="Print Barcode" />
-            </children>
-        </HBox>
+<BorderPane prefHeight="200.0" prefWidth="200.0" 	xmlns="http://javafx.com/javafx/23.0.1"
+			xmlns:fx="http://javafx.com/fxml/1"
+			fx:controller="app.MainController">
+	<center>
+		<VBox alignment="CENTER" spacing="12">
+		
+			<children>
+				<Label fx:id="messageLabel" alignment="CENTER" text="" />
+				<!-- GS1-128 inputs (hidden unless GS1-128 selected) -->
+				<HBox alignment="CENTER" spacing="8">
+					<children>
+						<TextField fx:id="productCodeField" prefWidth="180"
+							promptText="Product Code 5 digits" />
+						<TextField fx:id="gs1WeightField" prefWidth="160"
+							promptText="Weight (lb, decimal allowed)" />
+					</children>
+				</HBox>
 
-        <!-- UPC-A embedded weight controls (hidden unless UPC-A embedded selected) -->
-        <HBox fx:id="upcEmbeddedBox" alignment="CENTER" spacing="8" visible="true">
-            <children>
-                <TextField fx:id="upcNumberSystem" prefWidth="120" promptText="Number System (default 2)" />
-                <TextField fx:id="manufacturerField" prefWidth="140" promptText="Manufacturer (5 digits)" />
-                <TextField fx:id="upcWeightField" prefWidth="160" promptText="Weight (grams, up to 5 digits)" />
-            </children>
-        </HBox>
+				<HBox alignment="CENTER" spacing="8">
+					<children>
+						<Button onAction="#onGenerateClicked" text="Generate" />
+						<Button onAction="#onPrintClicked" text="Print Barcode" />
+					</children>
+				</HBox>
 
-        <!-- GS1-128 inputs (hidden unless GS1-128 selected) -->
-        <HBox fx:id="gs1Box" alignment="CENTER" spacing="8" visible="false">
-            <children>
-                <TextField fx:id="gtinField" prefWidth="180" promptText="GTIN (up to 14 digits)" />
-                <TextField fx:id="gs1WeightField" prefWidth="160" promptText="Weight (kg, decimal allowed)" />
-                <ChoiceBox fx:id="gs1DecimalsChoice" prefWidth="100" />
-            </children>
-        </HBox>
-
-        <ImageView fx:id="barcodeView" fitHeight="120" fitWidth="480" preserveRatio="true" />
-    </children>
-</VBox>
+				<ImageView fx:id="barcodeView" fitHeight="120"
+					fitWidth="480" preserveRatio="true" />
+				<Label text="Label" BorderPane.alignment="CENTER" />
+			</children>
+		</VBox>
+	</center>
+</BorderPane>
