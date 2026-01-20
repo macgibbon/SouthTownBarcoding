@@ -27,7 +27,7 @@
 						</VBox>
 						<VBox prefHeight="200.0" prefWidth="200.0">
 							<children>
-								<Label text="Weight (lbs) XX.xx " />
+								<Label text="Weight (lbs) WW.www " />
 								<TextField fx:id="gs1WeightField"  />
 							</children>
 						</VBox>
