@@ -8,21 +8,29 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="200.0" prefWidth="200.0" 	xmlns="http://javafx.com/javafx/23.0.1"
-			xmlns:fx="http://javafx.com/fxml/1"
-			fx:controller="app.MainController">
+<BorderPane prefHeight="200.0" prefWidth="200.0"
+	xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="app.MainController">
 	<center>
 		<VBox alignment="CENTER" spacing="12">
-		
+
 			<children>
 				<Label fx:id="messageLabel" alignment="CENTER" text="" />
 				<!-- GS1-128 inputs (hidden unless GS1-128 selected) -->
 				<HBox alignment="CENTER" spacing="8">
 					<children>
-						<TextField fx:id="productCodeField" prefWidth="180"
-							promptText="Product Code 5 digits" />
-						<TextField fx:id="gs1WeightField" prefWidth="160"
-							promptText="Weight (lb, decimal allowed)" />
+						<VBox prefHeight="200.0" prefWidth="200.0">
+							<children>
+								<Label text="Product code 6 digits" />
+								<TextField fx:id="productCodeField"  />
+							</children>
+						</VBox>
+						<VBox prefHeight="200.0" prefWidth="200.0">
+							<children>
+								<Label text="Weight (lbs) XX.xx " />
+								<TextField fx:id="gs1WeightField"  />
+							</children>
+						</VBox>
 					</children>
 				</HBox>
 
@@ -35,7 +43,7 @@
 
 				<ImageView fx:id="barcodeView" fitHeight="120"
 					fitWidth="480" preserveRatio="true" />
-				<Label text="Label" BorderPane.alignment="CENTER" />
+				<Label fx:id="contentLabel" text="" BorderPane.alignment="CENTER" />
 			</children>
 		</VBox>
 	</center>
