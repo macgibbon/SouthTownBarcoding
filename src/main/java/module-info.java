@@ -10,4 +10,5 @@ module southtown {
 	requires javafx.fxml;
 	requires javafx.graphics;
 	requires javafx.swing;
+	requires java.logging;
 }
