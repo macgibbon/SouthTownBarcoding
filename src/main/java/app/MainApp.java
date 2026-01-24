@@ -12,7 +12,7 @@ public class MainApp extends Application {
     public void start(Stage stage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("MainView.fxml"));
         Scene scene = new Scene(root, 600, 400);
-        scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
+ //       scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
 
         stage.setTitle("Southtown Market Barcoder");
         stage.setScene(scene);
