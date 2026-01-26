@@ -228,6 +228,16 @@
 													
 						</configuration>
 					</execution>
+					
+					<execution>
+						<id>mac</id>
+						<configuration>
+							<icon>icons/icon.ico</icon>
+							<winMenu>true</winMenu>		
+							<type>DMG</type>		
+													
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 		</plugins>
