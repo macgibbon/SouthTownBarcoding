@@ -135,9 +135,6 @@ public class MainController {
 		}
 
 		String formattedProductCode = String.format("%06d", productCode.toBigInteger());
-		int productcheck = computeUPCACheckDigit(formattedProductCode);
-		
-		int weightcheck = computeUPCACheckDigit(formattedWeight);
 		// Build 11-digit payload: ns + manu(5) + weight(5)
 		String content = formattedProductCode + formattedWeight; // length should be 11
 		if (content.length() != 11 || !content.matches("\\d{11}")) {
@@ -161,26 +158,6 @@ public class MainController {
 		BufferedImage bufferedImage = MatrixToImageWriter.toBufferedImage(bitMatrix);
 		Image fxImage = SwingFXUtils.toFXImage(bufferedImage, null);
 		barcodeView.setImage(fxImage);
-	}
-
-	// Compute UPC-A check digit for 11-digit string
-	private int computeUPCACheckDigit(String digits) {
-		
-		int sumOdd = 0; // positions 1,3,5,7,9,11 (index 0,2,...,10)
-		int sumEven = 0; // positions 2,4,6,8,10 (index 1,3,5,7,9)
-		for (int i = 0; i < digits.length(); i++) {
-			int d = digits.charAt(i) - '0';
-			if ((i % 2) == 0) {
-				sumOdd += d;
-			} else {
-				sumEven += d;
-			}
-		}
-		int total = sumOdd * 3 + sumEven;
-		int mod = total % 10;
-		return (10 - mod) % 10;
-	}
-
-	
+	}	
 
 }

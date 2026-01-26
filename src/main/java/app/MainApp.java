@@ -56,7 +56,7 @@ public class MainApp extends Application {
 		Pane root = (Pane) loader.load();
 		controller = loader.getController();
 
-		primaryStage.setTitle("Fertilizer formulator");
+		primaryStage.setTitle("Weight Embedding Barcoder");
 		Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
 		double width = primScreenBounds.getWidth();
 		double height = primScreenBounds.getHeight();
