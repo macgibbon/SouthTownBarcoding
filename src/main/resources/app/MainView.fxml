@@ -22,13 +22,13 @@
 						<VBox prefHeight="200.0" prefWidth="200.0">
 							<children>
 								<Label text="Product code 6 digits" />
-								<TextField fx:id="productCodeField"  />
+								<TextField fx:id="productCodeField" />
 							</children>
 						</VBox>
 						<VBox prefHeight="200.0" prefWidth="200.0">
 							<children>
 								<Label text="Weight (lbs) WW.www " />
-								<TextField fx:id="gs1WeightField"  />
+								<TextField fx:id="gs1WeightField" />
 							</children>
 						</VBox>
 					</children>
@@ -37,13 +37,17 @@
 				<HBox alignment="CENTER" spacing="8">
 					<children>
 						<Button onAction="#onGenerateClicked" text="Generate" />
-						<Button onAction="#onPrintClicked" text="Print Barcode" />
+						<Button onAction="#onPrintWindowsClicked"
+							text="Print Windows Printer" />
+						<Button onAction="#onPrintZebraClicked"
+							text="Print Zebra Printer" />
 					</children>
 				</HBox>
 
 				<ImageView fx:id="barcodeView" fitHeight="120"
 					fitWidth="480" preserveRatio="true" />
-				<Label fx:id="contentLabel" text="" BorderPane.alignment="CENTER" />
+				<Label fx:id="contentLabel" text=""
+					BorderPane.alignment="CENTER" />
 			</children>
 		</VBox>
 	</center>

@@ -1,15 +1,17 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>SouthTown</groupId>
-  <artifactId>barcoding</artifactId>
-  <version>1.0.1</version>
-  <name>SouthTown Barcoder</name>
-  <description>This project creates weight embedded barcodes.</description>
-  <properties>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>SouthTown</groupId>
+	<artifactId>barcoding</artifactId>
+	<version>1.0.1</version>
+	<name>SouthTown Barcoder</name>
+	<description>This project creates weight embedded barcodes.</description>
+	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.release>21</maven.compiler.release>
 		<javafx.version>22</javafx.version>
-		
+
 		<javafx.maven.plugin.version>0.0.8</javafx.maven.plugin.version>
 		<gluonfx.maven.plugin.version>1.0.23</gluonfx.maven.plugin.version>
 		<main.class>app.Launcher</main.class>
@@ -19,8 +21,8 @@
 		<package.type />
 		<module.name>southtown</module.name>
 		<vendor>Southtown Market</vendor>
-  </properties>
-  <dependencies>
+	</properties>
+	<dependencies>
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-controls</artifactId>
@@ -36,8 +38,8 @@
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-swing</artifactId>
 			<version>${javafx.version}</version>
-		</dependency>		
-		
+		</dependency>
+
 		<dependency>
 			<groupId>com.google.zxing</groupId>
 			<artifactId>core</artifactId>
@@ -49,8 +51,14 @@
 			<artifactId>javase</artifactId>
 			<version>3.5.4</version>
 		</dependency>
-  </dependencies>
-  <build>
+
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>5.2.5</version>
+		</dependency>
+	</dependencies>
+	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -60,7 +68,7 @@
 					<release>${maven.compiler.release}</release>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>3.3.1</version>
@@ -215,7 +223,7 @@
 					<winDirChooser>true</winDirChooser>
 					<winShortcut>true</winShortcut>
 					<winMenu>true</winMenu>
-					<winMenuGroup>Southtown Market</winMenuGroup>						
+					<winMenuGroup>Southtown Market</winMenuGroup>
 				</configuration>
 
 				<executions>
@@ -223,19 +231,19 @@
 						<id>win</id>
 						<configuration>
 							<icon>icons/icon.ico</icon>
-							<winMenu>true</winMenu>		
-							<type>MSI</type>		
-													
+							<winMenu>true</winMenu>
+							<type>MSI</type>
+
 						</configuration>
 					</execution>
-					
+
 					<execution>
 						<id>mac</id>
 						<configuration>
 							<icon>icons/icon.ico</icon>
-							<winMenu>true</winMenu>		
-							<type>DMG</type>		
-													
+							<winMenu>true</winMenu>
+							<type>DMG</type>
+
 						</configuration>
 					</execution>
 				</executions>
