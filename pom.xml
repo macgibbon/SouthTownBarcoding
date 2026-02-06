@@ -9,7 +9,7 @@
 	<description>This project creates weight embedded barcodes.</description>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.release>25</maven.compiler.release>
+		<maven.compiler.release>21</maven.compiler.release>
 		<javafx.version>22</javafx.version>
 
 		<javafx.maven.plugin.version>0.0.8</javafx.maven.plugin.version>
@@ -33,6 +33,22 @@
 			<artifactId>javafx-fxml</artifactId>
 			<version>${javafx.version}</version>
 		</dependency>
+
+	<!-- https://mvnrepository.com/artifact/org.testfx/testfx-junit5 -->
+		<dependency>
+			<groupId>org.testfx</groupId>
+			<artifactId>testfx-junit5</artifactId>
+			<version>4.0.18</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>5.7.0</version>
+		</dependency>
+
+
 
 		<dependency>
 			<groupId>org.openjfx</groupId>
