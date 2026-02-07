@@ -1,6 +1,5 @@
 .root {
     -fx-font-family: "Segoe UI", "Roboto", "Arial";
-    -fx-padding: 20;
     -fx-background-color: linear-gradient(to bottom right, #f8f9fb, #e6eef8);
 }
 

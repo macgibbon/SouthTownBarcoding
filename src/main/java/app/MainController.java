@@ -54,9 +54,13 @@ public class MainController {
 
 	@FXML
 	private TextField productCodeField;
+	
+	
+	private Model model;
 
 	@FXML
 	private void initialize() {
+		
 	}
 
 	@FXML
@@ -116,6 +120,11 @@ public class MainController {
 	}
 	
 	
+	@FXML
+	private void openReport(ActionEvent event) {
+		
+	}
+	
 	private static final String PRINTER_NAME = "Zebra"; // <- change to part or full name of your printer
 
 	@FXML
@@ -163,6 +172,11 @@ public class MainController {
 
 	private String getBarcodeContent() {
 		String weightStr = gs1WeightField.getText();
+		String productStr = productCodeField.getText();
+		return getBarCodeContent(weightStr, productStr);
+	}
+
+	private String getBarCodeContent(String weightStr, String productStr) {
 		BigDecimal weight = null;
 		try {
 			weight = new BigDecimal(weightStr);
@@ -178,7 +192,7 @@ public class MainController {
 		BigDecimal scaled = weight.movePointRight(3).setScale(0, RoundingMode.HALF_UP);
 		String formattedWeight = String.format("%05d", scaled.toBigInteger());
 
-		String productStr = productCodeField.getText();
+	
 	
 		BigDecimal productCode = null;
 		try {
@@ -213,11 +227,11 @@ public class MainController {
 		barcodeView.setImage(fxImage);
 	}	
 	
-	private String formatString(int xoffset, String species, String productCode, String weight, String upcCode) {
+	private String formatString(int xoffset, String group, String productCode, String weight, String upcCode) {
 		String zpl = "^XA\n" // use default font
 				+ "^CF,25\n" // set default font 0 to 30 dots high
 				+ "^FO" + Integer.toString(xoffset) + ",30,0" // field origin x,y, "
-				+ "^FD" + species // string to print
+				+ "^FD" + group // string to print
 				+ "^FS" + "^FO" + Integer.toString(xoffset) + ",70,0" // field origin x,y, "// end of field
 				+ "^FD" + productCode // string to print
 				+ "^FS\n" // end of field
