@@ -58,6 +58,9 @@ import javafx.stage.Window;
 public class MainController {
 
 	private static final Object[] EMPTYARGS = new Object[0];
+	
+	public static final String LAST_USED_FOLDER = "lastUsedFolder";
+
 
 	@FXML
 	private Label messageLabel;
@@ -173,15 +176,16 @@ public class MainController {
 			messageLabel.setText("Printing failed.");
 		}
 	}
-
+	
 	@FXML
 	private void openReport(ActionEvent event) throws FileNotFoundException, IOException {
-		File lastUsedDirectory = Path.of("spreadsheets").toFile();
+	    File lastUsedDirectory = new File(model.preferences.get(LAST_USED_FOLDER, Path.of("spreadsheets").toFile().getAbsolutePath()));
 		fileChooser = new FileChooser();
 		fileChooser.setInitialDirectory(lastUsedDirectory);
 		// Show the save file dialog
 		File file = fileChooser.showOpenDialog((Stage) tableView.getScene().getWindow());
-		if (file != null) {
+		if (file != null) {	
+		    model.preferences.put(LAST_USED_FOLDER, file.getParent());
 			model.setWorksheetForLabels(file);
 		}
 		tabpane.getSelectionModel().select(1);

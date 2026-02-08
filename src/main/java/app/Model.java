@@ -37,11 +37,10 @@ public class Model {
 	}
 
 	public ObservableList<ProductLabel> productLabels = FXCollections.observableArrayList();
-	
-	  public File appDir;
-	    public File currentDefaults;
-		public Preferences preferences;
-	    private List<String> reportHeaders;
+
+	public File appDir;
+	public File currentDefaults;
+	public Preferences preferences;
 
 	private Model() {
 		super();
@@ -84,8 +83,8 @@ public class Model {
 			String description = productIds[i].description();
 			List<String> productWeightList = productWeights.get(i);
 			for (String weight : productWeightList) {
-				ProductLabel productLabel = new ProductLabel(productGroup, productId.id().toString(), description.trim(),
-						weight);
+				ProductLabel productLabel = new ProductLabel(productGroup, productId.id().toString(),
+						description.trim(), weight);
 				productLabels.add(productLabel);
 			}
 		}
@@ -160,7 +159,8 @@ public class Model {
 			// special case for last product interval terminated by last worksheet row
 			productIntervals.add(new ProductInterval(productIntervals.getLast().endExclusive(), worksheetRows.size()));
 			List<List<String>> productWeights = productIntervals.stream()
-					.map(pi -> getProductRows(worksheetRows.subList(pi.beginInclusive(), pi.endExclusive()))).toList();
+					.map(pi -> getProductRows(worksheetRows.subList(pi.beginInclusive(), pi.endExclusive())))
+					.toList();
 
 			productLabels.setAll(getProductLabels(productHeaderPositions, productWeights));
 			System.out.println("done");
@@ -169,35 +169,34 @@ public class Model {
 		}
 	}
 
-	
-	 public static void copy(Path sourcePath, Path targetPath, Path source)  {
-	        Path target = targetPath.resolve(sourcePath.relativize(source));
-	        if (!(target.toFile().exists())) {
-	            try {
-	                Files.copy(source, target);
-	            } catch (IOException e) {
-	               throw new RuntimeException(e);
-	            }
-	        }
-	    }
+	public static void copy(Path sourcePath, Path targetPath, Path source) {
+		Path target = targetPath.resolve(sourcePath.relativize(source));
+		if (!(target.toFile().exists())) {
+			try {
+				Files.copy(source, target);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
+	}
 
-	    public static void deepCopy(Path sourcePath, Path targetPath)  {
-	        try (Stream<Path> stream = Files.walk(sourcePath)) {
-	            stream.forEach(source -> copy(sourcePath, targetPath, source));
-	        } catch (IOException e) {
-	           throw new RuntimeException(e);
-	        }
-	    }
-	
-	  private void loadDefaults()  {
-	        File userDir = new File(System.getProperty("user.home"));
-	        appDir = new File(userDir, ".fertilizer");
-	        if (!appDir.exists()) {
-	            appDir.mkdirs();
-	        }
-	        currentDefaults = new File(appDir, "currentDefaults");
-	        Path defaultPath = Path.of("./defaults");        
-	        deepCopy(defaultPath, currentDefaults.toPath());
-	        preferences = Preferences.userNodeForPackage(getClass());
-	  }
+	public static void deepCopy(Path sourcePath, Path targetPath) {
+		try (Stream<Path> stream = Files.walk(sourcePath)) {
+			stream.forEach(source -> copy(sourcePath, targetPath, source));
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private void loadDefaults() {
+		File userDir = new File(System.getProperty("user.home"));
+		appDir = new File(userDir, ".barcoder");
+		if (!appDir.exists()) {
+			appDir.mkdirs();
+		}
+		currentDefaults = new File(appDir, "currentDefaults");
+		Path defaultPath = Path.of("./defaults");
+		deepCopy(defaultPath, currentDefaults.toPath());
+		preferences = Preferences.userNodeForPackage(getClass());
+	}
 }
