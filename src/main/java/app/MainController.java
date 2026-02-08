@@ -196,7 +196,7 @@ public class MainController {
 	private void printSelected(ActionEvent event) {
 		ObservableList<ProductLabel> selectedLabels = tableView.getSelectionModel().getSelectedItems();
 		selectedLabels.stream()
-			.limit(2l)
+		//	.limit(2l)
 			.forEach(label -> {
 			String barcode = getBarCodeContent(label.weight(),label.productId());
 			try {
