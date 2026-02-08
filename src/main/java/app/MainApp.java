@@ -38,7 +38,7 @@ public class MainApp extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) -> showError(t, e));
 		File userDir = new File(System.getProperty("user.home"));
-		appDir = new File(userDir, ".fertilizer");
+		appDir = new File(userDir, ".barcoder");
 		if (!appDir.exists()) {
 			appDir.mkdirs();
 		}
