@@ -31,8 +31,8 @@ class TestWorksheetReading {
 			List productLabels = model.productLabels;
 			assertTrue(productLabels.size()>1);
 		} catch (Throwable e) {
-			fail(e.getMessage());
 			e.printStackTrace();
+			fail(e.getMessage());
 		}
 
 	}

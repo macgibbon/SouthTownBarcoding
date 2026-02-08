@@ -189,14 +189,27 @@ public class Model {
 	}
 
 	private void loadDefaults() {
-		File userDir = new File(System.getProperty("user.home"));
+		File userHome = new File(System.getProperty("user.home"));
+		System.out.println("User home =" + userHome.getAbsolutePath());
+		File userDir = new File(System.getProperty("user.dir"));
+		System.out.println("User dir =" + userDir.getAbsolutePath());
+		File javaDir = new File(System.getProperty("java.home"));
+		System.out.println("Java home =" + javaDir.getAbsolutePath());
 		appDir = new File(userDir, ".barcoder");
 		if (!appDir.exists()) {
 			appDir.mkdirs();
 		}
 		currentDefaults = new File(appDir, "currentDefaults");
-		Path defaultPath = Path.of("./defaults");
-		deepCopy(defaultPath, currentDefaults.toPath());
+		Path defaultPath = new File(javaDir,"defaults").toPath();
+		if (defaultPath.toFile().exists()) {
+			deepCopy(defaultPath, currentDefaults.toPath());
+		}
+		else {
+			Path altPath = Path.of("./defaults");
+			if (altPath.toFile().exists()) {
+				deepCopy(altPath, currentDefaults.toPath());
+			}
+		}
 		preferences = Preferences.userNodeForPackage(getClass());
 	}
 }
