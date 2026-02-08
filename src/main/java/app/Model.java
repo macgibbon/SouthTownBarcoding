@@ -4,10 +4,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.prefs.Preferences;
+import java.util.stream.Stream;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -33,9 +37,15 @@ public class Model {
 	}
 
 	public ObservableList<ProductLabel> productLabels = FXCollections.observableArrayList();
+	
+	  public File appDir;
+	    public File currentDefaults;
+		public Preferences preferences;
+	    private List<String> reportHeaders;
 
 	private Model() {
 		super();
+		loadDefaults();
 	}
 
 	private ArrayList<Row> getFirstWorksheetRows(HSSFWorkbook wb) {
@@ -159,4 +169,35 @@ public class Model {
 		}
 	}
 
+	
+	 public static void copy(Path sourcePath, Path targetPath, Path source)  {
+	        Path target = targetPath.resolve(sourcePath.relativize(source));
+	        if (!(target.toFile().exists())) {
+	            try {
+	                Files.copy(source, target);
+	            } catch (IOException e) {
+	               throw new RuntimeException(e);
+	            }
+	        }
+	    }
+
+	    public static void deepCopy(Path sourcePath, Path targetPath)  {
+	        try (Stream<Path> stream = Files.walk(sourcePath)) {
+	            stream.forEach(source -> copy(sourcePath, targetPath, source));
+	        } catch (IOException e) {
+	           throw new RuntimeException(e);
+	        }
+	    }
+	
+	  private void loadDefaults()  {
+	        File userDir = new File(System.getProperty("user.home"));
+	        appDir = new File(userDir, ".fertilizer");
+	        if (!appDir.exists()) {
+	            appDir.mkdirs();
+	        }
+	        currentDefaults = new File(appDir, "currentDefaults");
+	        Path defaultPath = Path.of("./defaults");        
+	        deepCopy(defaultPath, currentDefaults.toPath());
+	        preferences = Preferences.userNodeForPackage(getClass());
+	  }
 }

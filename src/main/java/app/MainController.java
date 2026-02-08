@@ -33,6 +33,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -40,6 +41,7 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.print.PrinterJob;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TabPane;
@@ -81,6 +83,9 @@ public class MainController {
 	@FXML
 	private TabPane tabpane;
 
+	@FXML
+	private Button printbutton;
+	
 	private Model model;
 
 	private FileChooser fileChooser;
@@ -113,6 +118,7 @@ public class MainController {
 			});
 		}
 		tableView.getColumns().setAll(FXCollections.observableList(tcList));
+		printbutton.disableProperty().bind(Bindings.isEmpty(tableView.getSelectionModel().getSelectedItems()));
 	}
 
 	@FXML

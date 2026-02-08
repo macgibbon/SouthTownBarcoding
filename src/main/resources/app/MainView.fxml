@@ -77,7 +77,7 @@
 								</TableView>
 							</center>
                      <bottom>
-                        <Button mnemonicParsing="false" onAction="#printSelected" text="Print Selected Labels" BorderPane.alignment="CENTER" />
+                        <Button mnemonicParsing="false" fx:id="printbutton" onAction="#printSelected" text="Print Selected Labels" BorderPane.alignment="CENTER" />
                      </bottom>
 						</BorderPane>
 					</content>

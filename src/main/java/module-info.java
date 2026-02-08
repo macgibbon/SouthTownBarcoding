@@ -12,5 +12,6 @@ module southtown {
 	requires javafx.swing;
 	requires java.logging;
 	requires transitive org.apache.poi.poi;
+	requires transitive java.prefs;
 	
 }
