@@ -74,7 +74,7 @@ public class Model {
 			String description = productIds[i].description();
 			List<String> productWeightList = productWeights.get(i);
 			for (String weight : productWeightList) {
-				ProductLabel productLabel = new ProductLabel(productGroup, productId.id().toString(), description,
+				ProductLabel productLabel = new ProductLabel(productGroup, productId.id().toString(), description.trim(),
 						weight);
 				productLabels.add(productLabel);
 			}

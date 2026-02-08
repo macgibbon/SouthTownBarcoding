@@ -11,3 +11,12 @@
 .button {
     -fx-font-size: 14px;
 }
+
+.table-view .column-header .label {
+    -fx-alignment: CENTER-LEFT; /* Change to CENTER-LEFT, CENTER-RIGHT, etc. */
+}
+
+.table-row-cell:selected {
+    -fx-background-color: lightBlue; /* Your desired color (e.g., red) */
+   
+}

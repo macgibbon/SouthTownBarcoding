@@ -35,11 +35,13 @@ import com.google.zxing.common.BitMatrix;
 
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.print.PrinterJob;
 import javafx.scene.control.Label;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -89,16 +91,18 @@ public class MainController {
 	private void initialize() {
 		model = Model.getInstance();
 		tableView.setItems(model.productLabels);
+		tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		List<TableColumn<ProductLabel, String>> tcList = Stream.of(ProductLabel.class.getRecordComponents())
-				.map(rc -> rc.getName()).map(name -> new TableColumn<ProductLabel, String>(name))
+				.map(rc -> rc.getName())
+				.map(name -> capitalizeFirstLetter(name))
+				.map(name -> new TableColumn<ProductLabel, String>(name))
 				.collect(Collectors.toList());
 		for (int i = 0; i < tcList.size(); i++) {
 			TableColumn<ProductLabel, String> aTableColumn = tcList.get(i);
 			final int col = i;
 			aTableColumn.setCellFactory(TextFieldTableCell.forTableColumn());
 			aTableColumn.setPrefWidth(200.0);
-			aTableColumn.setCellValueFactory(cellData -> {
-				
+			aTableColumn.setCellValueFactory(cellData -> {				
 				try {
 					Method accessor = ProductLabel.class.getRecordComponents()[col].getAccessor();
 					String cellValue = accessor.invoke(cellData.getValue(), EMPTYARGS).toString();
@@ -175,14 +179,37 @@ public class MainController {
 			model.setWorksheetForLabels(file);
 		}
 		tabpane.getSelectionModel().select(1);
+		tableView.getSelectionModel().selectAll();
 	}	
 
 	@FXML
-	private void onPrintZebraClicked(ActionEvent event) {
+	private void printSelected(ActionEvent event) {
+		ObservableList<ProductLabel> selectedLabels = tableView.getSelectionModel().getSelectedItems();
+		selectedLabels.stream()
+			.limit(2l)
+			.forEach(label -> {
+			String barcode = getBarCodeContent(label.weight(),label.productId());
+			try {
+				printZebra(barcode, label.group().toString(), label.weight() +" lb", label.description());
+			} catch (Throwable e) {
+				throw new RuntimeException(e);
+			}			
+		});	
+		tableView.getSelectionModel().clearSelection();
+	}
+	
+	@FXML
+	private void onPrintZebraClicked(ActionEvent event) throws PrintException {
 		String content = getBarcodeContent();
-		String weightStr = gs1WeightField.getText();
-		String productStr = productCodeField.getText();
-		String zpl = formatString(75, "Unknown", "Product " + productStr, weightStr + " lb", content);
+		String weightStr = gs1WeightField.getText() + "lb";
+		String productStr = "Product " + productCodeField.getText();
+		String group = "Unknown";
+		printZebra(content, group, weightStr, productStr);
+	}
+
+	private void printZebra(String content, String group, String weightStr, String description)  {
+		try { 
+		String zpl = formatString(78, group, description, weightStr, content);
 		PrintService ps = findPrintService(PRINTER_NAME);
 		if (ps == null) {
 			System.err.println("Printer matching '" + PRINTER_NAME + "' not found.");
@@ -192,18 +219,17 @@ public class MainController {
 			}
 			return;
 		}
-		DocPrintJob job = ps.createPrintJob();
+	
+		DocPrintJob job = ps.createPrintJob();		
 		byte[] bytes = zpl.getBytes(StandardCharsets.UTF_8);
 		Doc doc = new SimpleDoc(bytes, DocFlavor.BYTE_ARRAY.AUTOSENSE, null);
 		PrintRequestAttributeSet attrs = new HashPrintRequestAttributeSet();
 		attrs.add(new Copies(1));
-		try {
-			job.print(doc, attrs);
-			System.out.println("ZPL sent to printer: " + ps.getName());
-		} catch (PrintException e) {
-			System.err.println("Print failed: " + e.getMessage());
-			e.printStackTrace();
+		job.print(doc, attrs);
+		} catch(Throwable t) {
+			t.printStackTrace();
 		}
+		
 	}
 
 	private void handleUPCEmbedded(String content) throws WriterException {
@@ -273,7 +299,7 @@ public class MainController {
 
 	private String formatString(int xoffset, String group, String productCode, String weight, String upcCode) {
 		String zpl = "^XA\n" // use default font
-				+ "^CF,25\n" // set default font 0 to 30 dots high
+				+ "^CF,20\n" // set default font 0 to 30 dots high
 				+ "^FO" + Integer.toString(xoffset) + ",30,0" // field origin x,y, "
 				+ "^FD" + group // string to print
 				+ "^FS" + "^FO" + Integer.toString(xoffset) + ",70,0" // field origin x,y, "// end of field
@@ -299,5 +325,12 @@ public class MainController {
 			}
 		}
 		return null;
+	}
+	
+	public String capitalizeFirstLetter(String original) {
+	    if (original == null || original.length() == 0) {
+	        return original;
+	    }
+	    return original.substring(0, 1).toUpperCase() + original.substring(1);
 	}
 }
