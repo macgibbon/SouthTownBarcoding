@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
@@ -52,6 +53,8 @@ import javafx.stage.Window;
 
 public class MainController {
 
+	private static final Object[] EMPTYARGS = new Object[0];
+
 	@FXML
 	private Label messageLabel;
 
@@ -79,6 +82,8 @@ public class MainController {
 	private Model model;
 
 	private FileChooser fileChooser;
+	
+	private static final String PRINTER_NAME = "Zebra"; // <- change to part or full name of your printer
 
 	@FXML
 	private void initialize() {
@@ -93,17 +98,15 @@ public class MainController {
 			aTableColumn.setCellFactory(TextFieldTableCell.forTableColumn());
 			aTableColumn.setPrefWidth(200.0);
 			aTableColumn.setCellValueFactory(cellData -> {
-				String cellValue;
+				
 				try {
-					cellValue = ProductLabel.class.getRecordComponents()[col].getAccessor()
-							.invoke(cellData.getValue(), new Object[0]).toString();
+					Method accessor = ProductLabel.class.getRecordComponents()[col].getAccessor();
+					String cellValue = accessor.invoke(cellData.getValue(), EMPTYARGS).toString();
 					return new ReadOnlyStringWrapper(cellValue);
 				} catch (Throwable e) {
 					return new ReadOnlyStringWrapper(e.getMessage());
 				}
-
 			});
-
 		}
 		tableView.getColumns().setAll(FXCollections.observableList(tcList));
 	}
@@ -114,7 +117,6 @@ public class MainController {
 			String content = getBarcodeContent();
 			handleUPCEmbedded(content);
 		} catch (WriterException we) {
-			we.printStackTrace();
 			messageLabel.setText("Error generating barcode: " + we.getMessage());
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -127,11 +129,9 @@ public class MainController {
 		try {
 			String content = getBarcodeContent();
 			handleUPCEmbedded(content);
-		} catch (WriterException we) {
-			we.printStackTrace();
+		} catch (WriterException we) {		
 			messageLabel.setText("Error generating barcode: " + we.getMessage());
 		} catch (Exception ex) {
-			ex.printStackTrace();
 			messageLabel.setText("Unexpected error: " + ex.getMessage());
 		}
 		Image image = barcodeView.getImage();
@@ -175,9 +175,7 @@ public class MainController {
 			model.setWorksheetForLabels(file);
 		}
 		tabpane.getSelectionModel().select(1);
-	}
-
-	private static final String PRINTER_NAME = "Zebra"; // <- change to part or full name of your printer
+	}	
 
 	@FXML
 	private void onPrintZebraClicked(ActionEvent event) {
@@ -194,14 +192,11 @@ public class MainController {
 			}
 			return;
 		}
-
 		DocPrintJob job = ps.createPrintJob();
 		byte[] bytes = zpl.getBytes(StandardCharsets.UTF_8);
 		Doc doc = new SimpleDoc(bytes, DocFlavor.BYTE_ARRAY.AUTOSENSE, null);
-
 		PrintRequestAttributeSet attrs = new HashPrintRequestAttributeSet();
 		attrs.add(new Copies(1));
-
 		try {
 			job.print(doc, attrs);
 			System.out.println("ZPL sent to printer: " + ps.getName());
