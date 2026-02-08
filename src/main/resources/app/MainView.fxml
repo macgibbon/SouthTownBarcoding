@@ -2,49 +2,87 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="200.0" prefWidth="200.0"
-	xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1"
-	fx:controller="app.MainController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.MainController">
+	<top>
+		<MenuBar>
+			<menus>
+				<Menu mnemonicParsing="false" text="File">
+					<items>
+						<MenuItem mnemonicParsing="false" onAction="#openReport" text="Open Inventory Report" />
+					</items>
+				</Menu>
+			</menus>
+		</MenuBar>
+	</top>
 	<center>
-		<VBox alignment="CENTER" spacing="12">
+		<TabPane fx:id="tabpane" prefHeight="200.0" prefWidth="200.0" side="BOTTOM" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+			<tabs>
+				<Tab text="Manual">
+					<content>
+						<VBox alignment="CENTER" spacing="12">
 
-			<children>
-				<Label fx:id="messageLabel" alignment="CENTER" text="" />
-				<!-- GS1-128 inputs (hidden unless GS1-128 selected) -->
-				<HBox alignment="CENTER" spacing="8">
-					<children>
-						<VBox prefHeight="200.0" prefWidth="200.0">
 							<children>
-								<Label text="Product code 6 digits" />
-								<TextField fx:id="productCodeField"  />
+								<Label fx:id="messageLabel" alignment="CENTER" text="" />
+								<!-- GS1-128 inputs (hidden unless GS1-128 selected) -->
+								<HBox alignment="CENTER" spacing="8">
+									<children>
+										<VBox prefHeight="200.0" prefWidth="200.0">
+											<children>
+												<Label text="Product code 6 digits" />
+												<TextField fx:id="productCodeField" />
+											</children>
+										</VBox>
+										<VBox prefHeight="200.0" prefWidth="200.0">
+											<children>
+												<Label text="Weight (lbs) WW.www " />
+												<TextField fx:id="gs1WeightField" />
+											</children>
+										</VBox>
+									</children>
+								</HBox>
+
+								<HBox alignment="CENTER" spacing="8">
+									<children>
+										<Button onAction="#onGenerateClicked" text="Generate" />
+										<Button onAction="#onPrintWindowsClicked" text="Print Windows Printer" />
+										<Button onAction="#onPrintZebraClicked" text="Print Zebra Printer" />
+									</children>
+								</HBox>
+
+								<ImageView fx:id="barcodeView" fitHeight="120" fitWidth="480" preserveRatio="true" />
+								<Label fx:id="contentLabel" text="" BorderPane.alignment="CENTER" />
 							</children>
 						</VBox>
-						<VBox prefHeight="200.0" prefWidth="200.0">
-							<children>
-								<Label text="Weight (lbs) WW.www " />
-								<TextField fx:id="gs1WeightField"  />
-							</children>
-						</VBox>
-					</children>
-				</HBox>
 
-				<HBox alignment="CENTER" spacing="8">
-					<children>
-						<Button onAction="#onGenerateClicked" text="Generate" />
-						<Button onAction="#onPrintClicked" text="Print Barcode" />
-					</children>
-				</HBox>
-
-				<ImageView fx:id="barcodeView" fitHeight="120"
-					fitWidth="480" preserveRatio="true" />
-				<Label fx:id="contentLabel" text="" BorderPane.alignment="CENTER" />
-			</children>
-		</VBox>
+					</content>
+				</Tab>
+				<Tab text="Batch">
+					<content>
+						<BorderPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+							<center>
+								<TableView fx:id="tableView" prefHeight="4000" prefWidth="4000">
+									
+								</TableView>
+							</center>
+                     <bottom>
+                        <Button mnemonicParsing="false" fx:id="printbutton" onAction="#printSelected" text="Print Selected Labels" BorderPane.alignment="CENTER" />
+                     </bottom>
+						</BorderPane>
+					</content>
+				</Tab>
+			</tabs>
+		</TabPane>
 	</center>
 </BorderPane>

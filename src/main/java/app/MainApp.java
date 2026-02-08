@@ -20,7 +20,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -53,7 +52,7 @@ public class MainApp extends Application {
 		currentStage = primaryStage;
 		URL resource = MainApp.class.getResource("MainView.fxml");
 		FXMLLoader loader = new FXMLLoader(resource);
-		Pane root = (Pane) loader.load();
+		BorderPane root = (BorderPane) loader.load();
 		controller = loader.getController();
 
 		primaryStage.setTitle("Weight Embedding Barcoder");
