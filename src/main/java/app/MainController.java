@@ -181,7 +181,8 @@ public class MainController {
 	private void openReport(ActionEvent event) throws FileNotFoundException, IOException {
 	    File lastUsedDirectory = new File(model.preferences.get(LAST_USED_FOLDER, Path.of("spreadsheets").toFile().getAbsolutePath()));
 		fileChooser = new FileChooser();
-		fileChooser.setInitialDirectory(lastUsedDirectory);
+		if (lastUsedDirectory.exists())
+			fileChooser.setInitialDirectory(lastUsedDirectory);
 		// Show the save file dialog
 		File file = fileChooser.showOpenDialog((Stage) tableView.getScene().getWindow());
 		if (file != null) {	
