@@ -195,11 +195,12 @@ public class Model {
 		System.out.println("User dir =" + userDir.getAbsolutePath());
 		File javaDir = new File(System.getProperty("java.home"));
 		System.out.println("Java home =" + javaDir.getAbsolutePath());
-		appDir = new File(userDir, ".barcoder");
+		appDir = new File(userHome, ".barcoder");
 		if (!appDir.exists()) {
 			appDir.mkdirs();
 		}
 		currentDefaults = new File(appDir, "currentDefaults");
+		currentDefaults.mkdirs();
 		Path defaultPath = new File(javaDir,"defaults").toPath();
 		if (defaultPath.toFile().exists()) {
 			deepCopy(defaultPath, currentDefaults.toPath());
