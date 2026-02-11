@@ -1,7 +1,7 @@
 package app;
 
 public enum ProductGroup {
-	Beef, Fresh_Pork, Smoked_Pork, __;
+	Beef, Fresh_Pork, Pork, Fully_Cooked_Beef, __;
 
 	@Override
 	public String toString() {		

@@ -157,7 +157,8 @@ public class Model {
 			TreeMap<Integer, ProductId> productHeaderPositions = getProductHeaderRowPositions(worksheetRows);
 			List<ProductInterval> productIntervals = getProductWeightRowIntervals(productHeaderPositions);
 			// special case for last product interval terminated by last worksheet row
-			productIntervals.add(new ProductInterval(productIntervals.getLast().endExclusive(), worksheetRows.size()));
+			if (!productIntervals.isEmpty())
+				productIntervals.add(new ProductInterval(productIntervals.getLast().endExclusive(), worksheetRows.size()));
 			List<List<String>> productWeights = productIntervals.stream()
 					.map(pi -> getProductRows(worksheetRows.subList(pi.beginInclusive(), pi.endExclusive())))
 					.toList();
