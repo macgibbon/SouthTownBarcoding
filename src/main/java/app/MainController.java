@@ -1,8 +1,10 @@
 package app;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -12,6 +14,8 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -33,6 +37,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
@@ -40,9 +45,14 @@ import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.print.PrinterJob;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
@@ -51,22 +61,28 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
+import javafx.stage.Popup;
+import javafx.stage.PopupWindow;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import javafx.util.Pair;
 
 public class MainController {
 
 	private static final Object[] EMPTYARGS = new Object[0];
-	
-	public static final String LAST_USED_FOLDER = "lastUsedFolder";
 
+	public static final String LAST_USED_FOLDER = "lastUsedFolder";
 
 	@FXML
 	private Label messageLabel;
 
 	@FXML
 	private Label contentLabel;
+
+	@FXML
+	Label spreadsheetNameLabel;
 
 	@FXML
 	private TextField barcodeField;
@@ -82,35 +98,36 @@ public class MainController {
 
 	@FXML
 	private TableView<ProductLabel> tableView;
-	
+
 	@FXML
 	private TabPane tabpane;
 
 	@FXML
 	private Button printbutton;
-	
+
 	private Model model;
 
 	private FileChooser fileChooser;
-	
+
 	private static final String PRINTER_NAME = "Zebra"; // <- change to part or full name of your printer
+	public static final String COMMA_DELIMITER = ",";
 
 	@FXML
 	private void initialize() {
 		model = Model.getInstance();
+
 		tableView.setItems(model.productLabels);
+
 		tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		List<TableColumn<ProductLabel, String>> tcList = Stream.of(ProductLabel.class.getRecordComponents())
-				.map(rc -> rc.getName())
-				.map(name -> capitalizeFirstLetter(name))
-				.map(name -> new TableColumn<ProductLabel, String>(name))
-				.collect(Collectors.toList());
+				.map(rc -> rc.getName()).map(name -> capitalizeFirstLetter(name))
+				.map(name -> new TableColumn<ProductLabel, String>(name)).collect(Collectors.toList());
 		for (int i = 0; i < tcList.size(); i++) {
 			TableColumn<ProductLabel, String> aTableColumn = tcList.get(i);
 			final int col = i;
 			aTableColumn.setCellFactory(TextFieldTableCell.forTableColumn());
 			aTableColumn.setPrefWidth(200.0);
-			aTableColumn.setCellValueFactory(cellData -> {				
+			aTableColumn.setCellValueFactory(cellData -> {
 				try {
 					Method accessor = ProductLabel.class.getRecordComponents()[col].getAccessor();
 					String cellValue = accessor.invoke(cellData.getValue(), EMPTYARGS).toString();
@@ -122,6 +139,34 @@ public class MainController {
 		}
 		tableView.getColumns().setAll(FXCollections.observableList(tcList));
 		printbutton.disableProperty().bind(Bindings.isEmpty(tableView.getSelectionModel().getSelectedItems()));
+
+		File defaultProductsFile = new File(model.currentDefaults, "defaultProducts.csv");
+		loadDefaultProductFiles(defaultProductsFile);
+	}
+
+	private TreeMap<Integer, ProductId> loadDefaultProductFiles(File defaultProductsFile) {
+		TreeMap<Integer, ProductId> productMap = new TreeMap<>();
+		if (defaultProductsFile.exists()) {
+			try {
+				try (BufferedReader br = new BufferedReader(new FileReader(defaultProductsFile))) {
+					String headers = br.readLine();
+					String line;
+					while ((line = br.readLine()) != null) {
+						String dequotedLine = line.replaceAll("['\"]", "");
+						String[] values = dequotedLine.split(COMMA_DELIMITER);
+						int id = Integer.parseUnsignedInt(values[0]);
+						String group = values[1];
+						String description = values[2];
+						String fulltext = group + " " + description;
+						ProductId pid = ProductId.createProductId(id, fulltext);
+						productMap.put(id, pid);
+					}
+				}
+			} catch (Throwable t) {
+				throw new RuntimeException(t);
+			}
+		}
+		return productMap;
 	}
 
 	@FXML
@@ -138,11 +183,63 @@ public class MainController {
 	}
 
 	@FXML
+	private void onLastProductClicked(ActionEvent event) {
+
+	}
+
+	@FXML
+	private void onLookupClicked(ActionEvent event) {
+		Dialog<Pair<String, String>> dialog = new Dialog<>();
+		dialog.setTitle("Login Dialog");
+		dialog.setHeaderText("Please enter your credentials");
+
+		// 2. Set the button types (OK and Cancel)
+		ButtonType loginButtonType = new ButtonType("Login", ButtonData.OK_DONE);
+		dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+
+		// 3. Create the custom layout for the content
+		GridPane grid = new GridPane();
+		grid.setHgap(10);
+		grid.setVgap(10);
+		grid.setPadding(new Insets(20, 150, 10, 10));
+
+		TextField username = new TextField();
+		username.setPromptText("Username");
+		PasswordField password = new PasswordField();
+		password.setPromptText("Password");
+
+		grid.add(new Label("Username:"), 0, 0);
+		grid.add(username, 1, 0);
+		grid.add(new Label("Password:"), 0, 1);
+		grid.add(password, 1, 1);
+
+		// 4. Add the layout to the dialog pane
+		dialog.getDialogPane().setContent(grid);
+
+		// 5. Focus the username field by default
+		Platform.runLater(() -> username.requestFocus());
+
+		// 6. Convert the result to a Pair when the login button is clicked
+		dialog.setResultConverter(dialogButton -> {
+			if (dialogButton == loginButtonType) {
+				return new Pair<>(username.getText(), password.getText());
+			}
+			return null;
+		});
+
+		// 7. Show the dialog and handle the result
+		Optional<Pair<String, String>> result = dialog.showAndWait();
+		result.ifPresent(usernamePassword -> {
+			System.out.println("Username=" + usernamePassword.getKey() + ", Password=" + usernamePassword.getValue());
+		});
+	}
+
+	@FXML
 	private void onPrintWindowsClicked(ActionEvent event) {
 		try {
 			String content = getBarcodeContent();
 			handleUPCEmbedded(content);
-		} catch (WriterException we) {		
+		} catch (WriterException we) {
 			messageLabel.setText("Error generating barcode: " + we.getMessage());
 		} catch (Exception ex) {
 			messageLabel.setText("Unexpected error: " + ex.getMessage());
@@ -176,39 +273,42 @@ public class MainController {
 			messageLabel.setText("Printing failed.");
 		}
 	}
-	
+
 	@FXML
 	private void openReport(ActionEvent event) throws FileNotFoundException, IOException {
-	    File lastUsedDirectory = new File(model.preferences.get(LAST_USED_FOLDER, Path.of("spreadsheets").toFile().getAbsolutePath()));
+		File lastUsedDirectory = new File(
+				model.preferences.get(LAST_USED_FOLDER, Path.of("spreadsheets").toFile().getAbsolutePath()));
 		fileChooser = new FileChooser();
 		if (lastUsedDirectory.exists())
 			fileChooser.setInitialDirectory(lastUsedDirectory);
 		// Show the save file dialog
 		File file = fileChooser.showOpenDialog((Stage) tableView.getScene().getWindow());
-		if (file != null) {	
-		    model.preferences.put(LAST_USED_FOLDER, file.getParent());
+		if (file != null) {
+			model.preferences.put(LAST_USED_FOLDER, file.getParent());
 			model.setWorksheetForLabels(file);
+			spreadsheetNameLabel.setText(file.getAbsolutePath());
 		}
 		tabpane.getSelectionModel().select(1);
 		tableView.getSelectionModel().selectAll();
-	}	
+		Platform.runLater(() -> printbutton.requestFocus());
+	}
 
 	@FXML
 	private void printSelected(ActionEvent event) {
 		ObservableList<ProductLabel> selectedLabels = tableView.getSelectionModel().getSelectedItems();
 		selectedLabels.stream()
-		//	.limit(2l)
-			.forEach(label -> {
-			String barcode = getBarCodeContent(label.weight(),label.productId());
-			try {
-				printZebra(barcode, label.group().toString(), label.weight() +" lb", label.description());
-			} catch (Throwable e) {
-				throw new RuntimeException(e);
-			}			
-		});	
+				// .limit(2l)
+				.forEach(label -> {
+					String barcode = getBarCodeContent(label.weight(), label.productId());
+					try {
+						printZebra(barcode, label.group().toString(), label.weight() + " lb", label.description());
+					} catch (Throwable e) {
+						throw new RuntimeException(e);
+					}
+				});
 		tableView.getSelectionModel().clearSelection();
 	}
-	
+
 	@FXML
 	private void onPrintZebraClicked(ActionEvent event) throws PrintException {
 		String content = getBarcodeContent();
@@ -218,29 +318,29 @@ public class MainController {
 		printZebra(content, group, weightStr, productStr);
 	}
 
-	private void printZebra(String content, String group, String weightStr, String description)  {
-		try { 
-		String zpl = formatString(78, group, description, weightStr, content);
-		PrintService ps = findPrintService(PRINTER_NAME);
-		if (ps == null) {
-			System.err.println("Printer matching '" + PRINTER_NAME + "' not found.");
-			System.err.println("Available printers:");
-			for (PrintService p : PrintServiceLookup.lookupPrintServices(null, null)) {
-				System.err.println("  - " + p.getName());
+	private void printZebra(String content, String group, String weightStr, String description) {
+		try {
+			String zpl = formatString(78, group, description, weightStr, content);
+			PrintService ps = findPrintService(PRINTER_NAME);
+			if (ps == null) {
+				System.err.println("Printer matching '" + PRINTER_NAME + "' not found.");
+				System.err.println("Available printers:");
+				for (PrintService p : PrintServiceLookup.lookupPrintServices(null, null)) {
+					System.err.println("  - " + p.getName());
+				}
+				return;
 			}
-			return;
-		}
-	
-		DocPrintJob job = ps.createPrintJob();		
-		byte[] bytes = zpl.getBytes(StandardCharsets.UTF_8);
-		Doc doc = new SimpleDoc(bytes, DocFlavor.BYTE_ARRAY.AUTOSENSE, null);
-		PrintRequestAttributeSet attrs = new HashPrintRequestAttributeSet();
-		attrs.add(new Copies(1));
-		job.print(doc, attrs);
-		} catch(Throwable t) {
+
+			DocPrintJob job = ps.createPrintJob();
+			byte[] bytes = zpl.getBytes(StandardCharsets.UTF_8);
+			Doc doc = new SimpleDoc(bytes, DocFlavor.BYTE_ARRAY.AUTOSENSE, null);
+			PrintRequestAttributeSet attrs = new HashPrintRequestAttributeSet();
+			attrs.add(new Copies(1));
+			job.print(doc, attrs);
+		} catch (Throwable t) {
 			t.printStackTrace();
 		}
-		
+
 	}
 
 	private void handleUPCEmbedded(String content) throws WriterException {
@@ -337,11 +437,11 @@ public class MainController {
 		}
 		return null;
 	}
-	
+
 	public String capitalizeFirstLetter(String original) {
-	    if (original == null || original.length() == 0) {
-	        return original;
-	    }
-	    return original.substring(0, 1).toUpperCase() + original.substring(1);
+		if (original == null || original.length() == 0) {
+			return original;
+		}
+		return original.substring(0, 1).toUpperCase() + original.substring(1);
 	}
 }
