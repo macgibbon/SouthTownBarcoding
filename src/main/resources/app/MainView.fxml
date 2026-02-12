@@ -47,8 +47,7 @@
 									<children>
 										<VBox prefHeight="99.0" prefWidth="190.0">
 											<children>
-												<Button mnemonicParsing="false" prefHeight="30.0" onAction="#onLastProductClicked"
-													text="Last Product Id" />
+											<Label prefHeight="30.0" text="" />											
 												<Button mnemonicParsing="false" prefHeight="30.0" onAction="#onLookupClicked"
 													text="Lookup Product Id" />
 											</children>
@@ -62,8 +61,15 @@
 										</VBox>
 										<VBox prefHeight="120.0" prefWidth="200.0">
 											<children>
+												<Label prefHeight="30.0" text="Product Description" />
+												<TextField fx:id="descriptionField"
+													prefHeight="30.0" />
+											</children>
+										</VBox>
+										<VBox prefHeight="120.0" prefWidth="200.0">
+											<children>
 												<Label prefHeight="30.0" text="Weight (lbs) WW.www " />
-												<TextField fx:id="gs1WeightField"
+												<TextField fx:id="weightField"
 													prefHeight="30.0" />
 											</children>
 										</VBox>
