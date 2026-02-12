@@ -4,12 +4,12 @@
 }
 
 .label {
-    -fx-font-size: 16px;
+    -fx-font-size: 16.0px;
     -fx-text-fill: #2b3e50;
 }
 
 .button {
-    -fx-font-size: 14px;
+    -fx-font-size: 14.0px;
 }
 
 .table-view .column-header .label {

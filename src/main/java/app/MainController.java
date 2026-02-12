@@ -44,15 +44,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.print.PrinterJob;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
@@ -63,8 +62,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
-import javafx.stage.Popup;
-import javafx.stage.PopupWindow;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.util.Pair;
@@ -82,7 +79,7 @@ public class MainController {
 	private Label contentLabel;
 
 	@FXML
-	Label spreadsheetNameLabel;
+	private Label spreadsheetNameLabel;
 
 	@FXML
 	private TextField barcodeField;
@@ -111,6 +108,8 @@ public class MainController {
 
 	private static final String PRINTER_NAME = "Zebra"; // <- change to part or full name of your printer
 	public static final String COMMA_DELIMITER = ",";
+	
+	TreeMap<Integer,ProductId> productIdMap;
 
 	@FXML
 	private void initialize() {
@@ -141,7 +140,7 @@ public class MainController {
 		printbutton.disableProperty().bind(Bindings.isEmpty(tableView.getSelectionModel().getSelectedItems()));
 
 		File defaultProductsFile = new File(model.currentDefaults, "defaultProducts.csv");
-		loadDefaultProductFiles(defaultProductsFile);
+		productIdMap = loadDefaultProductFiles(defaultProductsFile);
 	}
 
 	private TreeMap<Integer, ProductId> loadDefaultProductFiles(File defaultProductsFile) {
@@ -190,41 +189,46 @@ public class MainController {
 	@FXML
 	private void onLookupClicked(ActionEvent event) {
 		Dialog<Pair<String, String>> dialog = new Dialog<>();
-		dialog.setTitle("Login Dialog");
-		dialog.setHeaderText("Please enter your credentials");
+		dialog.setTitle("Product Id Dialog");
+		dialog.setHeaderText("Press the appropriate button.");
 
 		// 2. Set the button types (OK and Cancel)
-		ButtonType loginButtonType = new ButtonType("Login", ButtonData.OK_DONE);
-		dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+		dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
 
 		// 3. Create the custom layout for the content
 		GridPane grid = new GridPane();
 		grid.setHgap(10);
 		grid.setVgap(10);
 		grid.setPadding(new Insets(20, 150, 10, 10));
-
-		TextField username = new TextField();
-		username.setPromptText("Username");
-		PasswordField password = new PasswordField();
-		password.setPromptText("Password");
-
-		grid.add(new Label("Username:"), 0, 0);
-		grid.add(username, 1, 0);
-		grid.add(new Label("Password:"), 0, 1);
-		grid.add(password, 1, 1);
+		int cols = 4;
+		Integer[] productIds = productIdMap.keySet().toArray(new Integer[0]);
+		
+		for (int i= 0; i<productIds.length; i++) {
+			Integer pid = productIds[i];
+			ProductId productId = productIdMap.get(pid);
+			String text = productId.productGroup() + " " +  productId.description();
+			Button button = new Button(text);
+			button.setUserData(productIds);
+			grid.add(button, i % cols, i / cols);
+		}
 
 		// 4. Add the layout to the dialog pane
 		dialog.getDialogPane().setContent(grid);
 
 		// 5. Focus the username field by default
-		Platform.runLater(() -> username.requestFocus());
-
+//		Platform.runLater(() -> username.requestFocus());
+		EventHandler buttonHandler = new EventHandler<ActionEvent>() {
+		    public void handle(ActionEvent args) {
+		    	Button button = (Button) args.getTarget();
+		        System.out.println(button.getUserData().toString());
+		     }
+		};
+		dialog.getDialogPane().addEventHandler(ActionEvent.ACTION, buttonHandler );
+		dialog.getDialogPane().addEventFilter(ActionEvent.ACTION, buttonHandler );
+//
 		// 6. Convert the result to a Pair when the login button is clicked
 		dialog.setResultConverter(dialogButton -> {
-			if (dialogButton == loginButtonType) {
-				return new Pair<>(username.getText(), password.getText());
-			}
-			return null;
+				return null;
 		});
 
 		// 7. Show the dialog and handle the result
