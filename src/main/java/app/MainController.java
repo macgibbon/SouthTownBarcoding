@@ -1,6 +1,5 @@
 package app;
 
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
@@ -46,7 +45,6 @@ import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.print.PrinterJob;
@@ -67,7 +65,6 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import javafx.util.Pair;
 
 public class MainController {
 
@@ -98,6 +95,9 @@ public class MainController {
 	
 	@FXML
 	private TextField descriptionField;
+	
+	@FXML
+	private TextField groupField;
 
 	@FXML
 	private TableView<ProductLabel> tableView;
@@ -187,10 +187,6 @@ public class MainController {
 		}
 	}
 
-	@FXML
-	private void onLastProductClicked(ActionEvent event) {
-
-	}
 
 	@FXML
 	private void onLookupClicked(ActionEvent event) {
@@ -238,26 +234,25 @@ public class MainController {
 		
 		dialog.getDialogPane().addEventFilter(ActionEvent.ACTION, buttonFilter);
 		weightField.setOnKeyPressed(keyevent -> {
-            System.out.println("Key Pressed: " + keyevent.getCode());
-            
-            // Example: Perform an action when the Enter key is pressed
-            if (keyevent.getCode() == KeyCode.ENTER) {
-            	boolean isValid = false;
-            	double w = 0.0;
-            	try { 
-            		w = Double.parseDouble(weightField.getText());
-            		isValid = ((w > 0.0) && (w< 100.0));
-            		System.out.println(w);
-            		weightField.clear();
-            		weightField.requestFocus();
-                	}
-            	catch (Throwable t) {
-            		
-            	}
-
-                // Add your custom logic here (e.g., submit form, move focus)
-            }
-        });
+			if (keyevent.getCode() == KeyCode.ENTER) {
+				boolean isValid = false;
+				double w = 0.0;
+				try {
+					w = Double.parseDouble(weightField.getText());
+					isValid = ((w > 0.0) && (w < 100.0));
+					if (isValid) {
+						String barcode = getBarCodeContent(weightField.getText(), productCodeField.getText());
+						String group =groupField.getText();
+						String description = descriptionField.getText();
+						String weight = weightField.getText();
+						Platform.runLater(()-> weightField.requestFocus());
+						Platform.runLater(()-> weightField.clear());
+						Platform.runLater(() -> printZebra(barcode, group, weight + " lb", description));
+					}
+				} catch (Throwable t) {
+				}
+			}
+		});
 //
 		// 6. Convert the result to a Pair when the login button is clicked
 //		dialog.setResultConverter(dialogButton -> {
@@ -269,12 +264,14 @@ public class MainController {
 		result.ifPresent(pid -> {
 			String pidStr = String.format("%06d", pid.id());
 			productCodeField.setText(pidStr);		
-			descriptionField.setText(pid.productGroup() + " " + pid.description());
+			groupField.setText(pid.productGroup().toString());
+			descriptionField.setText(pid.description());
 			Platform.runLater(()-> weightField.requestFocus());
 			Platform.runLater(()-> weightField.clear());
 		});
 	}
 
+	
 	@FXML
 	private void onPrintWindowsClicked(ActionEvent event) {
 		try {

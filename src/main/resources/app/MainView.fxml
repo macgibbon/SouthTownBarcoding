@@ -13,28 +13,21 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity"
-	minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
-	prefWidth="600.0" xmlns="http://javafx.com/javafx/22"
-	xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.MainController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="508.0" prefWidth="805.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.MainController">
 	<top>
 		<MenuBar>
 			<menus>
 				<Menu mnemonicParsing="false" text="File">
 					<items>
-						<MenuItem mnemonicParsing="false" onAction="#openReport"
-							text="Open Inventory Report" />
+						<MenuItem mnemonicParsing="false" onAction="#openReport" text="Open Inventory Report" />
 					</items>
 				</Menu>
 			</menus>
 		</MenuBar>
 	</top>
 	<center>
-		<TabPane fx:id="tabpane" prefHeight="200.0" prefWidth="200.0"
-			side="BOTTOM" tabClosingPolicy="UNAVAILABLE"
-			BorderPane.alignment="CENTER">
+		<TabPane fx:id="tabpane" prefHeight="415.0" prefWidth="799.0" side="BOTTOM" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
 			<tabs>
 				<Tab text="Manual">
 					<content>
@@ -47,30 +40,27 @@
 									<children>
 										<VBox prefHeight="99.0" prefWidth="190.0">
 											<children>
-											<Label prefHeight="30.0" text="" />											
-												<Button mnemonicParsing="false" prefHeight="30.0" onAction="#onLookupClicked"
-													text="Lookup Product Id" />
+												<Label prefHeight="30.0" text="Product code 6 digits" />
+												<TextField fx:id="productCodeField" prefHeight="30.0" />											
+												<Button mnemonicParsing="false" onAction="#onLookupClicked" prefHeight="30.0" text="Lookup Product Id" />
 											</children>
 										</VBox>
 										<VBox prefHeight="120.0" prefWidth="200.0">
 											<children>
-												<Label prefHeight="30.0" text="Product code 6 digits" />
-												<TextField fx:id="productCodeField"
-													prefHeight="30.0" />
+                                    <Label prefHeight="30.0" text="Product Group" />
+                                    <TextField fx:id="groupField" prefHeight="30.0" />
 											</children>
 										</VBox>
 										<VBox prefHeight="120.0" prefWidth="200.0">
 											<children>
 												<Label prefHeight="30.0" text="Product Description" />
-												<TextField fx:id="descriptionField"
-													prefHeight="30.0" />
+												<TextField fx:id="descriptionField" prefHeight="30.0" />
 											</children>
 										</VBox>
 										<VBox prefHeight="120.0" prefWidth="200.0">
 											<children>
 												<Label prefHeight="30.0" text="Weight (lbs) WW.www " />
-												<TextField fx:id="weightField"
-													prefHeight="30.0" />
+												<TextField fx:id="weightField" prefHeight="30.0" />
 											</children>
 										</VBox>
 									</children>
@@ -79,17 +69,13 @@
 								<HBox alignment="CENTER" spacing="8">
 									<children>
 										<Button onAction="#onGenerateClicked" text="Generate" />
-										<Button onAction="#onPrintWindowsClicked"
-											text="Print Windows Printer" />
-										<Button onAction="#onPrintZebraClicked"
-											text="Print Zebra Printer" />
+										<Button onAction="#onPrintWindowsClicked" text="Print Windows Printer" />
+										<Button onAction="#onPrintZebraClicked" text="Print Zebra Printer" />
 									</children>
 								</HBox>
 
-								<ImageView fx:id="barcodeView" fitHeight="120"
-									fitWidth="480" preserveRatio="true" />
-								<Label fx:id="contentLabel" text=""
-									BorderPane.alignment="CENTER" />
+								<ImageView fx:id="barcodeView" fitHeight="120" fitWidth="480" preserveRatio="true" />
+								<Label fx:id="contentLabel" text="" BorderPane.alignment="CENTER" />
 							</children>
 						</VBox>
 
@@ -97,22 +83,17 @@
 				</Tab>
 				<Tab text="Batch">
 					<content>
-						<BorderPane minHeight="0.0" minWidth="0.0"
-							prefHeight="180.0" prefWidth="200.0">
+						<BorderPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
 							<center>
-								<TableView fx:id="tableView" prefHeight="4000"
-									prefWidth="4000">
+								<TableView fx:id="tableView" prefHeight="4000" prefWidth="4000">
 
 								</TableView>
 							</center>
 							<bottom>
 								<VBox alignment="CENTER" BorderPane.alignment="CENTER">
 									<children>
-										<Button fx:id="printbutton" alignment="TOP_RIGHT"
-											mnemonicParsing="false" onAction="#printSelected"
-											text="Print Selected Labels" />
-										<Label fx:id="spreadsheetNameLabel"
-											text="spreadsheet.xls">
+										<Button fx:id="printbutton" alignment="TOP_RIGHT" mnemonicParsing="false" onAction="#printSelected" text="Print Selected Labels" />
+										<Label fx:id="spreadsheetNameLabel" text="spreadsheet.xls">
 										</Label>
 									</children>
 								</VBox>
