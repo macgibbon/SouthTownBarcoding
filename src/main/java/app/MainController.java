@@ -148,6 +148,7 @@ public class MainController {
 		if (defaultProductsFile.exists()) {
 			try {
 				try (BufferedReader br = new BufferedReader(new FileReader(defaultProductsFile))) {
+					@SuppressWarnings("unused")
 					String headers = br.readLine();
 					String line;
 					while ((line = br.readLine()) != null) {
@@ -181,10 +182,6 @@ public class MainController {
 		}
 	}
 
-	@FXML
-	private void onLastProductClicked(ActionEvent event) {
-
-	}
 
 	@FXML
 	private void onLookupClicked(ActionEvent event) {
@@ -217,13 +214,12 @@ public class MainController {
 
 		// 5. Focus the username field by default
 //		Platform.runLater(() -> username.requestFocus());
-		EventHandler buttonHandler = new EventHandler<ActionEvent>() {
+		EventHandler<ActionEvent> buttonHandler = new EventHandler<ActionEvent>() {
 		    public void handle(ActionEvent args) {
 		    	Button button = (Button) args.getTarget();
 		        System.out.println(button.getUserData().toString());
 		     }
 		};
-		dialog.getDialogPane().addEventHandler(ActionEvent.ACTION, buttonHandler );
 		dialog.getDialogPane().addEventFilter(ActionEvent.ACTION, buttonHandler );
 //
 		// 6. Convert the result to a Pair when the login button is clicked
