@@ -60,11 +60,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import javafx.util.Pair;
 
 public class MainController {
 
@@ -88,10 +88,16 @@ public class MainController {
 	private ImageView barcodeView;
 
 	@FXML
-	private TextField gs1WeightField;
+	private TextField weightField;
 
 	@FXML
 	private TextField productCodeField;
+	
+	@FXML
+	private TextField descriptionField;
+	
+	@FXML
+	private TextField groupField;
 
 	@FXML
 	private TableView<ProductLabel> tableView;
@@ -185,7 +191,7 @@ public class MainController {
 
 	@FXML
 	private void onLookupClicked(ActionEvent event) {
-		Dialog<Pair<String, String>> dialog = new Dialog<>();
+		Dialog<ProductId> dialog = new Dialog<>();
 		dialog.setTitle("Product Id Dialog");
 		dialog.setHeaderText("Press the appropriate button.");
 
@@ -205,7 +211,7 @@ public class MainController {
 			ProductId productId = productIdMap.get(pid);
 			String text = productId.productGroup() + " " +  productId.description();
 			Button button = new Button(text);
-			button.setUserData(productIds);
+			button.setUserData(productId);
 			grid.add(button, i % cols, i / cols);
 		}
 
@@ -214,26 +220,59 @@ public class MainController {
 
 		// 5. Focus the username field by default
 //		Platform.runLater(() -> username.requestFocus());
-		EventHandler<ActionEvent> buttonHandler = new EventHandler<ActionEvent>() {
+		
+		EventHandler<ActionEvent> buttonFilter = new EventHandler<ActionEvent>() {
 		    public void handle(ActionEvent args) {
 		    	Button button = (Button) args.getTarget();
-		        System.out.println(button.getUserData().toString());
+		    	ProductId pid = (ProductId) button.getUserData();
+		    	if (pid != null) {		    
+		    		args.consume();
+		    		dialog.setResult(pid);
+		    		dialog.close();
+		    	}
 		     }
 		};
-		dialog.getDialogPane().addEventFilter(ActionEvent.ACTION, buttonHandler );
+		
+		dialog.getDialogPane().addEventFilter(ActionEvent.ACTION, buttonFilter);
+		weightField.setOnKeyPressed(keyevent -> {
+			if (keyevent.getCode() == KeyCode.ENTER) {
+				boolean isValid = false;
+				double w = 0.0;
+				try {
+					w = Double.parseDouble(weightField.getText());
+					isValid = ((w > 0.0) && (w < 100.0));
+					if (isValid) {
+						String barcode = getBarCodeContent(weightField.getText(), productCodeField.getText());
+						String group =groupField.getText();
+						String description = descriptionField.getText();
+						String weight = weightField.getText();
+						Platform.runLater(()-> weightField.requestFocus());
+						Platform.runLater(()-> weightField.clear());
+						Platform.runLater(() -> printZebra(barcode, group, weight + " lb", description));
+					}
+				} catch (Throwable t) {
+				}
+			}
+		});
 //
 		// 6. Convert the result to a Pair when the login button is clicked
-		dialog.setResultConverter(dialogButton -> {
-				return null;
-		});
-
+//		dialog.setResultConverter(dialogButton -> {
+//				return null;
+//		});
+//
 		// 7. Show the dialog and handle the result
-		Optional<Pair<String, String>> result = dialog.showAndWait();
-		result.ifPresent(usernamePassword -> {
-			System.out.println("Username=" + usernamePassword.getKey() + ", Password=" + usernamePassword.getValue());
+		Optional<ProductId> result = dialog.showAndWait();
+		result.ifPresent(pid -> {
+			String pidStr = String.format("%06d", pid.id());
+			productCodeField.setText(pidStr);		
+			groupField.setText(pid.productGroup().toString());
+			descriptionField.setText(pid.description());
+			Platform.runLater(()-> weightField.requestFocus());
+			Platform.runLater(()-> weightField.clear());
 		});
 	}
 
+	
 	@FXML
 	private void onPrintWindowsClicked(ActionEvent event) {
 		try {
@@ -312,7 +351,7 @@ public class MainController {
 	@FXML
 	private void onPrintZebraClicked(ActionEvent event) throws PrintException {
 		String content = getBarcodeContent();
-		String weightStr = gs1WeightField.getText() + "lb";
+		String weightStr = weightField.getText() + "lb";
 		String productStr = "Product " + productCodeField.getText();
 		String group = "Unknown";
 		printZebra(content, group, weightStr, productStr);
@@ -355,7 +394,7 @@ public class MainController {
 	}
 
 	private String getBarcodeContent() {
-		String weightStr = gs1WeightField.getText();
+		String weightStr = weightField.getText();
 		String productStr = productCodeField.getText();
 		return getBarCodeContent(weightStr, productStr);
 	}
