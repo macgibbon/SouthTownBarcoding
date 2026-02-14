@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import app.InventoryReport;
 import app.Model;
 import app.ProductId;
 import app.ProductLabel;
@@ -70,7 +71,8 @@ class MapProductIds {
 		Model model = Model.getInstance();
 		model.productLabels.clear();
 		try {
-			model.setWorksheetForLabels(file);
+			InventoryReport inventoryReport = new InventoryReport(file);
+			model.productLabels.setAll(inventoryReport.productLabels);
 		} catch (Throwable e) {			
 			e.printStackTrace();
 		} 

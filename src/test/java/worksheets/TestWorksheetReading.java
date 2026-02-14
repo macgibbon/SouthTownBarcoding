@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import app.InventoryReport;
 import app.Model;
 
 class TestWorksheetReading {
@@ -27,7 +28,8 @@ class TestWorksheetReading {
 			System.out.println("Reading " + firstworksheet.getName());
 			
 			Model model = Model.getInstance();
-			model.setWorksheetForLabels(firstworksheet);
+			InventoryReport inventoryReport = new InventoryReport(firstworksheet);
+			model.productLabels.setAll(inventoryReport.productLabels);
 			List productLabels = model.productLabels;
 			assertTrue(productLabels.size()>1);
 		} catch (Throwable e) {
