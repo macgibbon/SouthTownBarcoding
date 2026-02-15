@@ -1,5 +1,6 @@
 package worksheets;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
@@ -19,7 +20,7 @@ class MapProductIds {
 	Path worksheetsPath = Path.of("spreadsheets");
 
 	@Test
-	void test() {
+	void testGetUniqueProductIds() {
 		try {
 			
 			List<ProductId> allproductIds = Files.list(worksheetsPath)
@@ -42,6 +43,7 @@ class MapProductIds {
 			File dir =worksheetsPath.toFile().getParentFile();
 			File productIds = new File(dir, "defaultProducts.csv");
 			
+			
 			try (PrintWriter writer = new PrintWriter(productIds)) {
 				writer.println("Product Id,Product Group,Description");
 				for (ProductId productId : allproductIds) {
@@ -59,6 +61,8 @@ class MapProductIds {
 					writer.println();
 				}			
 			}		
+			assertTrue(allproductIds.size() > 60, "unique id list has insufficent numbers!");
+	
 		} catch (Throwable e) {
 			e.printStackTrace();
 			fail(e.getMessage());
