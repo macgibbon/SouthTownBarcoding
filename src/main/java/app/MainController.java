@@ -21,6 +21,7 @@ import com.google.zxing.WriterException;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -37,6 +38,8 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.CheckBoxTableCell;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -47,8 +50,6 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 
 public class MainController {
-
-	private static final Object[] EMPTYARGS = new Object[0];
 
 	public static final String LAST_USED_FOLDER = "lastUsedFolder";
 
@@ -105,27 +106,36 @@ public class MainController {
 		tableView.setItems(model.productLabels);
 
 		tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-		List<TableColumn<ProductLabel, String>> tcList = Stream.of(ProductLabel.class.getRecordComponents())
+		final int printedColumn =3;
+		List<TableColumn<ProductLabel, ?>> tcList = Stream.of(ProductLabel.class.getFields())
+				.limit(printedColumn)
 				.map(rc -> rc.getName())
 				.map(name -> capitalizeFirstLetter(name))
 				.map(name -> new TableColumn<ProductLabel, String>(name))
+				.map(tc -> { 
+					tc.setCellValueFactory(new PropertyValueFactory<>(tc.getText())); 
+					tc.setPrefWidth(200.0);
+					tc.setEditable(false);
+					
+					return tc; 
+					})
+				
 				.collect(Collectors.toList());
-		for (int i = 0; i < tcList.size(); i++) {
-			TableColumn<ProductLabel, String> aTableColumn = tcList.get(i);
-			final int col = i;
-			aTableColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-			aTableColumn.setPrefWidth(200.0);
-			aTableColumn.setCellValueFactory(cellData -> {
-				try {
-					Method accessor = ProductLabel.class.getRecordComponents()[col].getAccessor();
-					String cellValue = accessor.invoke(cellData.getValue(), EMPTYARGS).toString();
-					return new ReadOnlyStringWrapper(cellValue);
-				} catch (Throwable e) {
-					return new ReadOnlyStringWrapper(e.getMessage());
-				}
-			});
-		}
+	
+		TableColumn<ProductLabel, Boolean> printedTableColumn = new TableColumn<ProductLabel, Boolean>("Printed");
+		
+		printedTableColumn.setCellFactory(CheckBoxTableCell.forTableColumn(printedTableColumn));
+		printedTableColumn.setPrefWidth(100.0);
+		printedTableColumn.setCellValueFactory(new PropertyValueFactory<>(printedTableColumn.getText())); 
+
+		
+		printedTableColumn.setEditable(true);
+		tcList.add(printedTableColumn);
+	
 		tableView.getColumns().setAll(FXCollections.observableList(tcList));
+		tableView.setEditable(true);
+
+		
 		printbutton.disableProperty().bind(Bindings.isEmpty(tableView.getSelectionModel().getSelectedItems()));
 
 		File defaultProductsFile = new File(model.currentDefaults, "defaultProducts.csv");
@@ -249,6 +259,9 @@ public class MainController {
 		Optional<ProductId> result = dialog.showAndWait();
 		result.ifPresent(pid -> {
 			String pidStr = String.format("%06d", pid.id());
+			int length = pidStr.length();
+			if (length > 6)
+				pidStr = pidStr.substring(length-6);
 			productCodeField.setText(pidStr);		
 			groupField.setText(pid.productGroup().toString());
 			descriptionField.setText(pid.description());
@@ -303,8 +316,7 @@ public class MainController {
 
 	@FXML
 	private void openReport(ActionEvent event) throws FileNotFoundException, IOException {
-		File lastUsedDirectory = new File(
-				model.preferences.get(LAST_USED_FOLDER, Path.of("spreadsheets").toFile().getAbsolutePath()));
+		File lastUsedDirectory = new File(model.preferences.get(LAST_USED_FOLDER, Path.of("spreadsheets").toFile().getAbsolutePath()));
 		fileChooser = new FileChooser();
 		if (lastUsedDirectory.exists())
 			fileChooser.setInitialDirectory(lastUsedDirectory);
@@ -323,13 +335,16 @@ public class MainController {
 
 	@FXML
 	private void printSelected(ActionEvent event) {
-		ObservableList<ProductLabel> selectedLabels = tableView.getSelectionModel().getSelectedItems();
-		selectedLabels.stream()
+		ObservableList<Integer> selectedRows = tableView.getSelectionModel().getSelectedIndices();
+		selectedRows.stream()
 				// .limit(2l)
-				.forEach(label -> {
-					Barcode barcodeWithWeight = new Barcode(label.weight(), label.productId());
+				.forEach(selected -> {
+					ProductLabel label = tableView.getItems().get(selected);
+					Barcode barcodeWithWeight = new Barcode(label.weight.get(), label.productId.get());
 					try {
-						 printer.print(barcodeWithWeight.content(), label.group().toString(), label.weight() + " lb", label.description());
+						 printer.print(barcodeWithWeight.content(), label.group.get().toString(), label.weight.get() + " lb", label.description.get());
+						 label.printed.set(true);
+						 tableView.getItems().set(selected, label);
 					} catch (Throwable e) {
 						throw new RuntimeException(e);
 					}

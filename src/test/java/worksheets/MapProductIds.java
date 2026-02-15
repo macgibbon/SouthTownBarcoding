@@ -26,10 +26,9 @@ class MapProductIds {
 			List<ProductId> allproductIds = Files.list(worksheetsPath)
 				.map(path -> path.toFile())
 				.map(file -> {			
-					List<ProductLabel> labels = loadFileLables(file);
-				
+					List<ProductLabel> labels = loadFileLables(file);				
 					List<ProductId> productIds = labels.stream()
-					.map(label -> new ProductId(Integer.valueOf(label.productId()), label.group(), label.description()))
+					.map(label -> new ProductId(Integer.valueOf(label.productId.get()), label.group.get(), label.description.get()))
 					.distinct()
 					.toList();	
 				return productIds;				

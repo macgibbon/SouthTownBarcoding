@@ -62,7 +62,7 @@ public class InventoryReport {
 			List<String> productWeightList = productWeights.get(i);
 			for (String weight : productWeightList) {
 				ProductLabel productLabel = new ProductLabel(productGroup, productId.id().toString(),
-						description.trim(), weight);
+						description.trim(), weight, false);
 				productLabels.add(productLabel);
 			}
 		}
