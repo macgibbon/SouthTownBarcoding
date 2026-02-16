@@ -339,7 +339,9 @@ public class MainController {
 					Barcode barcodeWithWeight = new Barcode(label.weight.get(), label.productId.get());
 					try {
 						 printer.print(barcodeWithWeight.content(), label.group.get().toString(), label.weight.get() + " lb", label.description.get());
-						 label.printed.setValue(true);				
+						 label.printed.setValue(true);	
+						 tableView.getItems().set(selected, label);
+						 tableView.setItems(tableView.getItems());
 					} catch (Throwable e) {
 						throw new RuntimeException(e);
 					}

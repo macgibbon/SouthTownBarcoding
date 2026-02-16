@@ -20,8 +20,11 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 
+import javafx.beans.Observable;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.util.Callback;
 
 public class Model {
 
@@ -32,7 +35,12 @@ public class Model {
 		return instance;
 	}
 
-	public ObservableList<ProductLabel> productLabels = FXCollections.observableArrayList();
+	// Define the extractor callback
+	Callback<ProductLabel, Observable[]> extractor = pl -> new Observable[] {
+	    pl.printedProperty(),
+	
+	};
+	public ObservableList<ProductLabel> productLabels = FXCollections.observableArrayList(extractor);
 
 
 	public File appDir;
