@@ -102,6 +102,7 @@ public class MainController {
 
         tableView.setItems(model.productLabels);
 
+
         tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         final int printedColumn = 3;
         List<TableColumn<ProductLabel, ?>> tcList = Stream.of(ProductLabel.class.getFields()).limit(printedColumn).map(rc -> rc.getName())
@@ -109,10 +110,8 @@ public class MainController {
                     tc.setCellValueFactory(new PropertyValueFactory<>(tc.getText()));
                     tc.setPrefWidth(200.0);
                     tc.setEditable(false);
-
                     return tc;
                 })
-
                 .collect(Collectors.toList());
 
         TableColumn<ProductLabel, Boolean> printedTableColumn = new TableColumn<ProductLabel, Boolean>("Printed");
