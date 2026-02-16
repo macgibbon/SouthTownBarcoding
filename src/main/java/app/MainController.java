@@ -208,10 +208,10 @@ public class MainController {
         EventHandler<ActionEvent> buttonFilter = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent args) {
                 Button button = (Button) args.getTarget();
-                ProductId pid = (ProductId) button.getUserData();
+                var pid =  button.getUserData();
                 if (pid != null) {
                     args.consume();
-                    dialog.setResult(pid);
+                    dialog.setResult((ProductId) pid);
                     dialog.close();
                 }
             }
@@ -239,13 +239,9 @@ public class MainController {
                 }
             }
         });
-//
-        // 6. Convert the result to a Pair when the login button is clicked
-//		dialog.setResultConverter(dialogButton -> {
-//				return null;
-//		});
-//
-        // 7. Show the dialog and handle the result
+
+   		dialog.setResultConverter(dialogButton ->  null);
+
         Optional<ProductId> result = dialog.showAndWait();
         result.ifPresent(pid -> {
             String pidStr = String.format("%06d", pid.id());
