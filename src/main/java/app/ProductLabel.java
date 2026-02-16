@@ -56,6 +56,7 @@ public class ProductLabel  {
 	 public BooleanProperty printedProperty() { 
 		 return printed; 
 	 }
+	
 
 	
 }

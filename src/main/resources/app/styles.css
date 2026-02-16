@@ -18,5 +18,8 @@
 
 .table-row-cell:selected {
     -fx-background-color: lightBlue; /* Your desired color (e.g., red) */
-   
+}
+
+.table-row-cell:selected .box {
+    -fx-background-color: white; /* Your desired color (e.g., red) */   
 }
