@@ -62,7 +62,7 @@ public class MainApp extends Application {
 		primaryStage.setX(width / 8.0);
 		primaryStage.setY(height / 8.0);
 		Scene scene = new Scene(root, width * 0.75, height * 0.75);
-		scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
+		scene.getStylesheets().add(getClass().getResource("/app/styles.css").toExternalForm());
 		primaryStage.setScene(scene);
 		// let all commits and invalidation events be processed before we start
 
