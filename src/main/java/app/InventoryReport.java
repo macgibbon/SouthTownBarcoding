@@ -133,7 +133,7 @@ public class InventoryReport {
 			List<List<String>> productWeights = productIntervals.stream()
 					.map(pi -> getProductRows(worksheetRows.subList(pi.beginInclusive(), pi.endExclusive())))
 					.toList();			
-			productLabels = getProductLabels(productHeaderPositions, productWeights);		
+			productLabels = getProductLabels(productHeaderPositions, productWeights);
 		} finally {
 			wb.close();
 		}

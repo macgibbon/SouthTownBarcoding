@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.TreeMap;
@@ -122,7 +123,7 @@ public class MainController {
 		
 		printedTableColumn.setCellFactory(CheckBoxTableCell.forTableColumn(printedTableColumn));
 		printedTableColumn.setPrefWidth(100.0);
-		printedTableColumn.setCellValueFactory(new PropertyValueFactory<>(printedTableColumn.getText())); 
+		printedTableColumn.setCellValueFactory(new PropertyValueFactory<>("printed")); 
 
 		
 		printedTableColumn.setEditable(true);
@@ -177,7 +178,6 @@ public class MainController {
 			messageLabel.setText("Unexpected error: " + ex.getMessage());
 		}
 	}
-
 
 	@FXML
 	private void onLookupClicked(ActionEvent event) {
@@ -340,14 +340,13 @@ public class MainController {
 					try {
 						 printer.print(barcodeWithWeight.content(), label.group.get().toString(), label.weight.get() + " lb", label.description.get());
 						 label.printed.setValue(true);	
-						 
-				//		 tableView.getItems().set(selected, label);
-				//		 tableView.setItems(tableView.getItems());
-						 tableView.refresh();
 					} catch (Throwable e) {
 						throw new RuntimeException(e);
 					}
 				});
+		var list =  new ArrayList<>(tableView.getItems());
+		tableView.getItems().clear();
+		tableView.getItems().setAll(list);
 		tableView.getSelectionModel().clearSelection();
 	}
 
