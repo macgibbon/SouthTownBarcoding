@@ -340,8 +340,10 @@ public class MainController {
 					try {
 						 printer.print(barcodeWithWeight.content(), label.group.get().toString(), label.weight.get() + " lb", label.description.get());
 						 label.printed.setValue(true);	
-						 tableView.getItems().set(selected, label);
-						 tableView.setItems(tableView.getItems());
+						 
+				//		 tableView.getItems().set(selected, label);
+				//		 tableView.setItems(tableView.getItems());
+						 tableView.refresh();
 					} catch (Throwable e) {
 						throw new RuntimeException(e);
 					}
