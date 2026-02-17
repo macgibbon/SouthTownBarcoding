@@ -18,14 +18,17 @@ import javafx.scene.image.Image;
 public class Barcode {
 	
 	String weight;
-	String product;
+	String product;	
 	
-	
-	public Barcode(String weight, String product) {
-		super();
-		this.weight = weight;
-		this.product = product;
-	}
+    public Barcode(String weight, String product) {
+        super();
+        this.weight = weight;
+        int length = product.length();
+        if (length > 6)
+            this.product = product.substring(length - 6);
+        else
+            this.product = product;
+    }
 	
 	public String content() {
 		BigDecimal weightd = null;
