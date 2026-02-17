@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.TreeMap;
@@ -97,7 +96,7 @@ public class MainController {
     final Printer printer = new Printer(PRINTER_NAME);
 
     @FXML
-    private void initialize() {
+    private void initialize() throws FileNotFoundException, IOException {
         model = Model.getInstance();
 
         tableView.setItems(model.productLabels);
@@ -132,49 +131,38 @@ public class MainController {
         productIdMap = loadDefaultProductFiles(defaultProductsFile);
     }
 
-    private TreeMap<Integer, ProductId> loadDefaultProductFiles(File defaultProductsFile) {
+    public TreeMap<Integer, ProductId> loadDefaultProductFiles(File defaultProductsFile) throws FileNotFoundException, IOException {
         TreeMap<Integer, ProductId> productMap = new TreeMap<>();
         if (defaultProductsFile.exists()) {
-            try {
-                try (BufferedReader br = new BufferedReader(new FileReader(defaultProductsFile))) {
-                    String headers = br.readLine();
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        String dequotedLine = line.replaceAll("['\"]", "");
-                        String[] values = dequotedLine.split(COMMA_DELIMITER);
-                        int id = Integer.parseUnsignedInt(values[0]);
-                        String group = values[1].replace(' ', '_');
-                        String description = values[2];
-                        ProductGroup pg = null;
-                        try { 
-                        	pg = ProductGroup.valueOf(group);
-                        } catch (IllegalArgumentException e) {
-                        	pg = ProductGroup.__;
-                        }
-                        ProductId pid = new ProductId(id, pg, description);
-                        productMap.put(id, pid);
+            try (BufferedReader br = new BufferedReader(new FileReader(defaultProductsFile))) {
+                String headers = br.readLine();
+                String line;
+                while ((line = br.readLine()) != null) {
+                    String dequotedLine = line.replaceAll("['\"]", "");
+                    String[] values = dequotedLine.split(COMMA_DELIMITER);
+                    int id = Integer.parseUnsignedInt(values[0]);
+                    String group = values[1].replace(' ', '_');
+                    String description = values[2];
+                    ProductGroup pg = null;
+                    try {
+                        pg = ProductGroup.valueOf(group);
+                    } catch (IllegalArgumentException e) {
+                        pg = ProductGroup.__;
                     }
+                    ProductId pid = new ProductId(id, pg, description);
+                    productMap.put(id, pid);
                 }
-            } catch (Throwable t) {
-                throw new RuntimeException(t);
             }
         }
         return productMap;
     }
 
     @FXML
-    private void onGenerateClicked(ActionEvent event) {
-        try {
-            String weightStr = weightField.getText();
-            String productStr = productCodeField.getText();
-            Barcode barcodeWithWeight = new Barcode(weightStr, productStr);
-            handleUPCEmbedded(barcodeWithWeight);
-        } catch (WriterException we) {
-            messageLabel.setText("Error generating barcode: " + we.getMessage());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            messageLabel.setText("Unexpected error: " + ex.getMessage());
-        }
+    private void onGenerateClicked(ActionEvent event) throws WriterException {
+        String weightStr = weightField.getText();
+        String productStr = productCodeField.getText();
+        Barcode barcodeWithWeight = new Barcode(weightStr, productStr);
+        handleUPCEmbedded(barcodeWithWeight);
     }
 
     @FXML
@@ -226,10 +214,12 @@ public class MainController {
             if (keyevent.getCode() == KeyCode.ENTER) {
                 boolean isValid = false;
                 double w = 0.0;
-                try {
+             
                     w = Double.parseDouble(weightField.getText());
-                    isValid = ((w > 0.0) && (w < 100.0));
-                    if (isValid) {
+                    if (w <= 0.0)
+                        throw new IllegalArgumentException("weight of " + w + " not allowed, nust be greated than zero!");
+                    if (w >= 100.0)
+                        throw new IllegalArgumentException("weight of " + w + " to large!");
                         Barcode bc = new Barcode(weightField.getText(), productCodeField.getText());
                         String barcode = bc.content();
                         String group = groupField.getText();
@@ -238,9 +228,6 @@ public class MainController {
                         Platform.runLater(() -> weightField.requestFocus());
                         Platform.runLater(() -> weightField.clear());
                         Platform.runLater(() -> printer.print(barcode, group, weight + " lb", description));
-                    }
-                } catch (Throwable t) {
-                }
             }
         });
 
@@ -261,18 +248,13 @@ public class MainController {
     }
 
     @FXML
-    private void onPrintWindowsClicked(ActionEvent event) {
-        try {
-            String weightStr = weightField.getText();
-            String productStr = productCodeField.getText();
-            Barcode barcodeWithWeight = new Barcode(weightStr, productStr);
+    private void onPrintWindowsClicked(ActionEvent event) throws WriterException {
+        String weightStr = weightField.getText();
+        String productStr = productCodeField.getText();
+        Barcode barcodeWithWeight = new Barcode(weightStr, productStr);
 
-            handleUPCEmbedded(barcodeWithWeight);
-        } catch (WriterException we) {
-            messageLabel.setText("Error generating barcode: " + we.getMessage());
-        } catch (Exception ex) {
-            messageLabel.setText("Unexpected error: " + ex.getMessage());
-        }
+        handleUPCEmbedded(barcodeWithWeight);
+
         Image image = barcodeView.getImage();
         if (image == null) {
             messageLabel.setText("No barcode to print. Generate one first.");
@@ -329,12 +311,10 @@ public class MainController {
             .forEach(selected -> {
                 ProductLabel label = tableView.getItems().get(selected);
                 Barcode barcodeWithWeight = new Barcode(label.weight.get(), label.productId.get());
-                try {
+               
                     printer.print(barcodeWithWeight.content(), label.group.get().toString(), label.weight.get() + " lb", label.description.get());
                     label.printed.setValue(true);
-                } catch (Throwable e) {
-                    throw new RuntimeException(e);
-                }
+               
             });
     }
 
@@ -348,15 +328,11 @@ public class MainController {
     }
 
     private void handleUPCEmbedded(Barcode bc) throws WriterException {
-        try {
-            Image image = bc.image(BarcodeFormat.UPC_A, 360, 120);
-            barcodeView.setImage(image);
-            messageLabel.setText("UPC-A (weight) generated: " + bc.content());
-            contentLabel.setText(bc.content());
-        } catch (IllegalArgumentException iae) {
-            contentLabel.setText("");
-            messageLabel.setText(iae.getMessage());
-        }
+        Image image = bc.image(BarcodeFormat.UPC_A, 360, 120);
+        barcodeView.setImage(image);
+        messageLabel.setText("UPC-A (weight) generated: " + bc.content());
+        contentLabel.setText(bc.content());
+
     }
 
     private String getBarcodeContent() {

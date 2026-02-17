@@ -14,12 +14,15 @@ import java.util.logging.SimpleFormatter;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -83,11 +86,6 @@ public class MainApp extends Application {
 	protected void showErrorDialog(Thread t, Throwable e) {
 		try {
 			logger.log(Level.SEVERE, "Exception in App", getCause(e));
-			// Create a new dialog
-			// Create a dialog to display the exception
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.setTitle("Unhandled Exception");
-			alert.setHeaderText("An unhandled exception occurred");
 
 			// Create a TextArea to display the stack trace
 			TextArea textArea = new TextArea();
@@ -105,6 +103,12 @@ public class MainApp extends Application {
 
 			BorderPane pane = new BorderPane();
 			pane.setCenter(textArea);
+			VBox bottomBox = new VBox();
+			bottomBox.setAlignment(Pos.CENTER);
+			Button closeButton = new Button("Close");
+			bottomBox.getChildren().add(closeButton);
+			pane.setBottom(bottomBox);
+		
 
 			final Stage stage = new Stage();
 
@@ -118,6 +122,7 @@ public class MainApp extends Application {
 			double height = primScreenBounds.getHeight();
 
 			Scene scene = new Scene(pane, width * 0.65, height * 0.65);
+			closeButton.setOnAction(event -> stage.close());
 			stage.setScene(scene);
 			stage.show();
 		} catch (Throwable x) {

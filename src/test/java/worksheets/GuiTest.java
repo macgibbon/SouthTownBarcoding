@@ -1,9 +1,10 @@
 package worksheets;
 
-import static worksheets.Util.reflectiveGetField;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static worksheets.Util.delDirTree;
 import static worksheets.Util.delay;
+import static worksheets.Util.reflectiveGetField;
 
 import java.io.File;
 
@@ -18,7 +19,6 @@ import org.testfx.framework.junit5.Stop;
 import app.MainApp;
 import app.MainController;
 import app.Model;
-
 import javafx.application.Platform;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
@@ -52,6 +52,80 @@ public class GuiTest extends MainApp {
 
     @Test
     void testLoad(FxRobot robot) throws Exception {
+        testBatchMode(robot);
+        testManualMode(robot);
+        testSpecialCasesForCodeCoverage();
+    }
+
+    private void testSpecialCasesForCodeCoverage() {
+        try {
+            controller.loadDefaultProductFiles(new File("notThere.csv"));
+        } catch (Exception e) {
+            fail(e.getCause());
+        }
+        
+    }
+
+    private void testManualMode(FxRobot robot) {
+        robot.clickOn("Manual");
+        
+        robot.clickOn("Lookup Product Id");
+        delay(2);
+        robot.clickOn("Fresh Pork Hot Italian Sausage Patties");
+        delay(2);
+        robot.push(KeyCode.NUMPAD1);
+        robot.push(KeyCode.NUMPAD2);
+        robot.push(KeyCode.PERIOD);
+        robot.push(KeyCode.NUMPAD3);
+        robot.push(KeyCode.NUMPAD4);
+        robot.push(KeyCode.NUMPAD5);
+        robot.push(KeyCode.ENTER);
+        
+        robot.push(KeyCode.NUMPAD1);
+        robot.push(KeyCode.NUMPAD2);
+        robot.push(KeyCode.PERIOD);
+        robot.push(KeyCode.NUMPAD3);
+        robot.push(KeyCode.NUMPAD4);
+        robot.push(KeyCode.NUMPAD6);
+       
+
+        robot.clickOn("Generate");
+        robot.clickOn("Print Windows Printer");
+        delay(2);
+        robot.press(KeyCode.SHIFT);
+        robot.press(KeyCode.TAB);
+        robot.release(KeyCode.TAB);
+        robot.release(KeyCode.SHIFT);
+        robot.push(KeyCode.ENTER);
+        delay(3);
+        robot.clickOn("Print Zebra Printer");
+        delay(2);
+        robot.clickOn("Lookup Product Id");
+        robot.clickOn("Cancel");
+        
+        robot.clickOn("Lookup Product Id");
+        robot.clickOn("Beef Ground Beef");
+        delay(2);
+        robot.push(KeyCode.MINUS);
+        robot.push(KeyCode.NUMPAD2);
+        robot.push(KeyCode.PERIOD);
+        robot.push(KeyCode.NUMPAD3);
+        robot.push(KeyCode.NUMPAD4);
+        robot.push(KeyCode.NUMPAD5);
+        robot.push(KeyCode.ENTER);
+        delay(2);
+        robot.clickOn("Close");
+        
+
+        robot.push(KeyCode.NUMPAD1);
+        robot.push(KeyCode.NUMPAD0);
+        robot.push(KeyCode.NUMPAD0);
+        robot.push(KeyCode.ENTER);
+        delay(2);
+        robot.clickOn("Close");
+    }
+
+    private void testBatchMode(FxRobot robot) {
         delay(2);
         robot.clickOn("File");
         robot.clickOn("Open Inventory Report");
@@ -70,30 +144,6 @@ public class GuiTest extends MainApp {
         Model model = (Model) reflectiveGetField(controller, "model");
         boolean isFirstPrinted = model.productLabels.get(0).printed.get();
         assertTrue(isFirstPrinted, "Printed Lable is not checked!");
-        delay(2);
-        robot.clickOn("Manual");
-        
-        robot.clickOn("Lookup Product Id");
-        delay(2);
-        robot.clickOn("Fresh Pork Hot Italian Sausage Patties");
-        delay(2);
-        robot.push(KeyCode.NUMPAD1);
-        robot.push(KeyCode.NUMPAD2);
-        robot.push(KeyCode.PERIOD);
-        robot.push(KeyCode.NUMPAD3);
-        robot.push(KeyCode.NUMPAD4);
-        robot.push(KeyCode.NUMPAD5);
-
-        robot.clickOn("Generate");
-        robot.clickOn("Print Windows Printer");
-        delay(2);
-        robot.press(KeyCode.SHIFT);
-        robot.press(KeyCode.TAB);
-        robot.release(KeyCode.TAB);
-        robot.release(KeyCode.SHIFT);
-        robot.push(KeyCode.ENTER);
-        delay(3);
-        robot.clickOn("Print Zebra Printer");
         delay(2);
     }
 
