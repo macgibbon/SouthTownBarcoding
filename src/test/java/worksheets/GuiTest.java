@@ -87,15 +87,14 @@ public class GuiTest extends MainApp {
         robot.clickOn("Generate");
         robot.clickOn("Print Windows Printer");
         delay(2);
-        robot.push(KeyCode.TAB);
-        robot.push(KeyCode.TAB);
-        robot.push(KeyCode.TAB);
-        robot.push(KeyCode.TAB);
-        robot.push(KeyCode.TAB);
-        robot.push(KeyCode.TAB);
-        robot.push(KeyCode.TAB);
+        robot.press(KeyCode.SHIFT);
+        robot.press(KeyCode.TAB);
+        robot.release(KeyCode.TAB);
+        robot.release(KeyCode.SHIFT);
         robot.push(KeyCode.ENTER);
-        
+        delay(3);
+        robot.clickOn("Print Zebra Printer");
+        delay(2);
     }
 
 	void testUncaughtExceptionHandler() {
