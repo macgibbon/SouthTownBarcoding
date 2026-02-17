@@ -143,10 +143,15 @@ public class MainController {
                         String dequotedLine = line.replaceAll("['\"]", "");
                         String[] values = dequotedLine.split(COMMA_DELIMITER);
                         int id = Integer.parseUnsignedInt(values[0]);
-                        String group = values[1];
+                        String group = values[1].replace(' ', '_');
                         String description = values[2];
-                        String fulltext = group + " " + description;
-                        ProductId pid = ProductId.createProductId(id, fulltext);
+                        ProductGroup pg = null;
+                        try { 
+                        	pg = ProductGroup.valueOf(group);
+                        } catch (IllegalArgumentException e) {
+                        	pg = ProductGroup.__;
+                        }
+                        ProductId pid = new ProductId(id, pg, description);
                         productMap.put(id, pid);
                     }
                 }

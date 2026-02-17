@@ -64,15 +64,37 @@ public class GuiTest extends MainApp {
         robot.push(KeyCode.L);
         robot.push(KeyCode.S);
         robot.push(KeyCode.ENTER);
-        delay(4);
+        delay(2);
         robot.clickOn("Fresh Pork");
         robot.clickOn("Print Selected Labels");
         Model model = (Model) reflectiveGetField(controller, "model");
         boolean isFirstPrinted = model.productLabels.get(0).printed.get();
         assertTrue(isFirstPrinted, "Printed Lable is not checked!");
+        delay(2);
+        robot.clickOn("Manual");
+        
+        robot.clickOn("Lookup Product Id");
+        delay(2);
+        robot.clickOn("Fresh Pork Hot Italian Sausage Patties");
+        delay(2);
+        robot.push(KeyCode.NUMPAD1);
+        robot.push(KeyCode.NUMPAD2);
+        robot.push(KeyCode.PERIOD);
+        robot.push(KeyCode.NUMPAD3);
+        robot.push(KeyCode.NUMPAD4);
+        robot.push(KeyCode.NUMPAD5);
 
-
-     
+        robot.clickOn("Generate");
+        robot.clickOn("Print Windows Printer");
+        delay(2);
+        robot.push(KeyCode.TAB);
+        robot.push(KeyCode.TAB);
+        robot.push(KeyCode.TAB);
+        robot.push(KeyCode.TAB);
+        robot.push(KeyCode.TAB);
+        robot.push(KeyCode.TAB);
+        robot.push(KeyCode.TAB);
+        robot.push(KeyCode.ENTER);
         
     }
 
