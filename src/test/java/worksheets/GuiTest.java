@@ -1,5 +1,6 @@
 package worksheets;
 
+import static worksheets.Util.reflectiveGetField;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static worksheets.Util.delDirTree;
 import static worksheets.Util.delay;
@@ -16,7 +17,10 @@ import org.testfx.framework.junit5.Stop;
 
 import app.MainApp;
 import app.MainController;
+import app.Model;
+
 import javafx.application.Platform;
+import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 
 @ExtendWith(ApplicationExtension.class)
@@ -51,14 +55,28 @@ public class GuiTest extends MainApp {
         delay(2);
         robot.clickOn("File");
         robot.clickOn("Open Inventory Report");
-  
+        robot.push(KeyCode.T);
+        robot.push(KeyCode.E);
+        robot.push(KeyCode.S);
+        robot.push(KeyCode.T);
+        robot.push(KeyCode.PERIOD);
+        robot.push(KeyCode.X);
+        robot.push(KeyCode.L);
+        robot.push(KeyCode.S);
+        robot.push(KeyCode.ENTER);
+        delay(4);
+        robot.clickOn("Fresh Pork");
+        robot.clickOn("Print Selected Labels");
+        Model model = (Model) reflectiveGetField(controller, "model");
+        boolean isFirstPrinted = model.productLabels.get(0).printed.get();
+        assertTrue(isFirstPrinted, "Printed Lable is not checked!");
 
+
+     
+        
     }
 
-
-
-
-    void testUncaughtExceptionHandler() {
+	void testUncaughtExceptionHandler() {
         Throwable error = null;
         try {
             Platform.runLater(() -> {
