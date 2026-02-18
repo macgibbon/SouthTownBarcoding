@@ -87,8 +87,6 @@ public class GuiTest extends MainApp {
         robot.push(KeyCode.NUMPAD3);
         robot.push(KeyCode.NUMPAD4);
         robot.push(KeyCode.NUMPAD6);
-       
-
         robot.clickOn("Generate");
         robot.clickOn("Print Windows Printer");
         delay(2);
@@ -97,9 +95,19 @@ public class GuiTest extends MainApp {
         robot.release(KeyCode.TAB);
         robot.release(KeyCode.SHIFT);
         robot.push(KeyCode.ENTER);
+   
         delay(3);
         robot.clickOn("Print Zebra Printer");
         delay(2);
+        
+        robot.clickOn("Print Windows Printer");
+        delay(2);
+        robot.press(KeyCode.SHIFT);
+        robot.press(KeyCode.TAB);
+        robot.release(KeyCode.TAB);
+        robot.release(KeyCode.SHIFT);
+        robot.push(KeyCode.ENTER);
+        
         robot.clickOn("Lookup Product Id");
         robot.clickOn("Cancel");
         
@@ -119,7 +127,7 @@ public class GuiTest extends MainApp {
 
         robot.push(KeyCode.NUMPAD1);
         robot.push(KeyCode.NUMPAD0);
-        robot.push(KeyCode.NUMPAD0);
+        robot.push(KeyCode.NUMPAD1);
         robot.push(KeyCode.ENTER);
         delay(2);
         robot.clickOn("Close");

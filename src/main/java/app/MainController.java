@@ -200,7 +200,7 @@ public class MainController {
         EventHandler<ActionEvent> buttonFilter = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent args) {
                 Button button = (Button) args.getTarget();
-                var pid =  button.getUserData();
+                var pid = button.getUserData();
                 if (pid != null) {
                     args.consume();
                     dialog.setResult((ProductId) pid);
@@ -212,26 +212,25 @@ public class MainController {
         dialog.getDialogPane().addEventFilter(ActionEvent.ACTION, buttonFilter);
         weightField.setOnKeyPressed(keyevent -> {
             if (keyevent.getCode() == KeyCode.ENTER) {
-                boolean isValid = false;
                 double w = 0.0;
-             
-                    w = Double.parseDouble(weightField.getText());
-                    if (w <= 0.0)
-                        throw new IllegalArgumentException("weight of " + w + " not allowed, nust be greated than zero!");
-                    if (w >= 100.0)
-                        throw new IllegalArgumentException("weight of " + w + " to large!");
-                        Barcode bc = new Barcode(weightField.getText(), productCodeField.getText());
-                        String barcode = bc.content();
-                        String group = groupField.getText();
-                        String description = descriptionField.getText();
-                        String weight = weightField.getText();
-                        Platform.runLater(() -> weightField.requestFocus());
-                        Platform.runLater(() -> weightField.clear());
-                        Platform.runLater(() -> printer.print(barcode, group, weight + " lb", description));
+
+                w = Double.parseDouble(weightField.getText());
+                if (w <= 0.0)
+                    throw new IllegalArgumentException("weight of " + w + " not allowed, nust be greated than zero!");
+                if (w >= 100.0)
+                    throw new IllegalArgumentException("weight of " + w + " to large!");
+                Barcode bc = new Barcode(weightField.getText(), productCodeField.getText());
+                String barcode = bc.content();
+                String group = groupField.getText();
+                String description = descriptionField.getText();
+                String weight = weightField.getText();
+                Platform.runLater(() -> weightField.requestFocus());
+                Platform.runLater(() -> weightField.clear());
+                Platform.runLater(() -> printer.print(barcode, group, weight + " lb", description));
             }
         });
 
-   		dialog.setResultConverter(dialogButton ->  null);
+        dialog.setResultConverter(dialogButton -> null);
 
         Optional<ProductId> result = dialog.showAndWait();
         result.ifPresent(pid -> {
@@ -256,11 +255,6 @@ public class MainController {
         handleUPCEmbedded(barcodeWithWeight);
 
         Image image = barcodeView.getImage();
-        if (image == null) {
-            messageLabel.setText("No barcode to print. Generate one first.");
-            return;
-        }
-
         PrinterJob job = PrinterJob.createPrinterJob();
         if (job == null) {
             messageLabel.setText("No printer job available.");

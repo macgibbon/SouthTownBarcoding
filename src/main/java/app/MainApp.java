@@ -114,6 +114,7 @@ public class MainApp extends Application {
 
 			double x = currentStage.getX() + 75.0;
 			double y = currentStage.getY() + 75.0;
+			stage.setTitle(e.getMessage());
 			stage.setX(x);
 			stage.setY(y);
 			stage.initModality(Modality.NONE);
