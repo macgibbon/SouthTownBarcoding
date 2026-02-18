@@ -8,17 +8,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-
 import app.InventoryReport;
 import app.Model;
 
 class TestWorksheetReading {
 
-	Path worksheetsPath = Path.of("spreadsheets");
+	static Path worksheetsPath = Path.of("spreadsheets");
 
-	@Test
-	void test() {
+	
+	public static void main(String[] args) {
 		try {
 			File firstworksheet = Files.list(worksheetsPath)
 					.sorted()

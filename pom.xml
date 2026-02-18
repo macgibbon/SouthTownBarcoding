@@ -34,7 +34,7 @@
 			<version>${javafx.version}</version>
 		</dependency>
 
-	<!-- https://mvnrepository.com/artifact/org.testfx/testfx-junit5 -->
+		<!-- https://mvnrepository.com/artifact/org.testfx/testfx-junit5 -->
 		<dependency>
 			<groupId>org.testfx</groupId>
 			<artifactId>testfx-junit5</artifactId>
@@ -47,7 +47,6 @@
 			<artifactId>junit-jupiter-api</artifactId>
 			<version>5.7.0</version>
 		</dependency>
-
 
 
 		<dependency>
@@ -166,6 +165,16 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.12</version>
+				<configuration>
+					<excludes>
+						<!-- Exclude all classes in any 'test' sub-package
+						within any package structure -->
+						<exclude>**/test/**/*</exclude>
+						<!-- You can add other exclusions here for generated
+						code, POJOs, etc. -->
+
+					</excludes>
+				</configuration>
 				<executions>
 					<execution>
 						<goals>

@@ -1,5 +1,6 @@
 package worksheets;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static worksheets.Util.delDirTree;
@@ -7,6 +8,7 @@ import static worksheets.Util.delay;
 import static worksheets.Util.reflectiveGetField;
 
 import java.io.File;
+import java.nio.file.Path;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
@@ -20,6 +22,7 @@ import app.MainApp;
 import app.MainController;
 import app.Model;
 import javafx.application.Platform;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 
@@ -27,6 +30,7 @@ import javafx.stage.Stage;
 public class GuiTest extends MainApp {
 
     private File testFolder;
+    Model model;
 
     @Start
     public void onStart(Stage primaryStage) throws Exception {
@@ -34,9 +38,9 @@ public class GuiTest extends MainApp {
 
         delDirTree(testFolder);
         String key = MainController.LAST_USED_FOLDER;
-      
+
         super.start(primaryStage);
-        // assert folder doesn't exist
+        model = (Model) reflectiveGetField(controller, "model");
     }
 
     @Stop
@@ -51,69 +55,49 @@ public class GuiTest extends MainApp {
     }
 
     @Test
-    void testLoad(FxRobot robot) throws Exception {
-        testBatchMode(robot);
-        testManualMode(robot);
-        testSpecialCasesForCodeCoverage();
-    }
-
-    private void testSpecialCasesForCodeCoverage() {
+    public void testSpecialCasesForCodeCoverage() {
+        Exception exc = null;
         try {
             controller.loadDefaultProductFiles(new File("notThere.csv"));
         } catch (Exception e) {
-            fail(e.getCause());
+            exc = e;
         }
+        assertTrue(exc == null, "No exception on missing default products file!");
         
+
+        String nullresult = controller.capitalizeFirstLetter(null);
+        assertTrue(nullresult == null);
+        String emptyResult = controller.capitalizeFirstLetter("");
+        assertTrue(emptyResult.equals(""));
+        
+        
+   
+
     }
 
-    private void testManualMode(FxRobot robot) {
+    @Test
+    public void testManualModeKeypadEntry(FxRobot robot) {
         robot.clickOn("Manual");
-        
+
         robot.clickOn("Lookup Product Id");
         delay(2);
         robot.clickOn("Fresh Pork Hot Italian Sausage Patties");
         delay(2);
-        robot.push(KeyCode.NUMPAD1);
-        robot.push(KeyCode.NUMPAD2);
-        robot.push(KeyCode.PERIOD);
-        robot.push(KeyCode.NUMPAD3);
-        robot.push(KeyCode.NUMPAD4);
-        robot.push(KeyCode.NUMPAD5);
-        robot.push(KeyCode.ENTER);
-        
+        String description = ((TextField) reflectiveGetField(controller, "descriptionField")).getText();
+        assertEquals(description, "Hot Italian Sausage Patties", "Incorrect Descripton");
+        String productId = ((TextField) reflectiveGetField(controller, "productCodeField")).getText();
+        assertEquals(productId, "854698", "Incorrect Descripton");
+
+        // Normal case
         robot.push(KeyCode.NUMPAD1);
         robot.push(KeyCode.NUMPAD2);
         robot.push(KeyCode.PERIOD);
         robot.push(KeyCode.NUMPAD3);
         robot.push(KeyCode.NUMPAD4);
         robot.push(KeyCode.NUMPAD6);
-        robot.clickOn("Generate");
-        robot.clickOn("Print Windows Printer");
-        delay(2);
-        robot.press(KeyCode.SHIFT);
-        robot.press(KeyCode.TAB);
-        robot.release(KeyCode.TAB);
-        robot.release(KeyCode.SHIFT);
         robot.push(KeyCode.ENTER);
-   
-        delay(3);
-        robot.clickOn("Print Zebra Printer");
-        delay(2);
-        
-        robot.clickOn("Print Windows Printer");
-        delay(2);
-        robot.press(KeyCode.SHIFT);
-        robot.press(KeyCode.TAB);
-        robot.release(KeyCode.TAB);
-        robot.release(KeyCode.SHIFT);
-        robot.push(KeyCode.ENTER);
-        
-        robot.clickOn("Lookup Product Id");
-        robot.clickOn("Cancel");
-        
-        robot.clickOn("Lookup Product Id");
-        robot.clickOn("Beef Ground Beef");
-        delay(2);
+
+        // Negative weight case
         robot.push(KeyCode.MINUS);
         robot.push(KeyCode.NUMPAD2);
         robot.push(KeyCode.PERIOD);
@@ -123,17 +107,99 @@ public class GuiTest extends MainApp {
         robot.push(KeyCode.ENTER);
         delay(2);
         robot.clickOn("Close");
-        
+        delay(2);
 
+        robot.clickOn("Lookup Product Id");
+        delay(2);
+        robot.clickOn("Fresh Pork Hot Italian Sausage Patties");
+        delay(2);
+        String description2 = ((TextField) reflectiveGetField(controller, "descriptionField")).getText();
+        assertEquals(description2, "Hot Italian Sausage Patties", "Incorrect Descripton");
+        String productId2 = ((TextField) reflectiveGetField(controller, "productCodeField")).getText();
+        assertEquals(productId2, "854698", "Incorrect Descripton");
+
+        // Overweight case
         robot.push(KeyCode.NUMPAD1);
         robot.push(KeyCode.NUMPAD0);
         robot.push(KeyCode.NUMPAD1);
         robot.push(KeyCode.ENTER);
         delay(2);
         robot.clickOn("Close");
+
     }
 
-    private void testBatchMode(FxRobot robot) {
+    @Test
+    public void manualModeButtons(FxRobot robot) {
+        robot.clickOn("Manual");
+
+        robot.clickOn("Lookup Product Id");
+        robot.clickOn("Beef Ground Beef");
+        delay(2);
+        String description = ((TextField) reflectiveGetField(controller, "descriptionField")).getText();
+        assertEquals(description, "Ground Beef", "Incorrect Descripton");
+        String productId = ((TextField) reflectiveGetField(controller, "productCodeField")).getText();
+        assertEquals(productId, "002086", "Incorrect Descripton");
+
+        delay(2);
+
+        robot.clickOn("Generate");
+        delay(2);
+        robot.clickOn("Close");
+        delay(2);
+
+        robot.clickOn("Manual");
+
+        robot.clickOn("Lookup Product Id");
+        robot.clickOn("Beef Ground Beef");
+        delay(2);
+        String description2 = ((TextField) reflectiveGetField(controller, "descriptionField")).getText();
+        assertEquals(description2, "Ground Beef", "Incorrect Descripton");
+        String productId2 = ((TextField) reflectiveGetField(controller, "productCodeField")).getText();
+        assertEquals(productId2, "002086", "Incorrect Descripton");
+        robot.push(KeyCode.NUMPAD1);
+        robot.push(KeyCode.NUMPAD2);
+        robot.push(KeyCode.PERIOD);
+        robot.push(KeyCode.NUMPAD3);
+        robot.push(KeyCode.NUMPAD4);
+        robot.push(KeyCode.NUMPAD5);
+        robot.clickOn("Generate");
+        delay(2);
+        robot.clickOn("Print Windows Printer");
+        delay(2);
+        robot.press(KeyCode.SHIFT);
+        robot.press(KeyCode.TAB);
+        robot.release(KeyCode.TAB);
+        robot.release(KeyCode.SHIFT);
+        robot.push(KeyCode.ENTER);
+
+        robot.clickOn("Print Windows Printer");
+        delay(2);
+        robot.push(KeyCode.ENTER);
+        delay(2);
+
+        robot.push(KeyCode.T);
+        robot.push(KeyCode.E);
+        robot.push(KeyCode.S);
+        robot.push(KeyCode.T);
+        robot.push(KeyCode.PERIOD);
+        robot.push(KeyCode.P);
+        robot.push(KeyCode.D);
+        robot.push(KeyCode.F);
+        robot.push(KeyCode.ENTER);
+        robot.press(KeyCode.Y);
+
+        delay(3);
+        robot.clickOn("Print Zebra Printer");
+        delay(2);
+
+        robot.clickOn("Manual");
+        robot.clickOn("Lookup Product Id");
+        robot.clickOn("Cancel");
+
+    }
+
+    @Test
+    public void testBatchMode(FxRobot robot) {
         delay(2);
         robot.clickOn("File");
         robot.clickOn("Open Inventory Report");
@@ -149,17 +215,41 @@ public class GuiTest extends MainApp {
         delay(2);
         robot.clickOn("Fresh Pork");
         robot.clickOn("Print Selected Labels");
-        Model model = (Model) reflectiveGetField(controller, "model");
+       
         boolean isFirstPrinted = model.productLabels.get(0).printed.get();
         assertTrue(isFirstPrinted, "Printed Lable is not checked!");
         delay(2);
     }
+    
+    @Test
+    public void testBadDefaultFolder(FxRobot robot) {
+        String currentLastFolder = model.preferences.get(controller.LAST_USED_FOLDER, Path.of("spreadsheets").toFile().getAbsolutePath());
+        try {
+          model.preferences.put("controller.LAST_USED_FOLDER", "notReal");
+        } finally {
+            model.preferences.put(controller.LAST_USED_FOLDER, currentLastFolder);
+            delay(2);
+            robot.clickOn("File");
+            robot.clickOn("Open Inventory Report");
+            robot.push(KeyCode.T);
+            robot.push(KeyCode.E);
+            robot.push(KeyCode.S);
+            robot.push(KeyCode.T);
+            robot.push(KeyCode.PERIOD);
+            robot.push(KeyCode.X);
+            robot.push(KeyCode.L);
+            robot.push(KeyCode.S);
+            robot.push(KeyCode.ENTER);
+            delay(2);
+        }
+        
+    }
 
-	void testUncaughtExceptionHandler() {
+    void testUncaughtExceptionHandler() {
         Throwable error = null;
         try {
             Platform.runLater(() -> {
-;        
+                ;
             });
 
         } catch (Throwable t) {
@@ -168,8 +258,5 @@ public class GuiTest extends MainApp {
         }
         assertTrue(error == null);
     }
-
-   
- 
 
 }

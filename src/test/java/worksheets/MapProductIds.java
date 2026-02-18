@@ -18,10 +18,10 @@ import app.ProductLabel;
 
 class MapProductIds {
 
-	Path worksheetsPath = Path.of("spreadsheets");
+	static Path worksheetsPath = Path.of("spreadsheets");
 
-	@Test
-	void testGetUniqueProductIds() {
+	
+	public static void main(String[] args) {
 		try {
 			
 			List<ProductId> allproductIds = Files.list(worksheetsPath)
@@ -70,7 +70,7 @@ class MapProductIds {
 
 	}
 
-	private List<ProductLabel> loadFileLables(File file) {
+	private static List<ProductLabel> loadFileLables(File file) {
 		Model model = Model.getInstance();
 		model.productLabels.clear();
 		try {

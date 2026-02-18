@@ -253,13 +253,12 @@ public class MainController {
         Barcode barcodeWithWeight = new Barcode(weightStr, productStr);
 
         handleUPCEmbedded(barcodeWithWeight);
-
-        Image image = barcodeView.getImage();
         PrinterJob job = PrinterJob.createPrinterJob();
-        if (job == null) {
+        Optional<PrinterJob> maybeJob = Optional.of(PrinterJob.createPrinterJob());
+        maybeJob.ifPresent((j) -> {
             messageLabel.setText("No printer job available.");
             return;
-        }
+        });
 
         // Show print dialog attached to the current window
         Window window = messageLabel.getScene().getWindow();
@@ -271,12 +270,12 @@ public class MainController {
 
         // Print the image node (ImageView)
         boolean printed = job.printPage(barcodeView);
-        if (printed) {
+        Optional maybePrinted = Optional.of(printed);
+        String msg = "Printing failed.";
+        maybePrinted.ifPresent((m) -> {
             job.endJob();
-            messageLabel.setText("Printed successfully.");
-        } else {
-            messageLabel.setText("Printing failed.");
-        }
+        });
+        messageLabel.setText(msg);
     }
 
     @FXML
