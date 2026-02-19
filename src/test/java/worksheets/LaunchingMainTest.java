@@ -14,6 +14,7 @@ class LaunchingMainTest  {
     // For code coverage of main method
     @Test
     void testMainLauncher() throws IOException {
+        delay(10);
         Launcher launcher = new Launcher();
         Throwable t = null;
         try {

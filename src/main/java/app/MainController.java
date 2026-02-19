@@ -48,7 +48,7 @@ import javafx.stage.Window;
 public class MainController {
 
     public static final String LAST_USED_FOLDER = "lastUsedFolder";
-
+ 
     @FXML
     private Label messageLabel;
 
@@ -101,11 +101,14 @@ public class MainController {
 
         tableView.setItems(model.productLabels);
 
-
         tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         final int printedColumn = 3;
-        List<TableColumn<ProductLabel, ?>> tcList = Stream.of(ProductLabel.class.getFields()).limit(printedColumn).map(rc -> rc.getName())
-                .map(name -> capitalizeFirstLetter(name)).map(name -> new TableColumn<ProductLabel, String>(name)).map(tc -> {
+        List<TableColumn<ProductLabel, ?>> tcList = Stream.of(ProductLabel.class.getFields())
+                .limit(printedColumn)
+                .map(rc -> rc.getName())
+                .map(name -> capitalizeFirstLetter(name))
+                .map(name -> new TableColumn<ProductLabel, String>(name))
+                .map(tc -> {
                     tc.setCellValueFactory(new PropertyValueFactory<>(tc.getText()));
                     tc.setPrefWidth(200.0);
                     tc.setEditable(false);
@@ -281,11 +284,13 @@ public class MainController {
     @FXML
     private void openReport(ActionEvent event) throws FileNotFoundException, IOException {
         File lastUsedDirectory = new File(model.preferences.get(LAST_USED_FOLDER, Path.of("spreadsheets").toFile().getAbsolutePath()));
+        System.out.println("lastUsedDirectory=" + lastUsedDirectory);
         fileChooser = new FileChooser();
         if (lastUsedDirectory.exists())
             fileChooser.setInitialDirectory(lastUsedDirectory);
         // Show the save file dialog
         File file = fileChooser.showOpenDialog((Stage) tableView.getScene().getWindow());
+        System.out.println("file= "+ file);
         if (file != null) {
             model.preferences.put(LAST_USED_FOLDER, file.getParent());
             InventoryReport inventoryReport = new InventoryReport(file);

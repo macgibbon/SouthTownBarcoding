@@ -10,6 +10,8 @@ import static worksheets.Util.reflectiveGetField;
 import java.io.File;
 import java.nio.file.Path;
 
+import javax.print.PrintService;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,11 +20,14 @@ import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
 import org.testfx.framework.junit5.Stop;
 
+import app.Barcode;
 import app.MainApp;
 import app.MainController;
 import app.Model;
+import app.Printer;
 import app.ProductGroup;
 import app.ProductId;
+import app.ProductLabel;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
@@ -82,6 +87,40 @@ public class GuiTest extends MainApp {
         
         ProductId pid = ProductId.createProductId(100000, "Chicken tenders");
         assertTrue(pid.productGroup() == ProductGroup.__);
+        
+        Printer printer = new Printer("NotPresentPrinter");
+        Exception expected= null;
+        try {           
+            PrintService printService = printer.findPrintService();
+        } catch (Exception e) {
+            expected = e;            
+        }
+        assertTrue(expected != null, "Did not fail on imaginary printer!");
+        
+        
+        Barcode tobigbarcode = new Barcode("1.0", "00123456");
+        Barcode minusbarcode = new Barcode("11.0", "00123456");
+        Barcode minusidbarcode = new Barcode("11.0", "-12345");
+        
+        ProductLabel badLabel = new ProductLabel(ProductGroup.Beef, "000001", "meat", "1.0", false);
+        String w = badLabel.getWeight();
+        badLabel.setPrinted(true);
+        boolean printed = badLabel.getPrinted();
+        assertTrue(printed);
+        badLabel.setPrinted(true);
+        
+        File userHome = new File(System.getProperty("user.home"));
+
+        File appDir = new File(userHome, ".barcoder");
+        
+        expected = null;
+        try {
+        File currentDefaults = new File(appDir, "currentDefaults");
+        Model.deepCopy(currentDefaults.toPath(), Path.of("Z:/"));
+        } catch (Exception e) {
+            expected =e;
+        }
+        assertTrue(expected != null, "Did not fail on imaginary path!");
     }
 
  
@@ -135,8 +174,6 @@ public class GuiTest extends MainApp {
         delay(2);
         robot.clickOn("Close");
         delay(2);
-       
-
     }
 
    

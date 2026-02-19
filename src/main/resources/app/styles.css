@@ -23,3 +23,15 @@
 .table-row-cell:selected .box {
     -fx-background-color: white; /* Your desired color (e.g., red) */   
 }
+
+#exceptionpane {
+    -fx-border-color: black;
+    -fx-border-width: 2px;
+    -fx-border-style: solid;
+}
+
+#exceptionpane .label {
+	 -fx-font-size: 24.0px;
+    -fx-text-fill: red;
+	
+}

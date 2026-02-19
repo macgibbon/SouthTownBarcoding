@@ -14,7 +14,7 @@ import javax.print.attribute.standard.Copies;
 
 public class Printer {
 	
-	private String printerName = "Zebra"; // <- change to part or full name of your printer
+	private String printerName;
 	
 	public Printer(String printerName) {
 		super();
@@ -41,29 +41,21 @@ public class Printer {
 		return zpl;
 	}
 	
-	private PrintService findPrintService() {
+	public PrintService findPrintService() {
 		PrintService[] services = PrintServiceLookup.lookupPrintServices(null, null);
 		for (PrintService s : services) {
 			if (s.getName().toLowerCase().contains(printerName.toLowerCase())) {
 				return s;
 			}
 		}
-		return null;
+		throw new RuntimeException("Print service for " + printerName + " not found!");
 	}
 	
 	public void print(String content, String group, String weightStr, String description) {
-		try {
+	    try {
 			String zpl = formatString(78, group, description, weightStr, content);
 			PrintService ps = findPrintService();
-			if (ps == null) {
-				System.err.println("Printer matching '" + printerName + "' not found.");
-				System.err.println("Available printers:");
-				for (PrintService p : PrintServiceLookup.lookupPrintServices(null, null)) {
-					System.err.println("  - " + p.getName());
-				}
-				return;
-			}
-
+			
 			DocPrintJob job = ps.createPrintJob();
 			byte[] bytes = zpl.getBytes(StandardCharsets.UTF_8);
 			Doc doc = new SimpleDoc(bytes, DocFlavor.BYTE_ARRAY.AUTOSENSE, null);
@@ -71,9 +63,8 @@ public class Printer {
 			attrs.add(new Copies(1));
 			job.print(doc, attrs);
 		} catch (Throwable t) {
-			t.printStackTrace();
+			throw new RuntimeException(t);
 		}
-
 	}
 
 
