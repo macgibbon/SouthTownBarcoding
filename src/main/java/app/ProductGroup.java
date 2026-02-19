@@ -5,7 +5,7 @@ public enum ProductGroup {
 
 	@Override
 	public String toString() {		
-		return super.toString().replace('_', ' ').trim();
+		return super.toString().replace('_', ' ');
 	}	
 
 }

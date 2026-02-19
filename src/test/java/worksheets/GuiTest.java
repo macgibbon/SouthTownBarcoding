@@ -57,19 +57,18 @@ public class GuiTest extends MainApp {
 
     @AfterAll
     public static void cleanup() {
-       MainApp.close();
+        MainApp.close();
     }
 
     @Test
     public void testAll(FxRobot robot) {
         testBatchMode(robot);
         testManualModeButtons(robot);
-        testManualModeKeypadEntry(robot);       
+        testManualModeKeypadEntry(robot);
         testBadDefaultFolder(robot);
-        testSpecialCasesForCodeCoverage();        
+        testSpecialCasesForCodeCoverage();
     }
-    
-   
+
     public void testSpecialCasesForCodeCoverage() {
         Exception exc = null;
         try {
@@ -77,53 +76,87 @@ public class GuiTest extends MainApp {
         } catch (Exception e) {
             exc = e;
         }
-        assertTrue(exc == null, "No exception on missing default products file!"); 
+        assertTrue(exc == null, "No exception on missing default products file!");
         String nullresult = controller.capitalizeFirstLetter(null);
         assertTrue(nullresult == null);
         String emptyResult = controller.capitalizeFirstLetter("");
         assertTrue(emptyResult.equals(""));
         delay(2);
-        
-        
+
         ProductId pid = ProductId.createProductId(100000, "Chicken tenders");
         assertTrue(pid.productGroup() == ProductGroup.__);
-        
+
         Printer printer = new Printer("NotPresentPrinter");
-        Exception expected= null;
-        try {           
+        Exception expected = null;
+        try {
             PrintService printService = printer.findPrintService();
         } catch (Exception e) {
-            expected = e;            
+            expected = e;
         }
         assertTrue(expected != null, "Did not fail on imaginary printer!");
-        
-        
+
         Barcode tobigbarcode = new Barcode("1.0", "00123456");
-        Barcode minusbarcode = new Barcode("11.0", "00123456");
+        Barcode minusbarcode = new Barcode("-11.0", "00123456");
+        expected = null;
+        try {
+            minusbarcode.content();
+        } catch (Exception e) {
+            expected = e;
+        }
+        assertTrue(expected != null, "Did not fail on negative wt!");
         Barcode minusidbarcode = new Barcode("11.0", "-12345");
+        expected = null;
+        try {
+            minusidbarcode.content();
+        } catch (Exception e) {
+            expected = e;
+        }
+        assertTrue(expected != null, "Did not fail on negative product id!");
+
+        Barcode tobigwtbarcode = new Barcode("100.0", "00123456");
+        expected = null;
+        try {
+            tobigwtbarcode.content();
+        } catch (Exception e) {
+            expected = e;
+        }
+        assertTrue(expected != null, "Did not fail on too big product id!");
         
+        Barcode badIdcode = new Barcode("1.0", "ABCD");
+        expected = null;
+        try {
+            badIdcode.content();
+        } catch (Exception e) {
+            expected = e;
+        }
+        assertTrue(expected != null, "Did not fail on bad product id!");
+
         ProductLabel badLabel = new ProductLabel(ProductGroup.Beef, "000001", "meat", "1.0", false);
         String w = badLabel.getWeight();
         badLabel.setPrinted(true);
         boolean printed = badLabel.getPrinted();
         assertTrue(printed);
         badLabel.setPrinted(true);
-        
+
         File userHome = new File(System.getProperty("user.home"));
 
         File appDir = new File(userHome, ".barcoder");
-        
+
         expected = null;
         try {
-        File currentDefaults = new File(appDir, "currentDefaults");
-        Model.deepCopy(currentDefaults.toPath(), Path.of("Z:/"));
+            File currentDefaults = new File(appDir, "currentDefaults");
+            MainApp.deepCopy(currentDefaults.toPath(), Path.of("Z:/"));
         } catch (Exception e) {
-            expected =e;
+            expected = e;
         }
         assertTrue(expected != null, "Did not fail on imaginary path!");
+
+        ProductId id = ProductId.createProductId(1, "chicken tenders");
+        
+      
+        
     }
 
- 
     public void testManualModeKeypadEntry(FxRobot robot) {
         robot.clickOn("Manual");
 
@@ -176,7 +209,6 @@ public class GuiTest extends MainApp {
         delay(2);
     }
 
-   
     public void testManualModeButtons(FxRobot robot) {
         robot.clickOn("Manual");
         delay(2);
@@ -244,11 +276,9 @@ public class GuiTest extends MainApp {
         robot.clickOn("Lookup Product Id");
         robot.clickOn("Cancel");
         delay(2);
-       
 
     }
 
-   
     public void testBatchMode(FxRobot robot) {
         delay(2);
         robot.clickOn("File");
@@ -268,34 +298,41 @@ public class GuiTest extends MainApp {
         boolean isFirstPrinted = model.productLabels.get(0).printed.get();
         assertTrue(isFirstPrinted, "Printed Lable is not checked!");
         delay(2);
-      
+
     }
-    
-   
+
+    public void testCancelBatchMode(FxRobot robot) {
+        delay(2);
+        robot.clickOn("File");
+        robot.clickOn("Open Inventory Report");
+        robot.push(KeyCode.TAB);
+        robot.push(KeyCode.TAB);
+        robot.push(KeyCode.ENTER);
+        delay(2);
+        robot.clickOn("Fresh Pork");
+        robot.clickOn("Print Selected Labels");
+        boolean isFirstPrinted = model.productLabels.get(0).printed.get();
+        assertTrue(isFirstPrinted, "Printed Lable is not checked!");
+        delay(2);
+
+    }
+
     public void testBadDefaultFolder(FxRobot robot) {
         String currentLastFolder = model.preferences.get(controller.LAST_USED_FOLDER, Path.of("spreadsheets").toFile().getAbsolutePath());
         try {
-          model.preferences.put("controller.LAST_USED_FOLDER", "notReal");
-          delay(2);
-          robot.clickOn("File");
-          robot.clickOn("Open Inventory Report");
-          robot.push(KeyCode.T);
-          robot.push(KeyCode.E);
-          robot.push(KeyCode.S);
-          robot.push(KeyCode.T);
-          robot.push(KeyCode.PERIOD);
-          robot.push(KeyCode.X);
-          robot.push(KeyCode.L);
-          robot.push(KeyCode.S);
-          robot.push(KeyCode.ENTER);
-          delay(2);
+            model.preferences.put(controller.LAST_USED_FOLDER, "notReal");
+            delay(2);
+            robot.clickOn("File");
+            robot.clickOn("Open Inventory Report");
+            robot.push(KeyCode.TAB);
+            robot.push(KeyCode.TAB);
+            robot.push(KeyCode.ENTER);
+            delay(2);
         } finally {
             model.preferences.put(controller.LAST_USED_FOLDER, currentLastFolder);
-           
+
         }
-       
-        
+
     }
 
-  
 }

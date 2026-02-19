@@ -48,8 +48,6 @@ public class ProductLabel  {
 
 
 	public void setPrinted(Boolean printed) {
-		if (printed)
-			System.out.println("printed");
 		this.printed.set(printed);
 	}
 

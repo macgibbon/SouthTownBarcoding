@@ -22,6 +22,8 @@ public class Printer {
 	}
 
 	private String formatString(int xoffset, String group, String productCode, String weight, String upcCode) {
+	    if (group == null)
+	        throw new RuntimeException("Invalid group " + group);
 		String zpl = "^XA\n" // use default font
 				+ "^CF,20\n" // set default font 0 to 30 dots high
 				+ "^FO" + Integer.toString(xoffset) + ",30,0" // field origin x,y, "

@@ -59,7 +59,7 @@ public class Barcode {
 		String formattedProductCode = String.format("%06d", productCode.toBigInteger());
 		// Build 11-digit payload: ns + manu(5) + weight(5)
 		String content = formattedProductCode + formattedWeight; // length should be 11
-		if (content.length() != 11 || !content.matches("\\d{11}")) {
+		if (content.length() != 11) {
 			throw new IllegalArgumentException("Constructed UPC-A payload invalid: " + content);
 		}
 		return content;

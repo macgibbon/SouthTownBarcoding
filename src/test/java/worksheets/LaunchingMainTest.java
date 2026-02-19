@@ -17,6 +17,8 @@ class LaunchingMainTest  {
         delay(10);
         Launcher launcher = new Launcher();
         Throwable t = null;
+        System.setProperty("user.home","C:/Test")
+        ;
         try {
             Thread launcherThread = new Thread(() ->  shutdown());
             launcherThread.start();

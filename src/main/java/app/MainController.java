@@ -130,8 +130,7 @@ public class MainController {
 
         printbutton.disableProperty().bind(Bindings.isEmpty(tableView.getSelectionModel().getSelectedItems()));
 
-        File defaultProductsFile = new File(model.currentDefaults, "defaultProducts.csv");
-        productIdMap = loadDefaultProductFiles(defaultProductsFile);
+
     }
 
     public TreeMap<Integer, ProductId> loadDefaultProductFiles(File defaultProductsFile) throws FileNotFoundException, IOException {
@@ -345,5 +344,11 @@ public class MainController {
             return original;
         }
         return original.substring(0, 1).toUpperCase() + original.substring(1);
+    }
+
+    public void setCurrentDefaults(File currentDefaults) throws IOException {
+        File defaultProductsFile = new File(currentDefaults, "defaultProducts.csv");
+        productIdMap = loadDefaultProductFiles(defaultProductsFile);
+        
     }
 }
