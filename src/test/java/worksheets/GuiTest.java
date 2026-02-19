@@ -1,8 +1,8 @@
+
 package worksheets;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 import static worksheets.Util.delDirTree;
 import static worksheets.Util.delay;
 import static worksheets.Util.reflectiveGetField;
@@ -21,9 +21,8 @@ import org.testfx.framework.junit5.Stop;
 import app.MainApp;
 import app.MainController;
 import app.Model;
-import app.ProductLabel;
-import javafx.application.Platform;
-import javafx.scene.control.TableView;
+import app.ProductGroup;
+import app.ProductId;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
@@ -79,7 +78,10 @@ public class GuiTest extends MainApp {
         String emptyResult = controller.capitalizeFirstLetter("");
         assertTrue(emptyResult.equals(""));
         delay(2);
-        close();
+        
+        
+        ProductId pid = ProductId.createProductId(100000, "Chicken tenders");
+        assertTrue(pid.productGroup() == ProductGroup.__);
     }
 
  
