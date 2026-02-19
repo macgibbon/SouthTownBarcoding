@@ -75,7 +75,7 @@ public class MainApp extends Application {
 	}
 
 	protected void showError(Thread t, Throwable e) {
-		getCause(e).printStackTrace();
+
 		Platform.runLater(() -> {
 			showErrorDialog(t, e);
 		});
@@ -83,7 +83,8 @@ public class MainApp extends Application {
 
 	protected void showErrorDialog(Thread t, Throwable e) {
 		try {
-			logger.log(Level.SEVERE, "Exception in App", getCause(e));
+			Throwable cause = getCause(e);
+            logger.log(Level.SEVERE, "Exception in App", cause);
 
 			// Create a TextArea to display the stack trace
 			TextArea textArea = new TextArea();
@@ -93,7 +94,7 @@ public class MainApp extends Application {
 			// Get the stack trace as a string
 			StringWriter sw = new StringWriter();
 			PrintWriter pw = new PrintWriter(sw);
-			getCause(e).printStackTrace(pw);
+			cause.printStackTrace(pw);
 			String stackTrace = sw.toString();
 
 			// Set the stack trace in the TextArea
@@ -112,7 +113,7 @@ public class MainApp extends Application {
 
 			double x = currentStage.getX() + 75.0;
 			double y = currentStage.getY() + 75.0;
-			stage.setTitle(e.getMessage());
+			stage.setTitle(cause.getMessage());
 			stage.setX(x);
 			stage.setY(y);
 			stage.initModality(Modality.NONE);
@@ -137,7 +138,7 @@ public class MainApp extends Application {
 		return t;
 	}
 
-	protected static void close() {
+	public static void close() {
 		Platform.runLater(() -> currentStage.close());
 	}
 	

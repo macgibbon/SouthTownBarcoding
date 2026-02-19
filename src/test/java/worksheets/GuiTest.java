@@ -21,7 +21,9 @@ import org.testfx.framework.junit5.Stop;
 import app.MainApp;
 import app.MainController;
 import app.Model;
+import app.ProductLabel;
 import javafx.application.Platform;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
@@ -51,10 +53,19 @@ public class GuiTest extends MainApp {
 
     @AfterAll
     public static void cleanup() {
-        // Platform.exit();
+       MainApp.close();
     }
 
     @Test
+    public void testAll(FxRobot robot) {
+        testBatchMode(robot);
+        testManualModeButtons(robot);
+        testManualModeKeypadEntry(robot);       
+        testBadDefaultFolder(robot);
+        testSpecialCasesForCodeCoverage();        
+    }
+    
+   
     public void testSpecialCasesForCodeCoverage() {
         Exception exc = null;
         try {
@@ -62,20 +73,16 @@ public class GuiTest extends MainApp {
         } catch (Exception e) {
             exc = e;
         }
-        assertTrue(exc == null, "No exception on missing default products file!");
-        
-
+        assertTrue(exc == null, "No exception on missing default products file!"); 
         String nullresult = controller.capitalizeFirstLetter(null);
         assertTrue(nullresult == null);
         String emptyResult = controller.capitalizeFirstLetter("");
         assertTrue(emptyResult.equals(""));
-        
-        
-   
-
+        delay(2);
+        close();
     }
 
-    @Test
+ 
     public void testManualModeKeypadEntry(FxRobot robot) {
         robot.clickOn("Manual");
 
@@ -105,18 +112,18 @@ public class GuiTest extends MainApp {
         robot.push(KeyCode.NUMPAD4);
         robot.push(KeyCode.NUMPAD5);
         robot.push(KeyCode.ENTER);
-        delay(2);
+        delay(4);
         robot.clickOn("Close");
         delay(2);
 
         robot.clickOn("Lookup Product Id");
         delay(2);
-        robot.clickOn("Fresh Pork Hot Italian Sausage Patties");
+        robot.clickOn("Beef Brisket Point");
         delay(2);
         String description2 = ((TextField) reflectiveGetField(controller, "descriptionField")).getText();
-        assertEquals(description2, "Hot Italian Sausage Patties", "Incorrect Descripton");
+        assertEquals(description2, "Brisket Point", "Incorrect Descripton");
         String productId2 = ((TextField) reflectiveGetField(controller, "productCodeField")).getText();
-        assertEquals(productId2, "854698", "Incorrect Descripton");
+        assertEquals(productId2, "002003", "Incorrect Descripton");
 
         // Overweight case
         robot.push(KeyCode.NUMPAD1);
@@ -125,13 +132,15 @@ public class GuiTest extends MainApp {
         robot.push(KeyCode.ENTER);
         delay(2);
         robot.clickOn("Close");
+        delay(2);
+       
 
     }
 
-    @Test
-    public void manualModeButtons(FxRobot robot) {
+   
+    public void testManualModeButtons(FxRobot robot) {
         robot.clickOn("Manual");
-
+        delay(2);
         robot.clickOn("Lookup Product Id");
         robot.clickOn("Beef Ground Beef");
         delay(2);
@@ -150,12 +159,12 @@ public class GuiTest extends MainApp {
         robot.clickOn("Manual");
 
         robot.clickOn("Lookup Product Id");
-        robot.clickOn("Beef Ground Beef");
+        robot.clickOn("Beef Sirloin Tip Roast");
         delay(2);
         String description2 = ((TextField) reflectiveGetField(controller, "descriptionField")).getText();
-        assertEquals(description2, "Ground Beef", "Incorrect Descripton");
+        assertEquals(description2, "Sirloin Tip Roast", "Incorrect Descripton");
         String productId2 = ((TextField) reflectiveGetField(controller, "productCodeField")).getText();
-        assertEquals(productId2, "002086", "Incorrect Descripton");
+        assertEquals(productId2, "002093", "Incorrect Descripton");
         robot.push(KeyCode.NUMPAD1);
         robot.push(KeyCode.NUMPAD2);
         robot.push(KeyCode.PERIOD);
@@ -195,10 +204,12 @@ public class GuiTest extends MainApp {
         robot.clickOn("Manual");
         robot.clickOn("Lookup Product Id");
         robot.clickOn("Cancel");
+        delay(2);
+       
 
     }
 
-    @Test
+   
     public void testBatchMode(FxRobot robot) {
         delay(2);
         robot.clickOn("File");
@@ -215,48 +226,37 @@ public class GuiTest extends MainApp {
         delay(2);
         robot.clickOn("Fresh Pork");
         robot.clickOn("Print Selected Labels");
-       
         boolean isFirstPrinted = model.productLabels.get(0).printed.get();
         assertTrue(isFirstPrinted, "Printed Lable is not checked!");
         delay(2);
+      
     }
     
-    @Test
+   
     public void testBadDefaultFolder(FxRobot robot) {
         String currentLastFolder = model.preferences.get(controller.LAST_USED_FOLDER, Path.of("spreadsheets").toFile().getAbsolutePath());
         try {
           model.preferences.put("controller.LAST_USED_FOLDER", "notReal");
+          delay(2);
+          robot.clickOn("File");
+          robot.clickOn("Open Inventory Report");
+          robot.push(KeyCode.T);
+          robot.push(KeyCode.E);
+          robot.push(KeyCode.S);
+          robot.push(KeyCode.T);
+          robot.push(KeyCode.PERIOD);
+          robot.push(KeyCode.X);
+          robot.push(KeyCode.L);
+          robot.push(KeyCode.S);
+          robot.push(KeyCode.ENTER);
+          delay(2);
         } finally {
             model.preferences.put(controller.LAST_USED_FOLDER, currentLastFolder);
-            delay(2);
-            robot.clickOn("File");
-            robot.clickOn("Open Inventory Report");
-            robot.push(KeyCode.T);
-            robot.push(KeyCode.E);
-            robot.push(KeyCode.S);
-            robot.push(KeyCode.T);
-            robot.push(KeyCode.PERIOD);
-            robot.push(KeyCode.X);
-            robot.push(KeyCode.L);
-            robot.push(KeyCode.S);
-            robot.push(KeyCode.ENTER);
-            delay(2);
+           
         }
+       
         
     }
 
-    void testUncaughtExceptionHandler() {
-        Throwable error = null;
-        try {
-            Platform.runLater(() -> {
-                ;
-            });
-
-        } catch (Throwable t) {
-            error = t;
-            t.printStackTrace();
-        }
-        assertTrue(error == null);
-    }
-
+  
 }

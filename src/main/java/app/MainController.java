@@ -294,7 +294,7 @@ public class MainController {
         }
         tabpane.getSelectionModel().select(1);
         tableView.getSelectionModel().selectAll();
-        Platform.runLater(() -> printbutton.requestFocus());
+      //  Platform.runLater(() -> printbutton.requestFocus());
     }
 
     @FXML

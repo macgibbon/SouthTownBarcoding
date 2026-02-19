@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import app.Launcher;
 import app.MainApp;
 
-class LaunchingMainTest extends MainApp {
+class LaunchingMainTest  {
 
     // For code coverage of main method
     @Test
@@ -25,12 +25,14 @@ class LaunchingMainTest extends MainApp {
             t = t1;
         }
         assert (t == null);
+        delay(2);
     }
   
 
     private void shutdown() {
-        delay(2);
-        MainApp.close();
+        delay(4);
+        MainApp.close();System.out.println("shutdown");
+        
     }
        
    
