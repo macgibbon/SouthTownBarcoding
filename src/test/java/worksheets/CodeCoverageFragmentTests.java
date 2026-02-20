@@ -7,7 +7,12 @@ import static worksheets.Util.delay;
 import static worksheets.Util.reflectiveGetField;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeMap;
 
 import javax.print.PrintService;
 
@@ -20,6 +25,7 @@ import org.testfx.framework.junit5.Start;
 import org.testfx.framework.junit5.Stop;
 
 import app.Barcode;
+import app.InventoryReport;
 import app.MainApp;
 import app.MainController;
 import app.Model;
@@ -60,7 +66,7 @@ public class CodeCoverageFragmentTests extends MainApp {
     }
 
     @Test
-    public void testSpecialCasesForCodeCoverage() {
+    public void testSpecialCasesForCodeCoverage() throws FileNotFoundException, IOException {
         Exception exc = null;
         try {
             controller.loadDefaultProductFiles(new File("notThere.csv"));
@@ -151,6 +157,19 @@ public class CodeCoverageFragmentTests extends MainApp {
         }
         assertTrue(expected != null, "Did not fail on imaginary path!");
 
+        TreeMap<Integer, ProductId> testMap = new TreeMap<>();
+        testMap.put(1, new ProductId(1, ProductGroup.Beef, "sticks"));
+        List<List<String>> emptyList = new ArrayList<>();
+
+        InventoryReport report = new InventoryReport(new File("spreadsheets/test.xls"));
+   
+        expected = null;
+        try {
+            ArrayList<ProductLabel> labels = report.getProductLabels(testMap, emptyList);
+        } catch (Exception e) {
+            expected = e;
+        }
+        assertTrue(expected != null, "Did not fail on Inventory report size mismatch!");
     }
 
 }

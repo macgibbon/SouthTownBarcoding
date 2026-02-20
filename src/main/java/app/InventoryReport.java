@@ -49,7 +49,7 @@ public class InventoryReport {
 		return productTypeRowIndexes;
 	}
 
-	private ArrayList<ProductLabel> getProductLabels(TreeMap<Integer, ProductId> productHeaderPositions,
+	public ArrayList<ProductLabel> getProductLabels(TreeMap<Integer, ProductId> productHeaderPositions,
 			List<List<String>> productWeights) {
 		if (productHeaderPositions.size() != productWeights.size())
 			throw new RuntimeException("Mismatch in product header positions and product positions");
@@ -90,7 +90,7 @@ public class InventoryReport {
 		return productIntervals;
 	}
 
-	private boolean isProductIdRow(HSSFCell productIdcell, HSSFCell productNameCell) {
+	public boolean isProductIdRow(HSSFCell productIdcell, HSSFCell productNameCell) {
 		if ((productIdcell == null) || (productIdcell.getCellType() != CellType.STRING))
 			return false;
 		if ((productNameCell == null) || (productNameCell.getCellType() != CellType.STRING))
