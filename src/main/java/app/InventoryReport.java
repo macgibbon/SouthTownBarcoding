@@ -113,11 +113,6 @@ public class InventoryReport {
 		} catch (NumberFormatException nfe) {
 			return false;
 		}
-		try {
-			Double.parseDouble(serialCell.getStringCellValue());
-		} catch (NumberFormatException nfe) {
-			return false;
-		}
 		return true;
 	}
 

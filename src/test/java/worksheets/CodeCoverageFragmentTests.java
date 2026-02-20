@@ -46,10 +46,8 @@ public class CodeCoverageFragmentTests extends MainApp {
     @Start
     public void onStart(Stage primaryStage) throws Exception {
         testFolder = new File(System.getProperty("user.home"), "testbarcodes");
-
         delDirTree(testFolder);
         String key = MainController.LAST_USED_FOLDER;
-
         super.start(primaryStage);
         model = (Model) reflectiveGetField(controller, "model");
     }
@@ -170,6 +168,48 @@ public class CodeCoverageFragmentTests extends MainApp {
             expected = e;
         }
         assertTrue(expected != null, "Did not fail on Inventory report size mismatch!");
+        try {
+        InventoryReport report2 = new InventoryReport(new File("spreadsheets/test2.xls"));
+        } catch (Exception e) {
+        	expected = e;
+        }
+        assertTrue(expected != null);
+        
+		try {
+			InventoryReport report3 = new InventoryReport(new File("./spreadsheets/Test2.xls"));
+		} catch (RuntimeException e) {
+			expected = e;
+		}
+		assertTrue(expected != null);
+		
+		expected = null;
+		try {
+			InventoryReport report4 = new InventoryReport(new File("./spreadsheets/Test3.xls"));
+		} catch (RuntimeException e) {
+			expected = e;
+		}
+		assertTrue(expected != null);
+		
+		expected = null;
+		try {
+			InventoryReport report5 = new InventoryReport(new File("./spreadsheets/Test4.xls"));
+		} catch (RuntimeException e) {
+			expected = e;
+		}
+		assertTrue(expected != null);
+		
+		expected = null;
+		try {
+			InventoryReport report6 = new InventoryReport(new File("./spreadsheets/Test5.xls"));
+		} catch (RuntimeException e) {
+			expected = e;
+		}
+		assertTrue(expected == null);
+	
+		
     }
 
+   
+    
+    
 }

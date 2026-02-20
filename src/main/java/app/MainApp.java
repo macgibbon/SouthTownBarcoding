@@ -89,7 +89,7 @@ public class MainApp extends Application {
         });
     }
 
-    protected void showErrorDialog(Thread t, Throwable e) {
+    public void showErrorDialog(Thread t, Throwable e) {
         try {
             Throwable cause = getCause(e);
             logger.log(Level.SEVERE, "Exception in App", cause);

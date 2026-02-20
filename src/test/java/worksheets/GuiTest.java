@@ -153,7 +153,6 @@ public class GuiTest extends MainApp {
 
         ProductId id = ProductId.createProductId(1, "chicken tenders");
         
-      
         
     }
 
