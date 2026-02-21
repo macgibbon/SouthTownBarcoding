@@ -1,9 +1,7 @@
 package app;
 
-import java.awt.Dialog;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
@@ -19,8 +17,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.stream.Stream;
-
-import javax.swing.JDialog;
 
 import javafx.application.Application;
 import javafx.application.Platform;

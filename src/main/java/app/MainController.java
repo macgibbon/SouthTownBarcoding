@@ -218,7 +218,7 @@ public class MainController {
 
                 w = Double.parseDouble(weightField.getText());
                 if (w <= 0.0)
-                    throw new IllegalArgumentException("weight of " + w + " not allowed, nust be greated than zero!");
+                    throw new IllegalArgumentException("weight of " + w + " not allowed, must be greater than zero!");
                 if (w >= 100.0)
                     throw new IllegalArgumentException("weight of " + w + " to large!");
                 Barcode bc = new Barcode(weightField.getText(), productCodeField.getText());

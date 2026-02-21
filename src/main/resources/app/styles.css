@@ -33,5 +33,10 @@
 #exceptionpane .label {
 	 -fx-font-size: 24.0px;
     -fx-text-fill: red;
+    -fx-padding: 20
 	
+}
+
+#exceptionpane .text-area .content {
+	 -fx-background-color: lightyellow;
 }
