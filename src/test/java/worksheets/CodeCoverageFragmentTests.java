@@ -1,6 +1,5 @@
 package worksheets;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static worksheets.Util.delDirTree;
 import static worksheets.Util.delay;
@@ -19,7 +18,6 @@ import javax.print.PrintService;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
 import org.testfx.framework.junit5.Stop;
@@ -27,14 +25,11 @@ import org.testfx.framework.junit5.Stop;
 import app.Barcode;
 import app.InventoryReport;
 import app.MainApp;
-import app.MainController;
 import app.Model;
 import app.Printer;
 import app.ProductGroup;
 import app.ProductId;
 import app.ProductLabel;
-import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 
 @ExtendWith(ApplicationExtension.class)
@@ -47,7 +42,6 @@ public class CodeCoverageFragmentTests extends MainApp {
     public void onStart(Stage primaryStage) throws Exception {
         testFolder = new File(System.getProperty("user.home"), "testbarcodes");
         delDirTree(testFolder);
-        String key = MainController.LAST_USED_FOLDER;
         super.start(primaryStage);
         model = (Model) reflectiveGetField(controller, "model");
     }
@@ -98,19 +92,30 @@ public class CodeCoverageFragmentTests extends MainApp {
             expected = e;
         }
         assertTrue(expected != null, "Did not fail on imaginary printer!");
-
-        Barcode tobigbarcode = new Barcode("1.0", "00123456");
-        Barcode minusbarcode = new Barcode("-11.0", "00123456");
+       
+        
+        
         expected = null;
         try {
+            Barcode tobigbarcode = new Barcode("1.0", "00123456");
+            tobigbarcode.content();
+        } catch (Exception e) {
+            expected = e;
+        }
+        assertTrue(expected == null, "failed on tobig product id rather than truncating to 6 digits!");
+          
+        expected = null;
+        try {
+            Barcode minusbarcode = new Barcode("-11.0", "00123456");
             minusbarcode.content();
         } catch (Exception e) {
             expected = e;
         }
         assertTrue(expected != null, "Did not fail on negative wt!");
-        Barcode minusidbarcode = new Barcode("11.0", "-12345");
+      
         expected = null;
         try {
+            Barcode minusidbarcode = new Barcode("11.0", "-12345");
             minusidbarcode.content();
         } catch (Exception e) {
             expected = e;
@@ -137,9 +142,9 @@ public class CodeCoverageFragmentTests extends MainApp {
 
         ProductLabel badLabel = new ProductLabel(ProductGroup.Beef, "000001", "meat", "1.0", false);
         String w = badLabel.getWeight();
+        
         badLabel.setPrinted(true);
-        boolean printed = badLabel.getPrinted();
-        assertTrue(printed);
+        assertTrue(badLabel.getPrinted(),"setting printer boolean on label failes");
         badLabel.setPrinted(true);
 
         File userHome = new File(System.getProperty("user.home"));

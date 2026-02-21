@@ -271,13 +271,8 @@ public class MainController {
         }
 
         // Print the image node (ImageView)
-        boolean printed = job.printPage(barcodeView);
-        Optional maybePrinted = Optional.of(printed);
-        String msg = "Printing failed.";
-        maybePrinted.ifPresent((m) -> {
-            job.endJob();
-        });
-        messageLabel.setText(msg);
+        job.printPage(barcodeView);
+        job.endJob();
     }
 
     @FXML
