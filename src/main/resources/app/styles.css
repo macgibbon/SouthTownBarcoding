@@ -10,6 +10,8 @@
 
 .button {
     -fx-font-size: 14.0px;
+    -fx-content-display: right;
+    -fx-font-weight: bold
 }
 
 .table-view .column-header .label {
@@ -24,19 +26,26 @@
     -fx-background-color: white; /* Your desired color (e.g., red) */   
 }
 
+.button .id-label {
+    -fx-font-size: 12px; /* Set the font size */
+    -fx-text-fill: black; /* Set the text color */
+    -fx-font-weight: lighter;
+    
+}
 #exceptionpane {
     -fx-border-color: black;
     -fx-border-width: 2px;
     -fx-border-style: solid;
+     -fx-background-color: lightyellow;
 }
 
 #exceptionpane .label {
 	 -fx-font-size: 24.0px;
-    -fx-text-fill: red;
-    -fx-padding: 20
-	
+    -fx-text-fill: black;
+    -fx-padding: 20;
+    -fx-font-weight: bold
 }
 
-#exceptionpane .text-area .content {
-	 -fx-background-color: lightyellow;
+#exceptionpane {
+	
 }

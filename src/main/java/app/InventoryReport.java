@@ -26,7 +26,6 @@ public class InventoryReport {
 	public ArrayList<ProductLabel> productLabels;
 	
 	private ArrayList<Row> getFirstWorksheetRows(HSSFWorkbook wb) {
-		System.out.println("Workbook has " + wb.getNumberOfSheets() + " sheets");
 		HSSFSheet firstSheet = wb.getSheetAt(0);
 		ArrayList<Row> worksheetRows = new ArrayList<>();
 		firstSheet.forEach(r -> worksheetRows.add(r));

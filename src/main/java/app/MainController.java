@@ -129,15 +129,14 @@ public class MainController {
         tableView.setEditable(true);
 
         printbutton.disableProperty().bind(Bindings.isEmpty(tableView.getSelectionModel().getSelectedItems()));
-
-
     }
 
     public TreeMap<Integer, ProductId> loadDefaultProductFiles(File defaultProductsFile) throws FileNotFoundException, IOException {
         TreeMap<Integer, ProductId> productMap = new TreeMap<>();
         if (defaultProductsFile.exists()) {
             try (BufferedReader br = new BufferedReader(new FileReader(defaultProductsFile))) {
-                String headers = br.readLine();
+                @SuppressWarnings("unused")
+				String headers = br.readLine();
                 String line;
                 while ((line = br.readLine()) != null) {
                     String dequotedLine = line.replaceAll("['\"]", "");
@@ -175,6 +174,7 @@ public class MainController {
 
         // 2. Set the button types (OK and Cancel)
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
+        dialog.getDialogPane().getStylesheets().add(getClass().getResource("/app/styles.css").toExternalForm());
 
         // 3. Create the custom layout for the content
         GridPane grid = new GridPane();
@@ -188,17 +188,13 @@ public class MainController {
             Integer pid = productIds[i];
             ProductId productId = productIdMap.get(pid);
             String text = productId.productGroup() + " " + productId.description();
-            Button button = new Button(text);
+            Label label = new Label(Integer.toString(productId.id()));
+            label.getStyleClass().add("id-label");
+            Button button = new Button(text,label);
             button.setUserData(productId);
             grid.add(button, i % cols, i / cols);
         }
-
-        // 4. Add the layout to the dialog pane
         dialog.getDialogPane().setContent(grid);
-
-        // 5. Focus the username field by default
-//		Platform.runLater(() -> username.requestFocus());
-
         EventHandler<ActionEvent> buttonFilter = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent args) {
                 Button button = (Button) args.getTarget();
@@ -215,12 +211,15 @@ public class MainController {
         weightField.setOnKeyPressed(keyevent -> {
             if (keyevent.getCode() == KeyCode.ENTER) {
                 double w = 0.0;
-
                 w = Double.parseDouble(weightField.getText());
-                if (w <= 0.0)
-                    throw new IllegalArgumentException("weight of " + w + " not allowed, must be greater than zero!");
-                if (w >= 100.0)
-                    throw new IllegalArgumentException("weight of " + w + " to large!");
+                if (w <= 0.0) {
+                	Platform.runLater(() -> weightField.selectAll());                	
+                    throw new IllegalArgumentException("Weight of " + w + " not allowed, must be greater than zero!");
+                }
+                if (w >= 100.0) {
+                 	Platform.runLater(() -> weightField.selectAll());                	  
+                    throw new IllegalArgumentException("Weight of " + w + " too large!");
+                }
                 Barcode bc = new Barcode(weightField.getText(), productCodeField.getText());
                 String barcode = bc.content();
                 String group = groupField.getText();
@@ -278,13 +277,11 @@ public class MainController {
     @FXML
     private void openReport(ActionEvent event) throws FileNotFoundException, IOException {
         File lastUsedDirectory = new File(model.preferences.get(LAST_USED_FOLDER, Path.of("spreadsheets").toFile().getAbsolutePath()));
-        System.out.println("lastUsedDirectory=" + lastUsedDirectory);
         fileChooser = new FileChooser();
         if (lastUsedDirectory.exists())
             fileChooser.setInitialDirectory(lastUsedDirectory);
         // Show the save file dialog
         File file = fileChooser.showOpenDialog((Stage) tableView.getScene().getWindow());
-        System.out.println("file= "+ file);
         if (file != null) {
             model.preferences.put(LAST_USED_FOLDER, file.getParent());
             InventoryReport inventoryReport = new InventoryReport(file);
