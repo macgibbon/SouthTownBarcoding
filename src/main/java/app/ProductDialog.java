@@ -1,0 +1,81 @@
+package app;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Optional;
+import java.util.TreeMap;
+
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
+
+public class ProductDialog {
+    
+
+
+
+    private Dialog<ProductId> dialog;
+
+    public ProductDialog( TreeMap<Integer, ProductId> productIdMap) {
+        super();
+        dialog = new Dialog<>();
+        dialog.setTitle("Product Id Dialog");
+        dialog.setHeaderText("Press the appropriate button.");
+
+        // 2. Set the button types (OK and Cancel)
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
+        dialog.getDialogPane().getStylesheets().add(getClass().getResource("/app/styles.css").toExternalForm());
+
+        // 3. Create the custom layout for the content
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+        int cols = 4;
+        Integer[] productIds = productIdMap.keySet().toArray(new Integer[0]);
+
+        for (int i = 0; i < productIds.length; i++) {
+            Integer pid = productIds[i];
+            ProductId productId = productIdMap.get(pid);
+            String text = productId.productGroup() + " " + productId.description();
+            Label label = new Label(Integer.toString(productId.id()));
+            label.getStyleClass().add("id-label");
+            Button button = new Button(text,label);
+            button.setUserData(productId);
+            grid.add(button, i % cols, i / cols);
+        }
+        dialog.getDialogPane().setContent(grid);
+       
+        EventHandler<ActionEvent> buttonFilter = new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent args) {
+                Button button = (Button) args.getTarget();
+                var pid = button.getUserData();
+                if (pid != null) {
+                    args.consume();
+                    dialog.setResult((ProductId) pid);
+                    dialog.close();
+                }
+            }
+        };
+        dialog.getDialogPane().addEventFilter(ActionEvent.ACTION, buttonFilter);
+       
+        dialog.setResultConverter(dialogButton -> null);
+
+        
+    }
+    
+    public Optional<ProductId> showAndWait() {
+        return dialog.showAndWait();
+    }
+    
+   
+
+}

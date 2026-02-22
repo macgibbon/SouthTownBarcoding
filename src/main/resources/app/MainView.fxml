@@ -21,6 +21,7 @@
 				<Menu mnemonicParsing="false" text="File">
 					<items>
 						<MenuItem mnemonicParsing="false" onAction="#openReport" text="Open Inventory Report" />
+                  <MenuItem mnemonicParsing="false" onAction="#openReportFor1" text="Open Inventory Report for 1 Product" />
 					</items>
 				</Menu>
 			</menus>
@@ -29,7 +30,7 @@
 	<center>
 		<TabPane fx:id="tabpane" prefHeight="415.0" prefWidth="799.0" side="BOTTOM" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
 			<tabs>
-				<Tab text="Manual">
+				<Tab  fx:id="manualtab" text="Manual">
 					<content>
 						<VBox alignment="CENTER" spacing="12">
 
@@ -92,7 +93,14 @@
 							<bottom>
 								<VBox alignment="CENTER" BorderPane.alignment="CENTER">
 									<children>
-										<Button fx:id="printbutton" alignment="TOP_RIGHT" mnemonicParsing="false" onAction="#printSelected" text="Print Selected Labels" />
+                              <HBox alignment="TOP_CENTER" prefWidth="200.0" spacing="20.0">
+                                 <children>
+      										<Button fx:id="printbutton" alignment="TOP_RIGHT" mnemonicParsing="false" onAction="#printSelected" text="Print Selected" />
+                                    <Button mnemonicParsing="false" onAction="#printNext20" text="Print Next 20 Unprinted" />
+                                    <Button mnemonicParsing="false" onAction="#printNext40" text="Print Next 40 Unprinted" />
+                                    <Button mnemonicParsing="false" onAction="#printAll" text="Print All Unprinted" />
+                                 </children>
+                              </HBox>
 										<Label fx:id="spreadsheetNameLabel" text="spreadsheet.xls">
 										</Label>
 									</children>

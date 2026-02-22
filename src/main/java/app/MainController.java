@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.TreeMap;
@@ -22,15 +23,12 @@ import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.print.PrinterJob;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -40,7 +38,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -48,12 +45,10 @@ import javafx.stage.Window;
 public class MainController {
 
     public static final String LAST_USED_FOLDER = "lastUsedFolder";
+    public static final String COMMA_DELIMITER = ",";
  
     @FXML
-    private Label messageLabel;
-
-    @FXML
-    private Label contentLabel;
+    private Label messageLabel, contentLabel;
 
     @FXML
     private Label spreadsheetNameLabel;
@@ -84,14 +79,16 @@ public class MainController {
 
     @FXML
     private Button printbutton;
+    
+    @FXML
+    private Tab manualtab;
 
     private Model model;
 
     private FileChooser fileChooser;
 
     private static final String PRINTER_NAME = "Zebra"; // <- change to part or full name of your printer
-    public static final String COMMA_DELIMITER = ",";
-
+  
     TreeMap<Integer, ProductId> productIdMap;
     final Printer printer = new Printer(PRINTER_NAME);
 
@@ -129,95 +126,18 @@ public class MainController {
         tableView.setEditable(true);
 
         printbutton.disableProperty().bind(Bindings.isEmpty(tableView.getSelectionModel().getSelectedItems()));
-    }
+        
 
-    public TreeMap<Integer, ProductId> loadDefaultProductFiles(File defaultProductsFile) throws FileNotFoundException, IOException {
-        TreeMap<Integer, ProductId> productMap = new TreeMap<>();
-        if (defaultProductsFile.exists()) {
-            try (BufferedReader br = new BufferedReader(new FileReader(defaultProductsFile))) {
-                @SuppressWarnings("unused")
-				String headers = br.readLine();
-                String line;
-                while ((line = br.readLine()) != null) {
-                    String dequotedLine = line.replaceAll("['\"]", "");
-                    String[] values = dequotedLine.split(COMMA_DELIMITER);
-                    int id = Integer.parseUnsignedInt(values[0]);
-                    String group = values[1].replace(' ', '_');
-                    String description = values[2];
-                    ProductGroup pg = null;
-                    try {
-                        pg = ProductGroup.valueOf(group);
-                    } catch (IllegalArgumentException e) {
-                        pg = ProductGroup.__;
-                    }
-                    ProductId pid = new ProductId(id, pg, description);
-                    productMap.put(id, pid);
-                }
-            }
-        }
-        return productMap;
-    }
-
-    @FXML
-    private void onGenerateClicked(ActionEvent event) throws WriterException {
-        String weightStr = weightField.getText();
-        String productStr = productCodeField.getText();
-        Barcode barcodeWithWeight = new Barcode(weightStr, productStr);
-        handleUPCEmbedded(barcodeWithWeight);
-    }
-
-    @FXML
-    private void onLookupClicked(ActionEvent event) {
-        Dialog<ProductId> dialog = new Dialog<>();
-        dialog.setTitle("Product Id Dialog");
-        dialog.setHeaderText("Press the appropriate button.");
-
-        // 2. Set the button types (OK and Cancel)
-        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
-        dialog.getDialogPane().getStylesheets().add(getClass().getResource("/app/styles.css").toExternalForm());
-
-        // 3. Create the custom layout for the content
-        GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(20, 150, 10, 10));
-        int cols = 4;
-        Integer[] productIds = productIdMap.keySet().toArray(new Integer[0]);
-
-        for (int i = 0; i < productIds.length; i++) {
-            Integer pid = productIds[i];
-            ProductId productId = productIdMap.get(pid);
-            String text = productId.productGroup() + " " + productId.description();
-            Label label = new Label(Integer.toString(productId.id()));
-            label.getStyleClass().add("id-label");
-            Button button = new Button(text,label);
-            button.setUserData(productId);
-            grid.add(button, i % cols, i / cols);
-        }
-        dialog.getDialogPane().setContent(grid);
-        EventHandler<ActionEvent> buttonFilter = new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent args) {
-                Button button = (Button) args.getTarget();
-                var pid = button.getUserData();
-                if (pid != null) {
-                    args.consume();
-                    dialog.setResult((ProductId) pid);
-                    dialog.close();
-                }
-            }
-        };
-
-        dialog.getDialogPane().addEventFilter(ActionEvent.ACTION, buttonFilter);
         weightField.setOnKeyPressed(keyevent -> {
             if (keyevent.getCode() == KeyCode.ENTER) {
                 double w = 0.0;
                 w = Double.parseDouble(weightField.getText());
                 if (w <= 0.0) {
-                	Platform.runLater(() -> weightField.selectAll());                	
+                    Platform.runLater(() -> weightField.selectAll());                   
                     throw new IllegalArgumentException("Weight of " + w + " not allowed, must be greater than zero!");
                 }
                 if (w >= 100.0) {
-                 	Platform.runLater(() -> weightField.selectAll());                	  
+                    Platform.runLater(() -> weightField.selectAll());                     
                     throw new IllegalArgumentException("Weight of " + w + " too large!");
                 }
                 Barcode bc = new Barcode(weightField.getText(), productCodeField.getText());
@@ -230,10 +150,20 @@ public class MainController {
                 Platform.runLater(() -> printer.print(barcode, group, weight + " lb", description));
             }
         });
+    
+    }
 
-        dialog.setResultConverter(dialogButton -> null);
+    @FXML
+    private void onGenerateClicked(ActionEvent event) throws WriterException {
+        String weightStr = weightField.getText();
+        String productStr = productCodeField.getText();
+        Barcode barcodeWithWeight = new Barcode(weightStr, productStr);
+        handleUPCEmbedded(barcodeWithWeight);
+    }
 
-        Optional<ProductId> result = dialog.showAndWait();
+    @FXML
+    private void onLookupClicked(ActionEvent event) {
+        Optional<ProductId> result = new ProductDialog(productIdMap).showAndWait();
         result.ifPresent(pid -> {
             String pidStr = String.format("%06d", pid.id());
             int length = pidStr.length();
@@ -275,6 +205,68 @@ public class MainController {
     }
 
     @FXML
+    private void openReportFor1(ActionEvent event) throws FileNotFoundException, IOException {
+        Optional<ProductId> result = new ProductDialog(productIdMap).showAndWait();
+        if (result.isPresent()) {
+            String pickedPid = result.get().id().toString();
+            File lastUsedDirectory = new File(model.preferences.get(LAST_USED_FOLDER, Path.of("spreadsheets").toFile().getAbsolutePath()));
+            fileChooser = new FileChooser();
+            if (lastUsedDirectory.exists())
+                fileChooser.setInitialDirectory(lastUsedDirectory);
+            // Show the save file dialog
+            File file = fileChooser.showOpenDialog((Stage) tableView.getScene().getWindow());
+            if (file != null) {
+                model.preferences.put(LAST_USED_FOLDER, file.getParent());
+                InventoryReport inventoryReport = new InventoryReport(file);
+                ArrayList<ProductLabel> pidLabels = inventoryReport.productLabels.stream()
+                    .filter(label -> label.productId.get().equals(pickedPid))
+                    .collect(Collectors.toCollection(ArrayList::new));
+                model.productLabels.setAll(pidLabels);
+                spreadsheetNameLabel.setText(file.getAbsolutePath());
+            }
+            tabpane.getSelectionModel().select(1);
+            
+        }
+    }
+    
+    @FXML
+    private void printNext20(ActionEvent event) throws FileNotFoundException, IOException {
+       tableView.getItems().stream()
+            .filter(label -> !label.getPrinted())
+            .limit(20)       
+            .forEach(label -> {                
+                Barcode barcodeWithWeight = new Barcode(label.weight.get(), label.productId.get());               
+                 printer.print(barcodeWithWeight.content(), label.group.get().toString(), label.weight.get() + " lb", label.description.get());
+                 label.printed.setValue(true);
+            });
+    }
+    
+    @FXML
+    private void printNext40(ActionEvent event) throws FileNotFoundException, IOException {
+        tableView.getItems().stream()
+        .filter(label -> !label.getPrinted())
+        .limit(40)       
+        .forEach(label -> {                
+            Barcode barcodeWithWeight = new Barcode(label.weight.get(), label.productId.get());               
+             printer.print(barcodeWithWeight.content(), label.group.get().toString(), label.weight.get() + " lb", label.description.get());
+             label.printed.setValue(true);
+        });
+    }
+    
+    @FXML
+    private void printAll(ActionEvent event) throws FileNotFoundException, IOException {
+        tableView.getItems().stream()
+        .filter(label -> !label.getPrinted())     
+        .forEach(label -> {                
+            Barcode barcodeWithWeight = new Barcode(label.weight.get(), label.productId.get());               
+             printer.print(barcodeWithWeight.content(), label.group.get().toString(), label.weight.get() + " lb", label.description.get());
+             label.printed.setValue(true);
+        });
+    }
+    
+    
+    
+    @FXML
     private void openReport(ActionEvent event) throws FileNotFoundException, IOException {
         File lastUsedDirectory = new File(model.preferences.get(LAST_USED_FOLDER, Path.of("spreadsheets").toFile().getAbsolutePath()));
         fileChooser = new FileChooser();
@@ -289,7 +281,7 @@ public class MainController {
             spreadsheetNameLabel.setText(file.getAbsolutePath());
         }
         tabpane.getSelectionModel().select(1);
-        tableView.getSelectionModel().selectAll();
+     //   tableView.getSelectionModel().selectAll();
       //  Platform.runLater(() -> printbutton.requestFocus());
     }
 
@@ -342,5 +334,32 @@ public class MainController {
         File defaultProductsFile = new File(currentDefaults, "defaultProducts.csv");
         productIdMap = loadDefaultProductFiles(defaultProductsFile);
         
+    }
+    
+    public TreeMap<Integer, ProductId> loadDefaultProductFiles(File defaultProductsFile) throws FileNotFoundException, IOException {
+        TreeMap<Integer, ProductId> productMap = new TreeMap<>();
+        if (defaultProductsFile.exists()) {
+            try (BufferedReader br = new BufferedReader(new FileReader(defaultProductsFile))) {
+                @SuppressWarnings("unused")
+                String headers = br.readLine();
+                String line;
+                while ((line = br.readLine()) != null) {
+                    String dequotedLine = line.replaceAll("['\"]", "");
+                    String[] values = dequotedLine.split(COMMA_DELIMITER);
+                    int id = Integer.parseUnsignedInt(values[0]);
+                    String group = values[1].replace(' ', '_');
+                    String description = values[2];
+                    ProductGroup pg = null;
+                    try {
+                        pg = ProductGroup.valueOf(group);
+                    } catch (IllegalArgumentException e) {
+                        pg = ProductGroup.__;
+                    }
+                    ProductId pid = new ProductId(id, pg, description);
+                    productMap.put(id, pid);
+                }
+            }
+        }
+        return productMap;
     }
 }

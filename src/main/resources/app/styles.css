@@ -18,8 +18,21 @@
     -fx-alignment: CENTER-LEFT; /* Change to CENTER-LEFT, CENTER-RIGHT, etc. */
 }
 
-.table-row-cell:selected {
-    -fx-background-color: lightBlue; /* Your desired color (e.g., red) */
+.table-row-cell:selected .table-cell {
+    -fx-text-fill: black;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: navajowhite  ; /* Example: a darker grey for odd rows */
+}
+
+.table-row-cell:even {
+    -fx-background-color: palegreen ; /* Example: a lighter grey for even rows */
+}
+
+.table-row-cell:selected  {
+    -fx-background-color: mediumturquoise  ; 
+    -fx-text-fill: black;
 }
 
 .table-row-cell:selected .box {
@@ -29,23 +42,32 @@
 .button .id-label {
     -fx-font-size: 12px; /* Set the font size */
     -fx-text-fill: black; /* Set the text color */
-    -fx-font-weight: lighter;
-    
+    -fx-font-weight: lighter;    
 }
 #exceptionpane {
     -fx-border-color: black;
     -fx-border-width: 2px;
-    -fx-border-style: solid;
-     -fx-background-color: lightyellow;
+    -fx-border-style: solid;   
+    -fx-background-color: #FFD580; /* light orange */ 
 }
 
 #exceptionpane .label {
 	 -fx-font-size: 24.0px;
     -fx-text-fill: black;
     -fx-padding: 20;
-    -fx-font-weight: bold
+    -fx-font-weight: bold;
+    -fx-background-color: #FFD580; /* light orange */
 }
 
-#exceptionpane {
-	
+.text-area {
+	-fx-background-color: #FFD580; /* light orange */
 }
+
+.text-area .content {
+	-fx-background-color: #FFD580;  /* light orange */
+}
+
+.text-area .scroll-bar .track {
+	-fx-background-color: #FFD580;  /* light orange */
+}
+
