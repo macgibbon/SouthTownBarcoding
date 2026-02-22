@@ -53,21 +53,24 @@ public class Printer {
 		throw new RuntimeException("Print service for " + printerName + " not found!");
 	}
 	
-	public void print(String content, String group, String weightStr, String description) {
-	    try {
-			String zpl = formatString(78, group, description, weightStr, content);
-			PrintService ps = findPrintService();
-			
-			DocPrintJob job = ps.createPrintJob();
-			byte[] bytes = zpl.getBytes(StandardCharsets.UTF_8);
-			Doc doc = new SimpleDoc(bytes, DocFlavor.BYTE_ARRAY.AUTOSENSE, null);
-			PrintRequestAttributeSet attrs = new HashPrintRequestAttributeSet();
-			attrs.add(new Copies(1));
-			job.print(doc, attrs);
-		} catch (Throwable t) {
-			throw new RuntimeException(t);
-		}
-	}
+    public void print(String content, String group, String weightStr, String description) {
+        try {
+            String zpl = formatString(78, group, description, weightStr, content);
+            PrintService ps = findPrintService();
+            DocPrintJob job = ps.createPrintJob();
+            try {
+                byte[] bytes = zpl.getBytes(StandardCharsets.UTF_8);
+                Doc doc = new SimpleDoc(bytes, DocFlavor.BYTE_ARRAY.AUTOSENSE, null);
+                PrintRequestAttributeSet attrs = new HashPrintRequestAttributeSet();
+                attrs.add(new Copies(1));
+                job.print(doc, attrs);
+            } finally {
+                // job.endJob();
+            }
+        } catch (Throwable t) {
+            throw new RuntimeException(t);
+        }
 
+    }
 
 }

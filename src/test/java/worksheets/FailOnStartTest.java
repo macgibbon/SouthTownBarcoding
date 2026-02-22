@@ -20,7 +20,7 @@ import app.Model;
 import javafx.stage.Stage;
 
 @ExtendWith(ApplicationExtension.class)
-public class FairOnStartTest extends MainApp {
+public class FailOnStartTest extends MainApp {
 
 
     Model model;

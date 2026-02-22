@@ -185,14 +185,10 @@ public class MainController {
 
         handleUPCEmbedded(barcodeWithWeight);
         PrinterJob job = PrinterJob.createPrinterJob();
-        Optional<PrinterJob> maybeJob = Optional.of(PrinterJob.createPrinterJob());
-        maybeJob.ifPresent((j) -> {
-            messageLabel.setText("No printer job available.");
-            return;
-        });
 
         // Show print dialog attached to the current window
         Window window = messageLabel.getScene().getWindow();
+
         boolean proceed = job.showPrintDialog(window);
         if (!proceed) {
             messageLabel.setText("Print cancelled.");
@@ -200,8 +196,12 @@ public class MainController {
         }
 
         // Print the image node (ImageView)
-        job.printPage(barcodeView);
-        job.endJob();
+        try {
+            job.printPage(barcodeView);
+        } finally {
+            job.endJob();
+        }
+
     }
 
     @FXML

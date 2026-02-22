@@ -75,7 +75,7 @@ public class MainApp extends Application {
 
             primaryStage.show();
         } catch (Exception t) {
-            t.printStackTrace();  
+         //   t.printStackTrace();  
             File file = new File(userHome+ "/.barcoder/StartupCrash.log");
             file.getParentFile().mkdirs();
             try (PrintStream fos = new PrintStream(file)) {
