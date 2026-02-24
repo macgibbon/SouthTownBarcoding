@@ -10,7 +10,7 @@ module southtown {
 	requires javafx.fxml;
 	requires transitive javafx.graphics;
 	requires javafx.swing;
-	requires java.logging;
+	requires transitive java.logging;
 	requires transitive org.apache.poi.poi;
 	requires transitive java.prefs;
 	

@@ -22,7 +22,6 @@ import org.testfx.framework.junit5.Stop;
 
 import app.Barcode;
 import app.MainApp;
-import app.MainController;
 import app.Model;
 import app.Printer;
 import app.ProductGroup;
@@ -41,10 +40,7 @@ public class GuiTest extends MainApp {
     @Start
     public void onStart(Stage primaryStage) throws Exception {
         testFolder = new File(System.getProperty("user.home"), "testbarcodes");
-
         delDirTree(testFolder);
-        String key = MainController.LAST_USED_FOLDER;
-
         super.start(primaryStage);
         model = (Model) reflectiveGetField(controller, "model");
     }
@@ -69,7 +65,6 @@ public class GuiTest extends MainApp {
         testBadDefaultFolder(robot);
         testSpecialCasesForCodeCoverage();
     }
-
   
     public void testSpecialCasesForCodeCoverage() {
         Exception exc = null;
@@ -313,17 +308,14 @@ public class GuiTest extends MainApp {
         assertTrue(isFirstPrinted, "Printed Lable is not checked!");
         robot.clickOn("Print Next 20 Unprinted");
         robot.clickOn("Print Next 40 Unprinted");
-       
         delay(2);
-
     }
 
     
     private void testBatchModeSingleProduct(FxRobot robot) {
         delay(2);
         robot.clickOn("File");
-        robot.clickOn("Open Inventory Report for 1 Product");
-        
+        robot.clickOn("Open Inventory Report for 1 Product");        
         delay(2);
         robot.clickOn("Fresh Pork Hot Italian Sausage Patties");
         robot.push(KeyCode.T);
@@ -342,27 +334,7 @@ public class GuiTest extends MainApp {
         assertTrue(isFirstPrinted, "Printed Lable is not checked!");
         delay(2);// TODO Auto-generated method stub
         robot.clickOn("Print All Unprinted");  // second print to force filter through all paths
-        
     }
-
-    
-    /*
-    public void testCancelBatchMode(FxRobot robot) {
-        delay(2);
-        robot.clickOn("File");
-        robot.clickOn("Open Inventory Report");
-        robot.push(KeyCode.TAB);
-        robot.push(KeyCode.TAB);
-        robot.push(KeyCode.ENTER);
-        delay(2);
-        robot.clickOn("Fresh Pork");
-        robot.clickOn("Print Selected Labels");
-        boolean isFirstPrinted = model.productLabels.get(0).printed.get();
-        assertTrue(isFirstPrinted, "Printed Lable is not checked!");
-        delay(2);
-
-    }
-    */
 
     public void testBadDefaultFolder(FxRobot robot) {
         String currentLastFolder = model.preferences.get(controller.LAST_USED_FOLDER, Path.of("spreadsheets").toFile().getAbsolutePath());
@@ -378,7 +350,6 @@ public class GuiTest extends MainApp {
             delay(2);
         } finally {
             model.preferences.put(controller.LAST_USED_FOLDER, currentLastFolder);
-
         }
         
         currentLastFolder = model.preferences.get(controller.LAST_USED_FOLDER, Path.of("spreadsheets").toFile().getAbsolutePath());
@@ -393,9 +364,7 @@ public class GuiTest extends MainApp {
             delay(2);
         } finally {
             model.preferences.put(controller.LAST_USED_FOLDER, currentLastFolder);
-
         }
-
     }
 
 }

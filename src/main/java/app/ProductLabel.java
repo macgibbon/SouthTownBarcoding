@@ -9,7 +9,6 @@ import javafx.beans.property.SimpleBooleanProperty;
 public class ProductLabel  {
 
 	public ReadOnlyObjectWrapper<ProductGroup> group;
-
 	public ReadOnlyStringProperty productId;
 	public ReadOnlyStringProperty description; 
 	public ReadOnlyStringProperty weight;
@@ -30,22 +29,18 @@ public class ProductLabel  {
 	public String getProductId() {
 		return productId.get();
 	}
-
 	
 	public String getDescription() {
 		return description.get();
 	}
-
 	
 	public String getWeight() {
 		return weight.get();
 	}
 
-
 	public Boolean getPrinted() {
 		return printed.get();
 	}
-
 
 	public void setPrinted(Boolean printed) {
 		this.printed.set(printed);
@@ -54,7 +49,5 @@ public class ProductLabel  {
 	 public BooleanProperty printedProperty() { 
 		 return printed; 
 	 }
-	
-
 	
 }
