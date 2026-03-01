@@ -9,7 +9,7 @@
 }
 
 .button {
-    -fx-font-size: 14.0px;
+    -fx-font-size: 12.0px;
     -fx-content-display: right;
     -fx-font-weight: bold
 }
@@ -40,7 +40,7 @@
 }
 
 .button .id-label {
-    -fx-font-size: 12px; /* Set the font size */
+    -fx-font-size: 11px; /* Set the font size */
     -fx-text-fill: black; /* Set the text color */
     -fx-font-weight: lighter;    
 }

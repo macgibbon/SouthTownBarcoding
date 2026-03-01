@@ -163,7 +163,8 @@ public class MainController {
 
     @FXML
     private void onLookupClicked(ActionEvent event) {
-        Optional<ProductId> result = new ProductDialog(productIdMap).showAndWait();
+        Window window = messageLabel.getScene().getWindow();
+        Optional<ProductId> result = new ProductDialog(productIdMap,window).showAndWait();
         result.ifPresent(pid -> {
             String pidStr = String.format("%06d", pid.id());
             int length = pidStr.length();
@@ -206,7 +207,8 @@ public class MainController {
 
     @FXML
     private void openReportFor1(ActionEvent event) throws FileNotFoundException, IOException {
-        Optional<ProductId> result = new ProductDialog(productIdMap).showAndWait();
+        Window window = messageLabel.getScene().getWindow();
+        Optional<ProductId> result = new ProductDialog(productIdMap,window).showAndWait();
         if (result.isPresent()) {
             String pickedPid = result.get().id().toString();
             File lastUsedDirectory = new File(model.preferences.get(LAST_USED_FOLDER, Path.of("spreadsheets").toFile().getAbsolutePath()));

@@ -66,9 +66,9 @@ public class MainApp extends Application {
             Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
             double width = primScreenBounds.getWidth();
             double height = primScreenBounds.getHeight();
-            primaryStage.setX(width / 8.0);
-            primaryStage.setY(height / 8.0);
-            Scene scene = new Scene(root, width * 0.75, height * 0.75);
+            primaryStage.setX(width / 20.0);
+            primaryStage.setY(height / 20.0);
+            Scene scene = new Scene(root, width * 0.9, height * 0.9);
             scene.getStylesheets().add(getClass().getResource("/app/styles.css").toExternalForm());
             primaryStage.setScene(scene);
             // let all commits and invalidation events be processed before we start

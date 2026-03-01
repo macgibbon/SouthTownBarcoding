@@ -11,11 +11,15 @@ import java.util.TreeMap;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Screen;
+import javafx.stage.Window;
 
 public class ProductDialog {
     
@@ -24,9 +28,10 @@ public class ProductDialog {
 
     private Dialog<ProductId> dialog;
 
-    public ProductDialog( TreeMap<Integer, ProductId> productIdMap) {
+    public ProductDialog( TreeMap<Integer, ProductId> productIdMap, Window owner) {
         super();
         dialog = new Dialog<>();
+        dialog.initOwner(owner);
         dialog.setTitle("Product Id Dialog");
         dialog.setHeaderText("Press the appropriate button.");
 
@@ -38,7 +43,7 @@ public class ProductDialog {
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
-        grid.setPadding(new Insets(20, 150, 10, 10));
+        grid.setPadding(new Insets(10, 10, 10, 10));
         int cols = 4;
         Integer[] productIds = productIdMap.keySet().toArray(new Integer[0]);
 
@@ -68,14 +73,23 @@ public class ProductDialog {
         dialog.getDialogPane().addEventFilter(ActionEvent.ACTION, buttonFilter);
        
         dialog.setResultConverter(dialogButton -> null);
-
         
+       
     }
     
     public Optional<ProductId> showAndWait() {
+        Window dialogowner = dialog.getOwner();
+        double width =dialogowner.getWidth();
+        double height = dialogowner.getHeight();
+        double x = dialogowner.getX();
+        double y = dialogowner.getY();
+        double margin = .045;
+        
+        dialog.setX(x + (width * (margin/2.0)));
+        dialog.setY(y + (height * (margin/2.0)));
+        dialog.setWidth( width * (1-margin));
+        dialog.setHeight(height * (1-margin));
         return dialog.showAndWait();
     }
-    
-   
 
 }
