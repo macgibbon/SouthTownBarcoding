@@ -333,12 +333,12 @@ public class MainController {
     }
 
     public void setCurrentDefaults(File currentDefaults) throws IOException {
-        File defaultProductsFile = new File(currentDefaults, "defaultProducts.csv");
+        File defaultProductsFile = new File(currentDefaults, "defaultProducts001.csv");
         productIdMap = loadDefaultProductFiles(defaultProductsFile);
         
     }
     
-    public TreeMap<Integer, ProductId> loadDefaultProductFiles(File defaultProductsFile) throws FileNotFoundException, IOException {
+    public static TreeMap<Integer, ProductId> loadDefaultProductFiles(File defaultProductsFile) throws FileNotFoundException, IOException {
         TreeMap<Integer, ProductId> productMap = new TreeMap<>();
         if (defaultProductsFile.exists()) {
             try (BufferedReader br = new BufferedReader(new FileReader(defaultProductsFile))) {
