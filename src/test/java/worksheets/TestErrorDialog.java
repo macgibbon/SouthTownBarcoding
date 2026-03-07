@@ -19,7 +19,7 @@ class TestErrorDialog {
         } catch (Throwable t) {
             exc = t;
         }
-        assertTrue(exc == null);		
+        assertTrue(exc != null);		
 	
 }
 

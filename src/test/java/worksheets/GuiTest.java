@@ -208,7 +208,7 @@ public class GuiTest extends MainApp {
     public void testManualModeButtons(FxRobot robot) {
         robot.clickOn("Manual");
         delay(2);
-        robot.clickOn("Lookup Product Id");
+        robot.clickOn("Lookup Beef Product Id");
         robot.clickOn("Beef Ground Beef");
         delay(2);
         String description = ((TextField) reflectiveGetField(controller, "descriptionField")).getText();
@@ -225,8 +225,8 @@ public class GuiTest extends MainApp {
 
         robot.clickOn("Manual");
 
-        robot.clickOn("Lookup Product Id");
-        robot.clickOn("Beef Sirloin Tip Roast");
+        robot.clickOn("Lookup Pork Product Id");
+        robot.clickOn("Fresh Pork Ground");
         delay(2);
         String description2 = ((TextField) reflectiveGetField(controller, "descriptionField")).getText();
         assertEquals(description2, "Sirloin Tip Roast", "Incorrect Descripton");
@@ -315,20 +315,21 @@ public class GuiTest extends MainApp {
     private void testBatchModeSingleProduct(FxRobot robot) {
         delay(2);
         robot.clickOn("File");
-        robot.clickOn("Open Inventory Report for 1 Product");        
+        robot.clickOn("Open Inventory Report for 1 Beef Product");        
         delay(2);
-        robot.clickOn("Fresh Pork Hot Italian Sausage Patties");
+        robot.clickOn("Beef Ground Beef");
         robot.push(KeyCode.T);
         robot.push(KeyCode.E);
         robot.push(KeyCode.S);
         robot.push(KeyCode.T);
+        robot.push(KeyCode.DIGIT1);
         robot.push(KeyCode.PERIOD);
         robot.push(KeyCode.X);
         robot.push(KeyCode.L);
         robot.push(KeyCode.S);
         robot.push(KeyCode.ENTER);
         delay(2);
-        robot.clickOn("Fresh Pork");
+        robot.clickOn("Beef Flank Steak");
         robot.clickOn("Print All Unprinted");
         boolean isFirstPrinted = model.productLabels.get(0).printed.get();
         assertTrue(isFirstPrinted, "Printed Lable is not checked!");
@@ -342,7 +343,7 @@ public class GuiTest extends MainApp {
             model.preferences.put(controller.LAST_USED_FOLDER, "notReal");
             delay(2);
             robot.clickOn("File");
-            robot.clickOn("Open Inventory Report for 1 Product");
+            robot.clickOn("Open Inventory Report for 1 Pork Product");
             robot.clickOn("Fresh Pork Ground");
             robot.push(KeyCode.TAB);
             robot.push(KeyCode.TAB);
