@@ -266,7 +266,7 @@ public class MainController {
     	    		.collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue(), (existing, replacement) -> existing ));
 
         
-        Optional<ProductId> result = new ProductDialog(productIdMap,window).showAndWait();
+        Optional<ProductId> result = new ProductDialog(productToSearchMap,window).showAndWait();
         if (result.isPresent()) {
             String pickedPid = result.get().id().toString();
             File lastUsedDirectory = new File(model.preferences.get(LAST_USED_FOLDER, Path.of("spreadsheets").toFile().getAbsolutePath()));
