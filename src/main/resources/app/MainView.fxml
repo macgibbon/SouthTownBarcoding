@@ -14,14 +14,18 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="508.0" prefWidth="805.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.MainController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="508.0" prefWidth="805.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.MainController">
 	<top>
 		<MenuBar>
 			<menus>
 				<Menu mnemonicParsing="false" text="File">
 					<items>
 						<MenuItem mnemonicParsing="false" onAction="#openReport" text="Open Inventory Report" />
-                  <MenuItem mnemonicParsing="false" onAction="#openReportFor1" text="Open Inventory Report for 1 Product" />
+						<MenuItem mnemonicParsing="false" onAction="#openReportFor1Beef" text="Open Inventory Report for 1 Beef Product" />
+							
+							<MenuItem mnemonicParsing="false" onAction="#openReportFor1Pork" text="Open Inventory Report for 1 Pork Product" />
+							
+							
 					</items>
 				</Menu>
 			</menus>
@@ -30,7 +34,7 @@
 	<center>
 		<TabPane fx:id="tabpane" prefHeight="415.0" prefWidth="799.0" side="BOTTOM" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
 			<tabs>
-				<Tab  fx:id="manualtab" text="Manual">
+				<Tab fx:id="manualtab" text="Manual">
 					<content>
 						<VBox alignment="CENTER" spacing="12">
 
@@ -42,14 +46,15 @@
 										<VBox prefHeight="99.0" prefWidth="190.0">
 											<children>
 												<Label prefHeight="30.0" text="Product code 6 digits" />
-												<TextField fx:id="productCodeField" prefHeight="30.0" />											
-												<Button mnemonicParsing="false" onAction="#onLookupClicked" prefHeight="30.0" text="Lookup Product Id" />
+												<TextField fx:id="productCodeField" prefHeight="30.0" />
+												<Button mnemonicParsing="false" onAction="#onLookupBeefClicked" prefHeight="30.0" text="Lookup Beef Product Id" />
+                                    <Button mnemonicParsing="false" onAction="#onLookupPorkClicked" prefHeight="30.0" text="Lookup Pork Product Id" />
 											</children>
 										</VBox>
 										<VBox prefHeight="120.0" prefWidth="200.0">
 											<children>
-                                    <Label prefHeight="30.0" text="Product Group" />
-                                    <TextField fx:id="groupField" prefHeight="30.0" />
+												<Label prefHeight="30.0" text="Product Group" />
+												<TextField fx:id="groupField" prefHeight="30.0" />
 											</children>
 										</VBox>
 										<VBox prefHeight="120.0" prefWidth="200.0">
@@ -93,14 +98,14 @@
 							<bottom>
 								<VBox alignment="CENTER" BorderPane.alignment="CENTER">
 									<children>
-                              <HBox alignment="TOP_CENTER" prefWidth="200.0" spacing="20.0">
-                                 <children>
-      										<Button fx:id="printbutton" alignment="TOP_RIGHT" mnemonicParsing="false" onAction="#printSelected" text="Print Selected" />
-                                    <Button mnemonicParsing="false" onAction="#printNext20" text="Print Next 20 Unprinted" />
-                                    <Button mnemonicParsing="false" onAction="#printNext40" text="Print Next 40 Unprinted" />
-                                    <Button mnemonicParsing="false" onAction="#printAll" text="Print All Unprinted" />
-                                 </children>
-                              </HBox>
+										<HBox alignment="TOP_CENTER" prefWidth="200.0" spacing="20.0">
+											<children>
+												<Button fx:id="printbutton" alignment="TOP_RIGHT" mnemonicParsing="false" onAction="#printSelected" text="Print Selected" />
+												<Button mnemonicParsing="false" onAction="#printNext20" text="Print Next 20 Unprinted" />
+												<Button mnemonicParsing="false" onAction="#printNext40" text="Print Next 40 Unprinted" />
+												<Button mnemonicParsing="false" onAction="#printAll" text="Print All Unprinted" />
+											</children>
+										</HBox>
 										<Label fx:id="spreadsheetNameLabel" text="spreadsheet.xls">
 										</Label>
 									</children>

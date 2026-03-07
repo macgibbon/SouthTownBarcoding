@@ -162,7 +162,11 @@ public class MainController {
     }
 
     @FXML
-    private void onLookupClicked(ActionEvent event) {
+    private void onLookupBeefClicked(ActionEvent event) {
+    }
+    
+    @FXML
+    private void onLookupPorkClicked(ActionEvent event) {
         Window window = messageLabel.getScene().getWindow();
         Optional<ProductId> result = new ProductDialog(productIdMap,window).showAndWait();
         result.ifPresent(pid -> {
@@ -204,9 +208,13 @@ public class MainController {
         }
 
     }
+    
+    @FXML
+    private void openReportFor1Pork(ActionEvent event) throws FileNotFoundException, IOException {
+    }
 
     @FXML
-    private void openReportFor1(ActionEvent event) throws FileNotFoundException, IOException {
+    private void openReportFor1Beef(ActionEvent event) throws FileNotFoundException, IOException {
         Window window = messageLabel.getScene().getWindow();
         Optional<ProductId> result = new ProductDialog(productIdMap,window).showAndWait();
         if (result.isPresent()) {
