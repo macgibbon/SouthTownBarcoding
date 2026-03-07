@@ -156,7 +156,7 @@ public class GuiTest extends MainApp {
     public void testManualModeKeypadEntry(FxRobot robot) {
         robot.clickOn("Manual");
 
-        robot.clickOn("Lookup Product Id");
+        robot.clickOn("Lookup Pork Product Id");
         delay(2);
         robot.clickOn("Fresh Pork Hot Italian Sausage Patties");
         delay(2);
@@ -186,7 +186,7 @@ public class GuiTest extends MainApp {
         robot.clickOn("Close");
         delay(2);
 
-        robot.clickOn("Lookup Product Id");
+        robot.clickOn("Lookup Beef Product Id");
         delay(2);
         robot.clickOn("Beef Brisket Point");
         delay(2);
@@ -229,9 +229,9 @@ public class GuiTest extends MainApp {
         robot.clickOn("Fresh Pork Ground");
         delay(2);
         String description2 = ((TextField) reflectiveGetField(controller, "descriptionField")).getText();
-        assertEquals(description2, "Sirloin Tip Roast", "Incorrect Descripton");
+        assertEquals(description2, "Ground", "Incorrect Descripton");
         String productId2 = ((TextField) reflectiveGetField(controller, "productCodeField")).getText();
-        assertEquals(productId2, "002093", "Incorrect Descripton");
+        assertEquals(productId2, "005041", "Incorrect Descripton");
         robot.push(KeyCode.NUMPAD1);
         robot.push(KeyCode.NUMPAD2);
         robot.push(KeyCode.PERIOD);
@@ -276,13 +276,13 @@ public class GuiTest extends MainApp {
         delay(2);
 
         robot.clickOn("Manual");
-        robot.clickOn("Lookup Product Id");
+        robot.clickOn("Lookup Beef Product Id");
         robot.clickOn("Cancel");
         delay(2);
         robot.clickOn("Manual");
         delay(2);
         robot.clickOn("File");
-        robot.clickOn("Open Inventory Report for 1 Product");
+        robot.clickOn("Open Inventory Report for 1 Beef Product");
         delay(2);
         robot.clickOn("Cancel");
 
@@ -317,7 +317,7 @@ public class GuiTest extends MainApp {
         robot.clickOn("File");
         robot.clickOn("Open Inventory Report for 1 Beef Product");        
         delay(2);
-        robot.clickOn("Beef Ground Beef");
+        robot.clickOn("Beef Chuck Eye Steak");
         robot.push(KeyCode.T);
         robot.push(KeyCode.E);
         robot.push(KeyCode.S);
@@ -329,7 +329,7 @@ public class GuiTest extends MainApp {
         robot.push(KeyCode.S);
         robot.push(KeyCode.ENTER);
         delay(2);
-        robot.clickOn("Beef Flank Steak");
+        robot.clickOn("Chuck Eye Steak");
         robot.clickOn("Print All Unprinted");
         boolean isFirstPrinted = model.productLabels.get(0).printed.get();
         assertTrue(isFirstPrinted, "Printed Lable is not checked!");

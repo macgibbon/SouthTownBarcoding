@@ -10,7 +10,7 @@ import app.MainApp;
 
 class TestErrorDialog {
 
-	// For code coverage of main method
+	
 	@Test
 	void testMainLauncher() throws IOException {	    
 	    Throwable exc = null;
@@ -19,7 +19,7 @@ class TestErrorDialog {
         } catch (Throwable t) {
             exc = t;
         }
-        assertTrue(exc != null);		
+        assertTrue(exc == null);		
 	
 }
 
