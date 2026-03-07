@@ -17,19 +17,25 @@
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="508.0" prefWidth="805.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.MainController">
 	<top>
 		<MenuBar>
-			<menus>
-				<Menu mnemonicParsing="false" text="File">
-					<items>
-						<MenuItem mnemonicParsing="false" onAction="#openReport" text="Open Inventory Report" />
-						<MenuItem mnemonicParsing="false" onAction="#openReportFor1Beef" text="Open Inventory Report for 1 Beef Product" />
-							
-							<MenuItem mnemonicParsing="false" onAction="#openReportFor1Pork" text="Open Inventory Report for 1 Pork Product" />
-							
-							
-					</items>
-				</Menu>
-			</menus>
-		</MenuBar>
+	<menus>
+		<Menu mnemonicParsing="false" text="File">
+			<items>
+				<MenuItem mnemonicParsing="false" onAction="#openReport"
+					text="Open Inventory Report" />
+					
+				<MenuItem mnemonicParsing="false"
+					onAction="#openReportFor1Beef"
+					text="Open Inventory Report for 1 Beef Product" />
+
+				<MenuItem mnemonicParsing="false"
+					onAction="#openReportFor1Pork"
+					text="Open Inventory Report for 1 Pork Product" />
+
+
+			</items>
+		</Menu>
+	</menus>
+</MenuBar>
 	</top>
 	<center>
 		<TabPane fx:id="tabpane" prefHeight="415.0" prefWidth="799.0" side="BOTTOM" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">

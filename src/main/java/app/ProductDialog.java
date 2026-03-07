@@ -1,5 +1,6 @@
 package app;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 
@@ -18,12 +19,9 @@ import javafx.stage.Window;
 
 public class ProductDialog {
     
-
-
-
     private Dialog<ProductId> dialog;
 
-    public ProductDialog( TreeMap<Integer, ProductId> productIdMap, Window owner) {
+    public ProductDialog( Map<Integer, ProductId> productIdMap, Window owner) {
         super();
         dialog = new Dialog<>();
         dialog.initOwner(owner);
