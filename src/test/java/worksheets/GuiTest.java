@@ -22,6 +22,7 @@ import org.testfx.framework.junit5.Stop;
 
 import app.Barcode;
 import app.MainApp;
+import app.MainController;
 import app.Model;
 import app.Printer;
 import app.ProductGroup;
@@ -70,6 +71,13 @@ public class GuiTest extends MainApp {
         Exception exc = null;
         try {
             controller.loadDefaultProductFiles(new File("notThere.csv"));
+        } catch (Exception e) {
+            exc = e;
+        }
+        
+       exc = null;
+        try {
+            controller.loadDefaultProductFiles(new File("badProducts.csv"));
         } catch (Exception e) {
             exc = e;
         }
@@ -149,6 +157,9 @@ public class GuiTest extends MainApp {
         assertTrue(expected != null, "Did not fail on imaginary path!");
 
         ProductId id = ProductId.createProductId(1, "chicken tenders");
+        
+        
+     
         
         
     }

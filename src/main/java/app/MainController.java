@@ -164,19 +164,13 @@ public class MainController {
 
     @FXML
     private void onLookupBeefClicked(ActionEvent event) {
-    	var productToSearchMap = productIdMap.entrySet()
-        		.stream()
-        		.filter(entry -> !isPork(entry.getValue().productGroup()))
-        		.collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue(), (existing, replacement) -> existing ));
+    	var productToSearchMap = filterBeef(productIdMap);
             lookupProduct(productToSearchMap);
     }
     
     @FXML
     private void onLookupPorkClicked(ActionEvent event) {
-    	var productToSearchMap = productIdMap.entrySet()
-    		.stream()
-    		.filter(entry -> isPork(entry.getValue().productGroup())) 
-    		.collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue(), (existing, replacement) -> existing ));
+    	var productToSearchMap = filterPork(productIdMap);
         lookupProduct(productToSearchMap);
     }
 
@@ -228,13 +222,20 @@ public class MainController {
     }
     
     @FXML
-    private void openReportFor1Pork(ActionEvent event) throws FileNotFoundException, IOException {
-    	 Window window = messageLabel.getScene().getWindow();
-    	 var productToSearchMap = productIdMap.entrySet()
+    private void openReportFor1Pork(ActionEvent event) throws FileNotFoundException, IOException {    	
+    	 openReportFor(filterPork(productIdMap));
+    }
+
+    public static Map<Integer, ProductId> filterPork(TreeMap<Integer, ProductId> pidMap) {
+        var productToSearchMap = pidMap.entrySet()
     	     		.stream()
     	    		.filter(entry -> isPork(entry.getValue().productGroup())) 
-    	    		.collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue(), (existing, replacement) -> existing ));
+    	    		.collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue()));
+        return productToSearchMap;
+    }
 
+    protected void openReportFor(Map<Integer, ProductId> productToSearchMap) throws IOException, FileNotFoundException {
+        Window window = messageLabel.getScene().getWindow();
          Optional<ProductId> result = new ProductDialog(productToSearchMap,window).showAndWait();
          if (result.isPresent()) {
              String pickedPid = result.get().id().toString();
@@ -258,34 +259,16 @@ public class MainController {
     }
 
     @FXML
-    private void openReportFor1Beef(ActionEvent event) throws FileNotFoundException, IOException {
-        Window window = messageLabel.getScene().getWindow();
-    	var productToSearchMap = productIdMap.entrySet()
+    private void openReportFor1Beef(ActionEvent event) throws FileNotFoundException, IOException {       
+    	openReportFor(filterBeef(productIdMap));
+    }
+
+    public static Map<Integer, ProductId> filterBeef(TreeMap<Integer, ProductId> pidMap) {
+        var productToSearchMap = pidMap.entrySet()
     	     		.stream()
     	    		.filter(entry -> !isPork(entry.getValue().productGroup())) 
-    	    		.collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue(), (existing, replacement) -> existing ));
-
-        
-        Optional<ProductId> result = new ProductDialog(productToSearchMap,window).showAndWait();
-        if (result.isPresent()) {
-            String pickedPid = result.get().id().toString();
-            File lastUsedDirectory = new File(model.preferences.get(LAST_USED_FOLDER, Path.of("spreadsheets").toFile().getAbsolutePath()));
-            fileChooser = new FileChooser();
-            if (lastUsedDirectory.exists())
-                fileChooser.setInitialDirectory(lastUsedDirectory);
-            // Show the save file dialog
-            File file = fileChooser.showOpenDialog((Stage) tableView.getScene().getWindow());
-            if (file != null) {
-                model.preferences.put(LAST_USED_FOLDER, file.getParent());
-                InventoryReport inventoryReport = new InventoryReport(file);
-                ArrayList<ProductLabel> pidLabels = inventoryReport.productLabels.stream()
-                    .filter(label -> label.productId.get().equals(pickedPid))
-                    .collect(Collectors.toCollection(ArrayList::new));
-                model.productLabels.setAll(pidLabels);
-                spreadsheetNameLabel.setText(file.getAbsolutePath());
-            }
-            tabpane.getSelectionModel().select(1);            
-        }
+    	    		.collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue() ));
+        return productToSearchMap;
     }
     
     @FXML
