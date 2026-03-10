@@ -28,7 +28,7 @@ class TestWorksheetReading {
 			Model model = Model.getInstance();
 			InventoryReport inventoryReport = new InventoryReport(firstworksheet);
 			model.productLabels.setAll(inventoryReport.productLabels);
-			List productLabels = model.productLabels;
+			var productLabels = model.productLabels;
 			assertTrue(productLabels.size()>1);
 		} catch (Throwable e) {
 			e.printStackTrace();

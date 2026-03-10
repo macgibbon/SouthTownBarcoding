@@ -3,12 +3,17 @@ package worksheets;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static worksheets.Util.delDirTree;
 import static worksheets.Util.delay;
 import static worksheets.Util.reflectiveGetField;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeMap;
 
 import javax.print.PrintService;
 
@@ -21,6 +26,7 @@ import org.testfx.framework.junit5.Start;
 import org.testfx.framework.junit5.Stop;
 
 import app.Barcode;
+import app.InventoryReport;
 import app.MainApp;
 import app.MainController;
 import app.Model;
@@ -70,18 +76,19 @@ public class GuiTest extends MainApp {
     public void testSpecialCasesForCodeCoverage() {
         Exception exc = null;
         try {
-            controller.loadDefaultProductFiles(new File("notThere.csv"));
-        } catch (Exception e) {
-            exc = e;
-        }
-        
-       exc = null;
-        try {
-            controller.loadDefaultProductFiles(new File("badProducts.csv"));
+            MainController.loadDefaultProductFiles(new File("notThere.csv"));
         } catch (Exception e) {
             exc = e;
         }
         assertTrue(exc == null, "No exception on missing default products file!");
+        
+       exc = null;
+        try {
+            MainController.loadDefaultProductFiles(new File("badProducts.csv"));
+        } catch (Exception e) {
+            exc = e;
+        }
+        assertTrue(exc == null, "No exception on bad default products file!");
         String nullresult = controller.capitalizeFirstLetter(null);
         assertTrue(nullresult == null);
         String emptyResult = controller.capitalizeFirstLetter("");
@@ -100,7 +107,16 @@ public class GuiTest extends MainApp {
         }
         assertTrue(expected != null, "Did not fail on imaginary printer!");
 
-        Barcode tobigbarcode = new Barcode("1.0", "00123456");
+        Printer printer2 = new Printer("Zebra");
+        expected = null;
+        try {
+            printer2.print(null, null, null, null);
+        } catch (Exception e) {
+            expected = e;
+        }
+        assertTrue(expected != null, "Did not fail on null group!");
+        
+     
         Barcode minusbarcode = new Barcode("-11.0", "00123456");
         expected = null;
         try {
@@ -125,7 +141,16 @@ public class GuiTest extends MainApp {
         } catch (Exception e) {
             expected = e;
         }
-        assertTrue(expected != null, "Did not fail on too big product id!");
+        
+        expected = null;
+        try {
+            Barcode tobigbarcode = new Barcode("1.0", "00123456");
+            tobigbarcode.content();
+        } catch (Exception e) {
+            expected = e;
+        }
+        assertTrue(expected == null, "failed on tobig product id rather than truncating to 6 digits!");
+          
         
         Barcode badIdcode = new Barcode("1.0", "ABCD");
         expected = null;
@@ -156,9 +181,73 @@ public class GuiTest extends MainApp {
         }
         assertTrue(expected != null, "Did not fail on imaginary path!");
 
-        ProductId id = ProductId.createProductId(1, "chicken tenders");
+        ProductId id = ProductId.createProductId(1, "chicken tenders");        
+        TreeMap<Integer, ProductId> testMap = new TreeMap<>();
+        testMap.put(1, new ProductId(1, ProductGroup.Beef, "sticks"));
+        List<List<String>> emptyList = new ArrayList();
         
+        expected = null;
+        InventoryReport report = null;
+        try {
+            report = new InventoryReport(new File("spreadsheets/test.xls"));
+        } catch (Exception e) {
+            assertTrue(expected == null,"Failed to open spreadsheet/test.xls");
+        } 
+   
+        expected = null;
+        try {
+            ArrayList<ProductLabel> labels = report.getProductLabels(testMap, emptyList);
+        } catch (Exception e) {
+            expected = e;
+        }
+        assertTrue(expected != null, "Did not fail on Inventory report size mismatch!");
+        try {
+        InventoryReport report2 = new InventoryReport(new File("spreadsheets/test2.xls"));
+        } catch (Exception e) {
+            expected = e;
+        }
+        assertTrue(expected != null);
         
+        try {
+            InventoryReport report3 = new InventoryReport(new File("./spreadsheets/Test2.xls"));
+        } catch (RuntimeException e) {
+            expected = e;
+        }   
+        catch (IOException ioe) {
+           fail(ioe);
+        }  
+        
+        expected = null;
+        try {
+            InventoryReport report4 = new InventoryReport(new File("./spreadsheets/Test3.xls"));
+        } catch (RuntimeException e) {
+            expected = e;
+        }
+        catch (IOException ioe) {
+            fail(ioe);
+         }  
+        assertTrue(expected != null);
+        
+        expected = null;
+        try {
+            InventoryReport report5 = new InventoryReport(new File("./spreadsheets/Test4.xls"));
+        } catch (RuntimeException e) {
+            expected = e;
+        }  catch (IOException ioe) {
+            fail(ioe);
+         }  
+        assertTrue(expected != null);
+        
+        expected = null;
+        try {
+            InventoryReport report6 = new InventoryReport(new File("./spreadsheets/Test5.xls"));
+        } catch (RuntimeException e) {
+            expected = e;
+        }
+        catch (IOException ioe) {
+            fail(ioe);
+         }  
+        assertTrue(expected == null);  
      
         
         
