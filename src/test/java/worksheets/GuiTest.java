@@ -184,7 +184,7 @@ public class GuiTest extends MainApp {
         ProductId id = ProductId.createProductId(1, "chicken tenders");        
         TreeMap<Integer, ProductId> testMap = new TreeMap<>();
         testMap.put(1, new ProductId(1, ProductGroup.Beef, "sticks"));
-        List<List<String>> emptyList = new ArrayList();
+        var emptyList = new ArrayList<List<String>>();
         
         expected = null;
         InventoryReport report = null;
@@ -197,9 +197,11 @@ public class GuiTest extends MainApp {
         expected = null;
         try {
             ArrayList<ProductLabel> labels = report.getProductLabels(testMap, emptyList);
+            assertTrue(labels != null);
         } catch (Exception e) {
             expected = e;
         }
+       
         assertTrue(expected != null, "Did not fail on Inventory report size mismatch!");
         try {
         InventoryReport report2 = new InventoryReport(new File("spreadsheets/test2.xls"));
@@ -349,7 +351,7 @@ public class GuiTest extends MainApp {
         robot.push(KeyCode.ENTER);
       
         
-        String currentLastFolder = model.preferences.get(controller.LAST_USED_FOLDER, Path.of("spreadsheets").toFile().getAbsolutePath());
+        String currentLastFolder = model.preferences.get(MainController.LAST_USED_FOLDER, Path.of("spreadsheets").toFile().getAbsolutePath());
         File testPrintFile = new File(currentLastFolder + "/test.pdf");
         if (testPrintFile.exists())
             testPrintFile.delete();
@@ -404,6 +406,7 @@ public class GuiTest extends MainApp {
         delay(2);
         robot.clickOn("Fresh Pork");
         robot.clickOn("Print Selected");
+        delay(2);
         boolean isFirstPrinted = model.productLabels.get(0).printed.get();
         assertTrue(isFirstPrinted, "Printed Lable is not checked!");
         robot.clickOn("Print Next 20 Unprinted");
