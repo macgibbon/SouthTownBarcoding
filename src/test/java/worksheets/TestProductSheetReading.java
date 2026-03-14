@@ -8,8 +8,6 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.poi.hssf.usermodel.HSSFRow;
-
 import app.MainController;
 import app.ProductId;
 
@@ -62,14 +60,6 @@ class TestProductSheetReading {
         if ((rowStrings[0].length() == 0) || (rowStrings[1].length() == 0))
             return false;
         return true;
-    }
-
-
-    private static String[] toStringArray(HSSFRow row) {
-        String[] strValues = new String[2];
-        strValues[0] = row.getCell(0).toString();
-        strValues[1] = row.getCell(1).toString();
-        return strValues;
     }
 
 

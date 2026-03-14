@@ -73,6 +73,7 @@ public class GuiTest extends MainApp {
         testSpecialCasesForCodeCoverage();
     }
   
+    @SuppressWarnings("unused")
     public void testSpecialCasesForCodeCoverage() {
         Exception exc = null;
         try {
@@ -181,7 +182,8 @@ public class GuiTest extends MainApp {
         }
         assertTrue(expected != null, "Did not fail on imaginary path!");
 
-        ProductId id = ProductId.createProductId(1, "chicken tenders");        
+        ProductId id = ProductId.createProductId(1, "chicken tenders");  
+        assertTrue(id.productGroup().equals(ProductGroup.__));
         TreeMap<Integer, ProductId> testMap = new TreeMap<>();
         testMap.put(1, new ProductId(1, ProductGroup.Beef, "sticks"));
         var emptyList = new ArrayList<List<String>>();
@@ -441,9 +443,9 @@ public class GuiTest extends MainApp {
     }
 
     public void testBadDefaultFolder(FxRobot robot) {
-        String currentLastFolder = model.preferences.get(controller.LAST_USED_FOLDER, Path.of("spreadsheets").toFile().getAbsolutePath());
+        String currentLastFolder = model.preferences.get(MainController.LAST_USED_FOLDER, Path.of("spreadsheets").toFile().getAbsolutePath());
         try {
-            model.preferences.put(controller.LAST_USED_FOLDER, "notReal");
+            model.preferences.put(MainController.LAST_USED_FOLDER, "notReal");
             delay(2);
             robot.clickOn("File");
             robot.clickOn("Open Inventory Report for 1 Pork Product");
@@ -453,12 +455,12 @@ public class GuiTest extends MainApp {
             robot.push(KeyCode.ENTER);
             delay(2);
         } finally {
-            model.preferences.put(controller.LAST_USED_FOLDER, currentLastFolder);
+            model.preferences.put(MainController.LAST_USED_FOLDER, currentLastFolder);
         }
         
-        currentLastFolder = model.preferences.get(controller.LAST_USED_FOLDER, Path.of("spreadsheets").toFile().getAbsolutePath());
+        currentLastFolder = model.preferences.get(MainController.LAST_USED_FOLDER, Path.of("spreadsheets").toFile().getAbsolutePath());
         try {
-            model.preferences.put(controller.LAST_USED_FOLDER, "notReal");
+            model.preferences.put(MainController.LAST_USED_FOLDER, "notReal");
             delay(2);
             robot.clickOn("File");
             robot.clickOn("Open Inventory Report");
@@ -467,7 +469,7 @@ public class GuiTest extends MainApp {
             robot.push(KeyCode.ENTER);
             delay(2);
         } finally {
-            model.preferences.put(controller.LAST_USED_FOLDER, currentLastFolder);
+            model.preferences.put(MainController.LAST_USED_FOLDER, currentLastFolder);
         }
     }
 

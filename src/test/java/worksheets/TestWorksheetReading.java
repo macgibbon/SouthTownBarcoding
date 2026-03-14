@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 
 import app.InventoryReport;
 import app.Model;
