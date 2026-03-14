@@ -23,8 +23,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 public class MainApp extends Application {
 
@@ -140,6 +142,34 @@ public class MainApp extends Application {
         defaultPaths.stream().findFirst().ifPresent(path -> deepCopy(path, currentDefaults.toPath()));
     }
 
+    
+    public static void showCsvEditorDialog(Window owner) {
+        try {
+            URL resource = MainApp.class.getResource("CsvEditorDialog.fxml");
+            FXMLLoader loader = new FXMLLoader(resource);
+            
+            javafx.scene.layout.BorderPane root = loader.load();
+            
+            Stage dialog = new Stage();
+            dialog.initOwner(owner);
+            dialog.initModality(Modality.WINDOW_MODAL);
+            dialog.setTitle("CSV Editor");
+            dialog.setWidth(900);
+            dialog.setHeight(600);
+            
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(
+                MainApp.class.getResource("/app/styles.css").toExternalForm()
+            );
+            
+            dialog.setScene(scene);
+            dialog.showAndWait();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to load CSV Editor Dialog", e);
+        }
+    }
    
 
 }

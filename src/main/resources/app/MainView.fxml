@@ -23,6 +23,9 @@
 				<MenuItem mnemonicParsing="false" onAction="#openReport"
 					text="Open Inventory Report" />
 					
+				<MenuItem mnemonicParsing="false" onAction="#editProductsClicked"
+					text="Edit Product List" />
+					
 				<MenuItem mnemonicParsing="false"
 					onAction="#openReportFor1Beef"
 					text="Open Inventory Report for 1 Beef Product" />

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="app.CsvEditorDialogController" prefHeight="600" prefWidth="900">
+    
+    <!-- Top: File information and controls -->
+    <top>
+        <VBox spacing="10" style="-fx-padding: 10">
+            <Label text="CSV File Editor" style="-fx-font-size: 14; -fx-font-weight: bold"/>
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="File:" style="-fx-font-weight: bold"/>
+                <Label fx:id="filePathLabel" text="No file loaded" 
+                       style="-fx-text-fill: #666666"/>
+                <Button text="Load CSV" onAction="#handleLoadCsv"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <!-- Center: TableView for CSV data -->
+    <center>
+        <BorderPane>
+            <center>
+                <TableView fx:id="csvTableView" editable="true" 
+                          style="-fx-control-inner-background: #f9f9f9;">
+                    <!-- Columns will be generated dynamically -->
+                </TableView>
+            </center>
+            <bottom>
+                <HBox spacing="10" style="-fx-padding: 10" alignment="CENTER_LEFT">
+                    <Button text="Add Row" onAction="#handleAddRow"/>
+                    <Button text="Delete Selected Row" onAction="#handleDeleteRow"/>
+                    <Button text="Clear All" onAction="#handleClearAll" style="-fx-text-fill: #cc0000"/>
+                </HBox>
+            </bottom>
+        </BorderPane>
+    </center>
+
+    <!-- Bottom: Action buttons -->
+    <bottom>
+        <ButtonBar style="-fx-padding: 10">
+            <buttons>
+                <Button text="Save CSV" onAction="#handleSaveCsv" style="-fx-font-size: 12; -fx-padding: 8"/>
+                <Button text="Cancel" onAction="#handleCancel"/>
+            </buttons>
+        </ButtonBar>
+    </bottom>
+</BorderPane>

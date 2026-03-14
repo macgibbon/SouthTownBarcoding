@@ -173,6 +173,12 @@ public class MainController {
     	var productToSearchMap = filterPork(productIdMap);
         lookupProduct(productToSearchMap);
     }
+    
+    @FXML
+    private void editProductsClicked(ActionEvent event) {
+        Window window = messageLabel.getScene().getWindow();
+        MainApp.showCsvEditorDialog(window);
+    }
 
     private static boolean isPork(ProductGroup group) {
     	return ((group == ProductGroup.Fresh_Pork) || (group == ProductGroup.Pork));
