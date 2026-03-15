@@ -26,6 +26,7 @@ import org.testfx.framework.junit5.Start;
 import org.testfx.framework.junit5.Stop;
 
 import app.Barcode;
+import app.CsvEditorController;
 import app.InventoryReport;
 import app.MainApp;
 import app.MainController;
@@ -77,6 +78,7 @@ public class GuiTest extends MainApp {
     private void testEditProducts(FxRobot robot) {
         robot.clickOn("File");
         robot.clickOn("Edit Product List");
+        robot.clickOn("Delete Selected Row");
         robot.clickOn("Beef");
         robot.clickOn("Delete Selected Row");
         robot.clickOn("Add Row");
@@ -84,10 +86,29 @@ public class GuiTest extends MainApp {
         
         robot.clickOn("File");
         robot.clickOn("Edit Product List");
+        robot.doubleClickOn("Stew");
+        delay(2);
+        robot.press(KeyCode.SHIFT);
+        robot.type(KeyCode.S);
+        robot.release(KeyCode.SHIFT);
+        robot.type(KeyCode.T,  KeyCode.E, KeyCode.W, KeyCode.ENTER);
         robot.clickOn("Save CSV");
         robot.clickOn("OK");
         robot.clickOn("Cancel");   
         delay(2);
+        
+        String field = "text, with, commas";
+        CsvEditorController csvEditorController = new CsvEditorController();
+        String escaped = csvEditorController.escapeCsvField(field);
+       
+        assertEquals("\"text, with, commas\"", escaped);
+        
+        String escapedNull = csvEditorController.escapeCsvField(null);
+        assertTrue(escapedNull.equals(""),"result of escapeCsvField should be empty string when passed null");
+        
+        String escapedCr = csvEditorController.escapeCsvField("text with cr\n");
+        
+        String escapeQuotesr = csvEditorController.escapeCsvField("\"text with embedded quote\"");
     }
 
     @SuppressWarnings("unused")

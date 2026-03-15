@@ -1,22 +1,19 @@
 package app;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
@@ -41,14 +38,13 @@ public class CsvEditorController {
             csvData.clear();
             csvTableView.getColumns().clear();
 
-            List<String[]> rows = parseCsvFile(file);
-            
-            if (rows.isEmpty()) {              
-                return;
-            }
-
+         
             // First row is headers
-            headers = rows.get(0);
+            //headers 
+            
+            String headerLine = Files.lines(file.toPath())
+                    .findFirst().get();
+            headers = headerLine.replaceAll("['\"]", "").split(COMMA_DELIMITER);
             
             // Create table columns dynamically
             for (int col = 0; col < headers.length; col++) {
@@ -72,66 +68,27 @@ public class CsvEditorController {
                 column.setResizable(true);
                 csvTableView.getColumns().add(column);
             }
-
-            // Load data rows (skip header row)
-            for (int i = 1; i < rows.size(); i++) {
-                String[] rowData = rows.get(i);
-                ObservableList<String> rowList = FXCollections.observableArrayList(rowData);
-                csvData.add(rowList);
-            }
-
-            csvTableView.setItems(csvData);           
-       
+            csvData = parseCsvFile(file);
+            csvTableView.setItems(csvData);
     }
 
-    private List<String[]> parseCsvFile(File file) throws IOException {
-        List<String[]> rows = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] values = parseCSVLine(line);
-                rows.add(values);
-            }
-        }
-        return rows;
+    private ObservableList<ObservableList<String>> parseCsvFile(File file) throws IOException {
+        List<ObservableList<String>>  content = Files.lines(file.toPath())
+              .skip(1)
+              .map(line -> {
+                  String dequotedLine = line.replaceAll("['\"]", "");
+                  String[] values = dequotedLine.split(COMMA_DELIMITER);
+                  ObservableList<String> rowValues = FXCollections.observableArrayList(values);
+                  return rowValues;
+              })
+              .collect(Collectors.toList());
+        ObservableList<ObservableList<String>> csvData = FXCollections.observableArrayList(content);
+        return csvData;      
     }
 
-    /**
-     * Parse a single CSV line, handling quoted fields with embedded commas
-     */
-    private String[] parseCSVLine(String line) {
-        List<String> fields = new ArrayList<>();
-        StringBuilder currentField = new StringBuilder();
-        boolean insideQuotes = false;
-
-        for (int i = 0; i < line.length(); i++) {
-            char c = line.charAt(i);
-
-            if (c == '"') {
-                if (insideQuotes && i + 1 < line.length() && line.charAt(i + 1) == '"') {
-                    // Escaped quote
-                    currentField.append('"');
-                    i++;
-                } else {
-                    // Toggle quote state
-                    insideQuotes = !insideQuotes;
-                }
-            } else if (c == ',' && !insideQuotes) {
-                // Field delimiter
-                fields.add(currentField.toString().trim());
-                currentField = new StringBuilder();
-            } else {
-                currentField.append(c);
-            }
-        }
-
-        fields.add(currentField.toString().trim());
-        return fields.toArray(new String[0]);
-    }
-
+  
     @FXML
-    private void handleAddRow(ActionEvent event) {
-      
+    private void handleAddRow(ActionEvent event) {      
 
         ObservableList<String> newRow = FXCollections.observableArrayList();
         for (int i = 0; i < headers.length; i++) {
@@ -174,7 +131,7 @@ public class CsvEditorController {
     /**
      * Escape CSV field values that contain special characters
      */
-    private String escapeCsvField(String field) {
+    public String escapeCsvField(String field) {
         if (field == null) {
             return "";
         }        
