@@ -92,6 +92,7 @@ public class MainController {
   
     TreeMap<Integer, ProductId> productIdMap;
     final Printer printer = new Printer(PRINTER_NAME);
+	private File currentDefaults;
 
     @FXML
     private void initialize() throws FileNotFoundException, IOException {
@@ -176,8 +177,10 @@ public class MainController {
     
     @FXML
     private void editProductsClicked(ActionEvent event) {
+        File defaultProductsFile = new File(currentDefaults, "defaultProducts001.csv");
+
         Window window = messageLabel.getScene().getWindow();
-        MainApp.showCsvEditorDialog(window);
+        MainApp.showCsvEditorDialog(window, defaultProductsFile);
     }
 
     private static boolean isPork(ProductGroup group) {
@@ -312,8 +315,6 @@ public class MainController {
         });
     }
     
-    
-    
     @FXML
     private void openReport(ActionEvent event) throws FileNotFoundException, IOException {
         File lastUsedDirectory = new File(model.preferences.get(LAST_USED_FOLDER, Path.of("spreadsheets").toFile().getAbsolutePath()));
@@ -340,10 +341,8 @@ public class MainController {
             .forEach(selected -> {
                 ProductLabel label = tableView.getItems().get(selected);
                 Barcode barcodeWithWeight = new Barcode(label.weight.get(), label.productId.get());
-               
-                    printer.print(barcodeWithWeight.content(), label.group.get().toString(), label.weight.get() + " lb", label.description.get());
-                    label.printed.setValue(true);
-               
+                printer.print(barcodeWithWeight.content(), label.group.get().toString(), label.weight.get() + " lb", label.description.get());
+                label.printed.setValue(true);
             });
     }
 
@@ -361,7 +360,6 @@ public class MainController {
         barcodeView.setImage(image);
         messageLabel.setText("UPC-A (weight) generated: " + bc.content());
         contentLabel.setText(bc.content());
-
     }
 
     private String getBarcodeContent() {
@@ -379,9 +377,9 @@ public class MainController {
     }
 
     public void setCurrentDefaults(File currentDefaults) throws IOException {
+    	this.currentDefaults = currentDefaults;
         File defaultProductsFile = new File(currentDefaults, "defaultProducts001.csv");
-        productIdMap = loadDefaultProductFiles(defaultProductsFile);
-        
+        productIdMap = loadDefaultProductFiles(defaultProductsFile);     
     }
     
     public static TreeMap<Integer, ProductId> loadDefaultProductFiles(File defaultProductsFile) throws FileNotFoundException, IOException {

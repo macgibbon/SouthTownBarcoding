@@ -143,12 +143,15 @@ public class MainApp extends Application {
     }
 
     
-    public static void showCsvEditorDialog(Window owner) {
+    public static void showCsvEditorDialog(Window owner, File defaultProductsFile) {
         try {
-            URL resource = MainApp.class.getResource("CsvEditorDialog.fxml");
-            FXMLLoader loader = new FXMLLoader(resource);
-            
-            javafx.scene.layout.BorderPane root = loader.load();
+        	  URL resource = MainApp.class.getResource("CsvEditorDialog.fxml");
+              FXMLLoader loader = new FXMLLoader(resource);
+              BorderPane root = (BorderPane) loader.load();
+              CsvEditorDialogController controller = loader.getController();
+        //      controller.setCurrentDefaults(currentDefaults);
+               	
+        
             
             Stage dialog = new Stage();
             dialog.initOwner(owner);
