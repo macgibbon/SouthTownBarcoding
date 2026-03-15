@@ -87,6 +87,7 @@ public class MainController {
     private Model model;
 
     private FileChooser fileChooser;
+ 
 
     private static final String PRINTER_NAME = "Zebra"; // <- change to part or full name of your printer
   
@@ -116,20 +117,14 @@ public class MainController {
                 .collect(Collectors.toList());
 
         TableColumn<ProductLabel, Boolean> printedTableColumn = new TableColumn<ProductLabel, Boolean>("Printed");
-
         printedTableColumn.setCellFactory(CheckBoxTableCell.forTableColumn(printedTableColumn));
         printedTableColumn.setPrefWidth(100.0);
         printedTableColumn.setCellValueFactory(new PropertyValueFactory<>("printed"));
-
         printedTableColumn.setEditable(true);
         tcList.add(printedTableColumn);
-
         tableView.getColumns().setAll(FXCollections.observableList(tcList));
         tableView.setEditable(true);
-
         printbutton.disableProperty().bind(Bindings.isEmpty(tableView.getSelectionModel().getSelectedItems()));
-        
-
         weightField.setOnKeyPressed(keyevent -> {
             if (keyevent.getCode() == KeyCode.ENTER) {
                 double w = 0.0;
@@ -151,8 +146,7 @@ public class MainController {
                 Platform.runLater(() -> weightField.clear());
                 Platform.runLater(() -> printer.print(barcode, group, weight + " lb", description));
             }
-        });
-    
+        });    
     }
 
     @FXML

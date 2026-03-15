@@ -1,57 +1,41 @@
 package app;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.stage.FileChooser;
-import javafx.stage.Window;
 
-import java.io.*;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
-
-public class CsvEditorDialogController {
-
-    @FXML
-    private Label filePathLabel;
-
-    @FXML
-    private TableView<ObservableList<String>> csvTableView;
-
+public class CsvEditorController {
+    
     private Path currentFilePath;
     private String[] headers;
     private ObservableList<ObservableList<String>> csvData;
     private static final String COMMA_DELIMITER = ",";
 
+ 
+    @FXML
+    private TableView<ObservableList<String>> csvTableView;
+   
     @FXML
     private void initialize() {
         csvData = FXCollections.observableArrayList();
-    }
-
-    @FXML
-    private void handleLoadCsv(ActionEvent event) {
-        Window window = csvTableView.getScene().getWindow();
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open CSV File");
-        fileChooser.getExtensionFilters().add(
-            new FileChooser.ExtensionFilter("CSV Files", "*.csv")
-        );
-
-        // Remember last used folder
-        String lastFolder = Model.getInstance().preferences.get("csvLastFolder", 
-            System.getProperty("user.home"));
-        fileChooser.setInitialDirectory(new File(lastFolder));
-
-        File selectedFile = fileChooser.showOpenDialog(window);
-        if (selectedFile != null) {
-            currentFilePath = selectedFile.toPath();
-            Model.getInstance().preferences.put("csvLastFolder", selectedFile.getParent());
-            loadCsvFile(selectedFile);
-        }
     }
 
     private void loadCsvFile(File file) {
@@ -61,8 +45,7 @@ public class CsvEditorDialogController {
 
             List<String[]> rows = parseCsvFile(file);
             
-            if (rows.isEmpty()) {
-                filePathLabel.setText(file.getAbsolutePath());
+            if (rows.isEmpty()) {              
                 return;
             }
 
@@ -99,9 +82,7 @@ public class CsvEditorDialogController {
                 csvData.add(rowList);
             }
 
-            csvTableView.setItems(csvData);
-            filePathLabel.setText(file.getAbsolutePath());
-
+            csvTableView.setItems(csvData);           
         } catch (Exception e) {
             showError("Error loading CSV file", e.getMessage());
         }
@@ -191,18 +172,9 @@ public class CsvEditorDialogController {
     }
 
     @FXML
-    private void handleSaveCsv(ActionEvent event) {
-        if (currentFilePath == null) {
-            showError("No file selected", "Please load a CSV file first");
-            return;
-        }
-
-        try {
-            saveCsvFile(currentFilePath.toFile());
-            showInfo("Success", "CSV file saved successfully");
-        } catch (Exception e) {
-            showError("Error saving CSV file", e.getMessage());
-        }
+    private void handleSaveCsv(ActionEvent event) throws IOException {
+        saveCsvFile(currentFilePath.toFile());
+        showInfo("Success", "CSV file saved successfully");
     }
 
     private void saveCsvFile(File file) throws IOException {
@@ -227,8 +199,7 @@ public class CsvEditorDialogController {
     private String escapeCsvField(String field) {
         if (field == null) {
             return "";
-        }
-        
+        }        
         if (field.contains(COMMA_DELIMITER) || field.contains("\"") || field.contains("\n")) {
             return "\"" + field.replace("\"", "\"\"") + "\"";
         }
@@ -253,5 +224,9 @@ public class CsvEditorDialogController {
         alert.setTitle(title);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    public void setDefaultsFile(File defaultProductsFile) {
+        loadCsvFile(defaultProductsFile);
     }
 }

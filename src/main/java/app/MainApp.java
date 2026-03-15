@@ -142,37 +142,8 @@ public class MainApp extends Application {
         defaultPaths.stream().findFirst().ifPresent(path -> deepCopy(path, currentDefaults.toPath()));
     }
 
-    
-    public static void showCsvEditorDialog(Window owner, File defaultProductsFile) {
-        try {
-        	  URL resource = MainApp.class.getResource("CsvEditorDialog.fxml");
-              FXMLLoader loader = new FXMLLoader(resource);
-              BorderPane root = (BorderPane) loader.load();
-              CsvEditorDialogController controller = loader.getController();
-        //      controller.setCurrentDefaults(currentDefaults);
-               	
-        
-            
-            Stage dialog = new Stage();
-            dialog.initOwner(owner);
-            dialog.initModality(Modality.WINDOW_MODAL);
-            dialog.setTitle("CSV Editor");
-            dialog.setWidth(900);
-            dialog.setHeight(600);
-            
-            Scene scene = new Scene(root);
-            scene.getStylesheets().add(
-                MainApp.class.getResource("/app/styles.css").toExternalForm()
-            );
-            
-            dialog.setScene(scene);
-            dialog.showAndWait();
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("Failed to load CSV Editor Dialog", e);
-        }
+    public static void showCsvEditorDialog(Window window, File defaultProductsFile) {
+        new CsvEditor().showCsvEditorDialog(window, defaultProductsFile);        
     }
-   
 
 }

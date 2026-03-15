@@ -19,12 +19,12 @@
 		<MenuBar>
 	<menus>
 		<Menu mnemonicParsing="false" text="File">
-			<items>
-				<MenuItem mnemonicParsing="false" onAction="#openReport"
-					text="Open Inventory Report" />
-					
+			<items>								
 				<MenuItem mnemonicParsing="false" onAction="#editProductsClicked"
 					text="Edit Product List" />
+					
+				<MenuItem mnemonicParsing="false" onAction="#openReport"
+					text="Open Inventory Report" />
 					
 				<MenuItem mnemonicParsing="false"
 					onAction="#openReportFor1Beef"
