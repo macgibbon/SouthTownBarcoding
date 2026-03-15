@@ -18,6 +18,7 @@ class LaunchingMainTest {
     @Test
     void testMainLauncher() throws IOException {
         delay(10);
+        @SuppressWarnings("unused")
         Launcher launcher = new Launcher();
         Throwable t = null;
         int x = (int) (Math.random() * 1000000.0);

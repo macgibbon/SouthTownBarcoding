@@ -1,95 +1,95 @@
-Product Id,Product Group,Description
-2001,Beef,Brisket Whole
-2003,Beef,Brisket Point
-2004,Beef,Brisket Flat
-2005,Beef,Short Ribs
-2008,Beef,Bone In Chuck Roast
-2009,Beef,Chuck Roast Boneless
-2010,Beef,Flat Iron Steak
-2012,Beef,Chuck Eye Steak
-2013,Beef,Chuck Steak
-2018,Beef,Shoulder Roast
-2021,Beef,Shoulder London Broil
-2022,Beef,Rib Steak Bone-In
-2023,Beef,Rib Steak Boneless
-2028,Beef,Rib Roast Bone In 
-2029,Beef,Rib Roast Boneless
-2031,Beef,Top Sirloin Steak Boneless
-2034,Beef,Tri-Tip Roast
-2037,Beef,Strip Loin
-2038,Beef,T-Bone Steak
-2039,Beef,Porterhouse Steak
-2040,Beef,Strip Steak
-2042,Beef,Tenderloin Steak
-2043,Beef,Tenderloin Whole
-2046,Beef,Shaved Steak
-2048,Beef,Stew
-2052,Beef,Top Round Roast
-2054,Beef,Top Round London Broil
-2056,Beef,Bottom Round Roast
-2060,Beef,Eye Round Roast
-2063,Beef,Sirloin Tip Steak
-2069,Beef,Flank Steak
-2070,Beef,Hanging Tender
-2071,Beef,Skirt Steak
-2074,Beef,Osso Bucco
-2075,Beef,Knuckle Bone
-2076,Beef,Marrow Bone
-2077,Beef,Suet
-2079,Beef,Heart
-2080,Beef,Tongue
-2081,Beef,Oxtail
-2082,Beef,Liver
-2083,Beef,Kidney
-2086,Beef,Ground Beef
-2089,Beef,1/3# Patties
-2090,Beef,1/4# Patties
-2092,Beef,Neck Bones
-2093,Beef,Sirloin Tip Roast
-2095,Beef,Back Ribs
-3013,Beef,Fully Cooked
-3026,Fully Cooked Beef,Snack Stick
-3031,Beef,Smoked Kielbasa
-4578,Fully Cooked Beef,Dill Pickle Snack Stick
-5004,Fresh Pork,Shoulder Roast
-5005,Fresh Pork,Shoulder Steak
-5013,Fresh Pork,Spare Rib
-5015,Fresh Pork,Butt Roast
-5016,Fresh Pork,Country Style Ribs
-5019,Fresh Pork,Porkloin Roast
-5020,Fresh Pork,Chop Bone-In
-5021,Fresh Pork,Chop Boneless
-5029,Fresh Pork,Tenderloin Whole
-5032,Fresh Pork,Ear
-5033,Fresh Pork,Tail
-5034,Fresh Pork,Tongue
-5035,Fresh Pork,Heart
-5037,Fresh Pork,Liver
-5038,Fresh Pork,Fat
-5041,Fresh Pork,Ground
-5042,Fresh Pork,Breakfast Sausage Bulk
-5043,Fresh Pork,Breakfast Sausage Little Link
-5046,Fresh Pork,Breakfast Patties
-5047,Fresh Pork,Sweet Italian Bulk Sausage
-5048,Fresh Pork,Sweet Italian Link Sausage
-5050,Fresh Pork,Sweet Italian Sausage Patties
-5051,Fresh Pork,Hot Italian Bulk Sausage
-5052,Fresh Pork,Hot Italian Sausage Link
-5054,Fresh Pork,Chorizo Bulk Sausage
-5055,Fresh Pork,Chorizo Sausage Link
-5065,Fresh Pork,Garlic Bratwurst Sausage Link
-5068,Fresh Pork,Apple Maple Sausage Link
-5069,Fresh Pork,Apple Maple Sausage Little Link
-5073,Fresh Pork,Neck Bones
-5074,Fresh Pork,Baby Back Ribs
-5287,Fully Cooked Beef,Philly Cheesesteak Snack Stick
-6003,Pork,Ham Steak
-6006,Pork,Bacon Sliced Regular
-6007,Pork,Thick Bacon
-6008,Pork,Thin Bacon
-6014,Pork,Ear
-6071,Beef,Hot Dogs
-70215,Pork,Sirloin Roast
-698745,Pork,Smoked Pork Skin
-789625,Beef,Dyno Ribs
-97854698,Fresh Pork,Hot Italian Sausage Patties
+Product Id,Product Group,Description,Priced Product Id,Price per lb
+2001,Beef,Brisket Whole,,
+2003,Beef,Brisket Point,,
+2004,Beef,Brisket Flat,,
+2005,Beef,Short Ribs,,
+2008,Beef,Bone In Chuck Roast,,
+2009,Beef,Chuck Roast Boneless,,
+2010,Beef,Flat Iron Steak,,
+2012,Beef,Chuck Eye Steak,,
+2013,Beef,Chuck Steak,,
+2018,Beef,Shoulder Roast,,
+2021,Beef,Shoulder London Broil,,
+2022,Beef,Rib Steak Bone-In,,
+2023,Beef,Rib Steak Boneless,,
+2028,Beef,Rib Roast Bone In ,,
+2029,Beef,Rib Roast Boneless,,
+2031,Beef,Top Sirloin Steak Boneless,,
+2034,Beef,Tri-Tip Roast,,
+2037,Beef,Strip Loin,,
+2038,Beef,T-Bone Steak,,
+2039,Beef,Porterhouse Steak,,
+2040,Beef,Strip Steak,,
+2042,Beef,Tenderloin Steak,,
+2043,Beef,Tenderloin Whole,,
+2046,Beef,Shaved Steak,,
+2048,Beef,Stew,,
+2052,Beef,Top Round Roast,,
+2054,Beef,Top Round London Broil,,
+2056,Beef,Bottom Round Roast,,
+2060,Beef,Eye Round Roast,,
+2063,Beef,Sirloin Tip Steak,,
+2069,Beef,Flank Steak,,
+2070,Beef,Hanging Tender,,
+2071,Beef,Skirt Steak,,
+2074,Beef,Osso Bucco,,
+2075,Beef,Knuckle Bone,,
+2076,Beef,Marrow Bone,,
+2077,Beef,Suet,,
+2079,Beef,Heart,,
+2080,Beef,Tongue,,
+2081,Beef,Oxtail,,
+2082,Beef,Liver,,
+2083,Beef,Kidney,,
+2086,Beef,Ground Beef,,
+2089,Beef,1/3# Patties,,
+2090,Beef,1/4# Patties,,
+2092,Beef,Neck Bones,,
+2093,Beef,Sirloin Tip Roast,,
+2095,Beef,Back Ribs,,
+3013,Beef,Fully Cooked,,
+3026,Fully Cooked Beef,Snack Stick,,
+3031,Beef,Smoked Kielbasa,,
+4578,Fully Cooked Beef,Dill Pickle Snack Stick,,
+5004,Fresh Pork,Shoulder Roast,,
+5005,Fresh Pork,Shoulder Steak,,
+5013,Fresh Pork,Spare Rib,,
+5015,Fresh Pork,Butt Roast,,
+5016,Fresh Pork,Country Style Ribs,,
+5019,Fresh Pork,Porkloin Roast,,
+5020,Fresh Pork,Chop Bone-In,,
+5021,Fresh Pork,Chop Boneless,,
+5029,Fresh Pork,Tenderloin Whole,,
+5032,Fresh Pork,Ear,,
+5033,Fresh Pork,Tail,,
+5034,Fresh Pork,Tongue,,
+5035,Fresh Pork,Heart,,
+5037,Fresh Pork,Liver,,
+5038,Fresh Pork,Fat,,
+5041,Fresh Pork,Ground,,
+5042,Fresh Pork,Breakfast Sausage Bulk,,
+5043,Fresh Pork,Breakfast Sausage Little Link,,
+5046,Fresh Pork,Breakfast Patties,,
+5047,Fresh Pork,Sweet Italian Bulk Sausage,,
+5048,Fresh Pork,Sweet Italian Link Sausage,,
+5050,Fresh Pork,Sweet Italian Sausage Patties,,
+5051,Fresh Pork,Hot Italian Bulk Sausage,,
+5052,Fresh Pork,Hot Italian Sausage Link,,
+5054,Fresh Pork,Chorizo Bulk Sausage,,
+5055,Fresh Pork,Chorizo Sausage Link,,
+5065,Fresh Pork,Garlic Bratwurst Sausage Link,,
+5068,Fresh Pork,Apple Maple Sausage Link,,
+5069,Fresh Pork,Apple Maple Sausage Little Link,,
+5073,Fresh Pork,Neck Bones,,
+5074,Fresh Pork,Baby Back Ribs,,
+5287,Fully Cooked Beef,Philly Cheesesteak Snack Stick,,
+6003,Pork,Ham Steak,,
+6006,Pork,Bacon Sliced Regular,,
+6007,Pork,Thick Bacon,,
+6008,Pork,Thin Bacon,,
+6014,Pork,Ear,,
+6071,Beef,Hot Dogs,,
+70215,Pork,Sirloin Roast,,
+698745,Pork,Smoked Pork Skin,,
+789625,Beef,Dyno Ribs,,
+97854698,Fresh Pork,Hot Italian Sausage Patties,,

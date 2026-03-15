@@ -21,6 +21,7 @@ import javafx.stage.StageStyle;
 
 public class ErrorDisplay {
 
+    @SuppressWarnings("unused")
     private Thread t;
     private Throwable e;
     private Stage currentStage;

@@ -4,7 +4,7 @@ module southtown {
 
 	requires transitive com.google.zxing;
 	requires com.google.zxing.javase;
-	requires java.desktop;
+	requires transitive java.desktop;
 	requires javafx.base;
 	requires javafx.controls;
 	requires javafx.fxml;

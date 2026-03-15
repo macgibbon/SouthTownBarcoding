@@ -65,6 +65,7 @@ public class GuiTest extends MainApp {
 
     @Test
     public void testAll(FxRobot robot) {
+        testEditProducts(robot);
         testBatchMode(robot);
         testBatchModeSingleProduct(robot);
         testManualModeButtons(robot);
@@ -73,6 +74,23 @@ public class GuiTest extends MainApp {
         testSpecialCasesForCodeCoverage();
     }
   
+    private void testEditProducts(FxRobot robot) {
+        robot.clickOn("File");
+        robot.clickOn("Edit Product List");
+        robot.clickOn("Beef");
+        robot.clickOn("Delete Selected Row");
+        robot.clickOn("Add Row");
+        robot.clickOn("Cancel");   
+        
+        robot.clickOn("File");
+        robot.clickOn("Edit Product List");
+        robot.clickOn("Save CSV");
+        robot.clickOn("OK");
+        robot.clickOn("Cancel");   
+        delay(2);
+    }
+
+    @SuppressWarnings("unused")
     public void testSpecialCasesForCodeCoverage() {
         Exception exc = null;
         try {
@@ -181,10 +199,11 @@ public class GuiTest extends MainApp {
         }
         assertTrue(expected != null, "Did not fail on imaginary path!");
 
-        ProductId id = ProductId.createProductId(1, "chicken tenders");        
+        ProductId id = ProductId.createProductId(1, "chicken tenders");  
+        assertTrue(id.productGroup().equals(ProductGroup.__));
         TreeMap<Integer, ProductId> testMap = new TreeMap<>();
         testMap.put(1, new ProductId(1, ProductGroup.Beef, "sticks"));
-        List<List<String>> emptyList = new ArrayList();
+        var emptyList = new ArrayList<List<String>>();
         
         expected = null;
         InventoryReport report = null;
@@ -197,9 +216,11 @@ public class GuiTest extends MainApp {
         expected = null;
         try {
             ArrayList<ProductLabel> labels = report.getProductLabels(testMap, emptyList);
+            assertTrue(labels != null);
         } catch (Exception e) {
             expected = e;
         }
+       
         assertTrue(expected != null, "Did not fail on Inventory report size mismatch!");
         try {
         InventoryReport report2 = new InventoryReport(new File("spreadsheets/test2.xls"));
@@ -349,7 +370,7 @@ public class GuiTest extends MainApp {
         robot.push(KeyCode.ENTER);
       
         
-        String currentLastFolder = model.preferences.get(controller.LAST_USED_FOLDER, Path.of("spreadsheets").toFile().getAbsolutePath());
+        String currentLastFolder = model.preferences.get(MainController.LAST_USED_FOLDER, Path.of("spreadsheets").toFile().getAbsolutePath());
         File testPrintFile = new File(currentLastFolder + "/test.pdf");
         if (testPrintFile.exists())
             testPrintFile.delete();
@@ -404,6 +425,7 @@ public class GuiTest extends MainApp {
         delay(2);
         robot.clickOn("Fresh Pork");
         robot.clickOn("Print Selected");
+        delay(2);
         boolean isFirstPrinted = model.productLabels.get(0).printed.get();
         assertTrue(isFirstPrinted, "Printed Lable is not checked!");
         robot.clickOn("Print Next 20 Unprinted");
@@ -435,12 +457,13 @@ public class GuiTest extends MainApp {
         assertTrue(isFirstPrinted, "Printed Lable is not checked!");
         delay(2);// TODO Auto-generated method stub
         robot.clickOn("Print All Unprinted");  // second print to force filter through all paths
+        delay(2);
     }
 
     public void testBadDefaultFolder(FxRobot robot) {
-        String currentLastFolder = model.preferences.get(controller.LAST_USED_FOLDER, Path.of("spreadsheets").toFile().getAbsolutePath());
+        String currentLastFolder = model.preferences.get(MainController.LAST_USED_FOLDER, Path.of("spreadsheets").toFile().getAbsolutePath());
         try {
-            model.preferences.put(controller.LAST_USED_FOLDER, "notReal");
+            model.preferences.put(MainController.LAST_USED_FOLDER, "notReal");
             delay(2);
             robot.clickOn("File");
             robot.clickOn("Open Inventory Report for 1 Pork Product");
@@ -450,12 +473,12 @@ public class GuiTest extends MainApp {
             robot.push(KeyCode.ENTER);
             delay(2);
         } finally {
-            model.preferences.put(controller.LAST_USED_FOLDER, currentLastFolder);
+            model.preferences.put(MainController.LAST_USED_FOLDER, currentLastFolder);
         }
         
-        currentLastFolder = model.preferences.get(controller.LAST_USED_FOLDER, Path.of("spreadsheets").toFile().getAbsolutePath());
+        currentLastFolder = model.preferences.get(MainController.LAST_USED_FOLDER, Path.of("spreadsheets").toFile().getAbsolutePath());
         try {
-            model.preferences.put(controller.LAST_USED_FOLDER, "notReal");
+            model.preferences.put(MainController.LAST_USED_FOLDER, "notReal");
             delay(2);
             robot.clickOn("File");
             robot.clickOn("Open Inventory Report");
@@ -464,7 +487,7 @@ public class GuiTest extends MainApp {
             robot.push(KeyCode.ENTER);
             delay(2);
         } finally {
-            model.preferences.put(controller.LAST_USED_FOLDER, currentLastFolder);
+            model.preferences.put(MainController.LAST_USED_FOLDER, currentLastFolder);
         }
     }
 

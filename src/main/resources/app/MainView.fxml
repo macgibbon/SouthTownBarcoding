@@ -14,12 +14,15 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="508.0" prefWidth="805.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.MainController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="508.0" prefWidth="805.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.MainController">
 	<top>
 		<MenuBar>
 	<menus>
 		<Menu mnemonicParsing="false" text="File">
-			<items>
+			<items>								
+				<MenuItem mnemonicParsing="false" onAction="#editProductsClicked"
+					text="Edit Product List" />
+					
 				<MenuItem mnemonicParsing="false" onAction="#openReport"
 					text="Open Inventory Report" />
 					
