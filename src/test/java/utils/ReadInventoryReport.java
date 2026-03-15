@@ -1,4 +1,4 @@
-package worksheets;
+package utils;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -10,7 +10,7 @@ import java.nio.file.Path;
 import app.InventoryReport;
 import app.Model;
 
-class TestWorksheetReading {
+class ReadInventoryReport {
 
 	static Path worksheetsPath = Path.of("spreadsheets");
 

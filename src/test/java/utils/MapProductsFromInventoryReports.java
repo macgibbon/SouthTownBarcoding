@@ -1,4 +1,4 @@
-package worksheets;
+package utils;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -14,7 +14,7 @@ import app.Model;
 import app.ProductId;
 import app.ProductLabel;
 
-class MapProductIds {
+class MapProductsFromInventoryReports {
 
 	static Path worksheetsPath = Path.of("spreadsheets");
 

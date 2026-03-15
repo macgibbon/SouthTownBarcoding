@@ -12,7 +12,7 @@ class TestErrorDialog {
 
 	
 	@Test
-	void testMainLauncher() throws IOException {	    
+	void testErrorInErrorDialog() throws IOException {	    
 	    Throwable exc = null;
         try {
             new MainApp().showErrorDialog(null, null);

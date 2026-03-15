@@ -1,4 +1,4 @@
-package worksheets;
+package utils;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -11,7 +11,7 @@ import java.util.Map;
 import app.MainController;
 import app.ProductId;
 
-class TestProductSheetReading {
+class ReadDefaultProducts {
 
 	static Path worksheetsPath = Path.of("spreadsheets");
 
