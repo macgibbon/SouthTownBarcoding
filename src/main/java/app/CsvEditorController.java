@@ -17,7 +17,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
@@ -38,8 +37,7 @@ public class CsvEditorController {
         csvData = FXCollections.observableArrayList();
     }
 
-    private void loadCsvFile(File file) {
-        try {
+    private void loadCsvFile(File file) throws IOException {
             csvData.clear();
             csvTableView.getColumns().clear();
 
@@ -83,9 +81,7 @@ public class CsvEditorController {
             }
 
             csvTableView.setItems(csvData);           
-        } catch (Exception e) {
-            showError("Error loading CSV file", e.getMessage());
-        }
+       
     }
 
     private List<String[]> parseCsvFile(File file) throws IOException {
@@ -135,10 +131,7 @@ public class CsvEditorController {
 
     @FXML
     private void handleAddRow(ActionEvent event) {
-        if (headers == null || headers.length == 0) {
-            showError("No CSV loaded", "Please load a CSV file first");
-            return;
-        }
+      
 
         ObservableList<String> newRow = FXCollections.observableArrayList();
         for (int i = 0; i < headers.length; i++) {
@@ -153,22 +146,7 @@ public class CsvEditorController {
         int selectedIndex = csvTableView.getSelectionModel().getSelectedIndex();
         if (selectedIndex >= 0) {
             csvData.remove(selectedIndex);
-        } else {
-            showError("No selection", "Please select a row to delete");
-        }
-    }
-
-    @FXML
-    private void handleClearAll(ActionEvent event) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Clear All Data");
-        alert.setHeaderText("Are you sure?");
-        alert.setContentText("This will delete all rows. This action cannot be undone.");
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            csvData.clear();
-        }
+        } 
     }
 
     @FXML
@@ -212,13 +190,6 @@ public class CsvEditorController {
         stage.close();
     }
 
-    private void showError(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
     private void showInfo(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
@@ -226,7 +197,8 @@ public class CsvEditorController {
         alert.showAndWait();
     }
 
-    public void setDefaultsFile(File defaultProductsFile) {
+    public void setDefaultsFile(File defaultProductsFile) throws IOException {
+        currentFilePath = defaultProductsFile.toPath();
         loadCsvFile(defaultProductsFile);
     }
 }

@@ -65,6 +65,7 @@ public class GuiTest extends MainApp {
 
     @Test
     public void testAll(FxRobot robot) {
+        testEditProducts(robot);
         testBatchMode(robot);
         testBatchModeSingleProduct(robot);
         testManualModeButtons(robot);
@@ -73,6 +74,22 @@ public class GuiTest extends MainApp {
         testSpecialCasesForCodeCoverage();
     }
   
+    private void testEditProducts(FxRobot robot) {
+        robot.clickOn("File");
+        robot.clickOn("Edit Product List");
+        robot.clickOn("Beef");
+        robot.clickOn("Delete Selected Row");
+        robot.clickOn("Add Row");
+        robot.clickOn("Cancel");   
+        
+        robot.clickOn("File");
+        robot.clickOn("Edit Product List");
+        robot.clickOn("Save CSV");
+        robot.clickOn("OK");
+        robot.clickOn("Cancel");   
+        delay(2);
+    }
+
     @SuppressWarnings("unused")
     public void testSpecialCasesForCodeCoverage() {
         Exception exc = null;
@@ -440,6 +457,7 @@ public class GuiTest extends MainApp {
         assertTrue(isFirstPrinted, "Printed Lable is not checked!");
         delay(2);// TODO Auto-generated method stub
         robot.clickOn("Print All Unprinted");  // second print to force filter through all paths
+        delay(2);
     }
 
     public void testBadDefaultFolder(FxRobot robot) {

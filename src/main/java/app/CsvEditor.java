@@ -1,6 +1,7 @@
 package app;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 
 import javafx.fxml.FXMLLoader;
@@ -12,8 +13,8 @@ import javafx.stage.Window;
 
 public class CsvEditor {
     
-    public  void showCsvEditorDialog(Window owner, File defaultProductsFile) {
-        try {
+    public  void showCsvEditorDialog(Window owner, File defaultProductsFile) throws IOException {
+
             URL resource = MainApp.class.getResource("CsvEditorDialog.fxml");
             FXMLLoader loader = new FXMLLoader(resource);
             BorderPane root = (BorderPane) loader.load();
@@ -39,10 +40,7 @@ public class CsvEditor {
             dialog.setWidth( width * (1-margin));
             dialog.setHeight( height * (1-margin));
             dialog.showAndWait();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("Failed to load CSV Editor Dialog", e);
-        }
+       
     }   
 
 }

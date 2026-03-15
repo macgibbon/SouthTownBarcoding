@@ -170,11 +170,10 @@ public class MainController {
     }
     
     @FXML
-    private void editProductsClicked(ActionEvent event) {
+    private void editProductsClicked(ActionEvent event) throws IOException {
         File defaultProductsFile = new File(currentDefaults, "defaultProducts001.csv");
-
         Window window = messageLabel.getScene().getWindow();
-        MainApp.showCsvEditorDialog(window, defaultProductsFile);
+        new CsvEditor().showCsvEditorDialog(window, defaultProductsFile);    
     }
 
     private static boolean isPork(ProductGroup group) {

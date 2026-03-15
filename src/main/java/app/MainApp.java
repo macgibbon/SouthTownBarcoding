@@ -142,8 +142,5 @@ public class MainApp extends Application {
         defaultPaths.stream().findFirst().ifPresent(path -> deepCopy(path, currentDefaults.toPath()));
     }
 
-    public static void showCsvEditorDialog(Window window, File defaultProductsFile) {
-        new CsvEditor().showCsvEditorDialog(window, defaultProductsFile);        
-    }
-
+   
 }
