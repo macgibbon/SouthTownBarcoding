@@ -298,7 +298,7 @@ public class GuiTest extends MainApp {
     public void testManualModeKeypadEntry(FxRobot robot) {
         robot.clickOn("Manual");
 
-        robot.clickOn("Lookup Pork Product Id");
+        robot.clickOn("Lookup Non Beef Id");
         delay(2);
         robot.clickOn("Fresh Pork Hot Italian Sausage Patties");
         delay(2);
@@ -367,7 +367,7 @@ public class GuiTest extends MainApp {
 
         robot.clickOn("Manual");
 
-        robot.clickOn("Lookup Pork Product Id");
+        robot.clickOn("Lookup Non Beef Product Id");
         robot.clickOn("Fresh Pork Ground");
         delay(2);
         String description2 = ((TextField) reflectiveGetField(controller, "descriptionField")).getText();
@@ -487,7 +487,7 @@ public class GuiTest extends MainApp {
             model.preferences.put(MainController.LAST_USED_FOLDER, "notReal");
             delay(2);
             robot.clickOn("File");
-            robot.clickOn("Open Inventory Report for 1 Pork Product");
+            robot.clickOn("Open Inventory Report for 1 Non Beef Product");
             robot.clickOn("Fresh Pork Ground");
             robot.push(KeyCode.TAB);
             robot.push(KeyCode.TAB);

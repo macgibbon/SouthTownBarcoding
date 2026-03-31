@@ -9,8 +9,10 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.TreeMap;
+import java.util.LinkedHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -165,7 +167,7 @@ public class MainController {
     
     @FXML
     private void onLookupPorkClicked(ActionEvent event) {
-    	var productToSearchMap = filterPork(productIdMap);
+    	var productToSearchMap = filterNotBeef(productIdMap);
         lookupProduct(productToSearchMap);
     }
     
@@ -176,10 +178,13 @@ public class MainController {
         new CsvEditor().showCsvEditorDialog(window, defaultProductsFile);    
     }
 
-    private static boolean isPork(ProductGroup group) {
-    	return ((group == ProductGroup.Fresh_Pork) || (group == ProductGroup.Pork));
+    private static boolean isBeef(ProductGroup group) {
+    	return ((group == ProductGroup.Beef) || (group == ProductGroup.Fully_Cooked_Beef));
     }
-     
+    private static boolean isNotBeef(ProductGroup group) {
+       return !isBeef(group);
+    }
+      
 	private void lookupProduct( Map<Integer, ProductId> productToSearchMap) {
 		Window window = messageLabel.getScene().getWindow();
         Optional<ProductId> result = new ProductDialog(productToSearchMap,window).showAndWait();
@@ -225,15 +230,26 @@ public class MainController {
     
     @FXML
     private void openReportFor1Pork(ActionEvent event) throws FileNotFoundException, IOException {    	
-    	 openReportFor(filterPork(productIdMap));
+    	 openReportFor(filterNotBeef(productIdMap));
     }
 
-    public static Map<Integer, ProductId> filterPork(TreeMap<Integer, ProductId> pidMap) {
+    public static Map<Integer, ProductId> filterNotBeef(TreeMap<Integer, ProductId> pidMap) {
         var productToSearchMap = pidMap.entrySet()
     	     		.stream()
-    	    		.filter(entry -> isPork(entry.getValue().productGroup())) 
-    	    		.collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue()));
+    	     		.sorted((e1,e2) -> sortProducts(e1,e2))
+    	    		.filter(entry -> isNotBeef(entry.getValue().productGroup())) 
+    	    		.collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue(),(e1, e2) -> e1, LinkedHashMap::new));
         return productToSearchMap;
+    }
+
+    private static int sortProducts(Entry<Integer, ProductId> e1, Entry<Integer, ProductId> e2) {
+        ProductId id1 = e1.getValue();
+        ProductId id2 = e2.getValue();
+       int groupCompare = id1.productGroup().compareTo(id2.productGroup());
+       if (groupCompare == 0)
+           return Integer.compare(id1.id(), id2.id());
+       else
+           return groupCompare;        
     }
 
     protected void openReportFor(Map<Integer, ProductId> productToSearchMap) throws IOException, FileNotFoundException {
@@ -268,7 +284,7 @@ public class MainController {
     public static Map<Integer, ProductId> filterBeef(TreeMap<Integer, ProductId> pidMap) {
         var productToSearchMap = pidMap.entrySet()
     	     		.stream()
-    	    		.filter(entry -> !isPork(entry.getValue().productGroup())) 
+    	    		.filter(entry -> isBeef(entry.getValue().productGroup())) 
     	    		.collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue() ));
         return productToSearchMap;
     }
