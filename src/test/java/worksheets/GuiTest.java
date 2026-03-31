@@ -134,7 +134,7 @@ public class GuiTest extends MainApp {
         assertTrue(emptyResult.equals(""));
         delay(2);
 
-        ProductId pid = ProductId.createProductId(100000, "Chicken tenders");
+        ProductId pid = ProductId.createProductId(100000, "Rabbit tenders");
         assertTrue(pid.productGroup() == ProductGroup.__);
 
         Printer printer = new Printer("NotPresentPrinter");
@@ -298,7 +298,7 @@ public class GuiTest extends MainApp {
     public void testManualModeKeypadEntry(FxRobot robot) {
         robot.clickOn("Manual");
 
-        robot.clickOn("Lookup Non Beef Id");
+        robot.clickOn("Lookup Non Beef Product Id");
         delay(2);
         robot.clickOn("Fresh Pork Hot Italian Sausage Patties");
         delay(2);

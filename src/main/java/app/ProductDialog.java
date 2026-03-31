@@ -1,5 +1,6 @@
 package app;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -17,7 +18,7 @@ public class ProductDialog {
     
     private Dialog<ProductId> dialog;
 
-    public ProductDialog( Map<Integer, ProductId> productIdMap, Window owner) {
+    public ProductDialog( List<ProductId> productIdList, Window owner) {
         super();
         dialog = new Dialog<>();
         dialog.initOwner(owner);
@@ -34,11 +35,10 @@ public class ProductDialog {
         grid.setVgap(10);
         grid.setPadding(new Insets(10, 10, 10, 10));
         int cols = 4;
-        Integer[] productIds = productIdMap.keySet().toArray(new Integer[0]);
-
-        for (int i = 0; i < productIds.length; i++) {
-            Integer pid = productIds[i];
-            ProductId productId = productIdMap.get(pid);
+     
+        for (int i = 0; i < productIdList.size(); i++) {
+   
+            ProductId productId = productIdList.get(i);
             String text = productId.productGroup() + " " + productId.description();
             Label label = new Label(Integer.toString(productId.id()));
             label.getStyleClass().add("id-label");

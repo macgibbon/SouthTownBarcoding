@@ -185,7 +185,7 @@ public class MainController {
        return !isBeef(group);
     }
       
-	private void lookupProduct( Map<Integer, ProductId> productToSearchMap) {
+	private void lookupProduct(List<ProductId> productToSearchMap) {
 		Window window = messageLabel.getScene().getWindow();
         Optional<ProductId> result = new ProductDialog(productToSearchMap,window).showAndWait();
         result.ifPresent(pid -> {
@@ -233,18 +233,16 @@ public class MainController {
     	 openReportFor(filterNotBeef(productIdMap));
     }
 
-    public static Map<Integer, ProductId> filterNotBeef(TreeMap<Integer, ProductId> pidMap) {
-        var productToSearchMap = pidMap.entrySet()
+    public static List<ProductId> filterNotBeef(TreeMap<Integer, ProductId> pidMap) {
+        var productToSearchMap = pidMap.values()
     	     		.stream()
     	     		.sorted((e1,e2) -> sortProducts(e1,e2))
-    	    		.filter(entry -> isNotBeef(entry.getValue().productGroup())) 
-    	    		.collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue(),(e1, e2) -> e1, LinkedHashMap::new));
+    	    		.filter(entry -> isNotBeef(entry.productGroup())) 
+    	    		.collect(Collectors.toList());
         return productToSearchMap;
     }
 
-    private static int sortProducts(Entry<Integer, ProductId> e1, Entry<Integer, ProductId> e2) {
-        ProductId id1 = e1.getValue();
-        ProductId id2 = e2.getValue();
+    private static int sortProducts( ProductId id1, ProductId id2) {
        int groupCompare = id1.productGroup().compareTo(id2.productGroup());
        if (groupCompare == 0)
            return Integer.compare(id1.id(), id2.id());
@@ -252,7 +250,7 @@ public class MainController {
            return groupCompare;        
     }
 
-    protected void openReportFor(Map<Integer, ProductId> productToSearchMap) throws IOException, FileNotFoundException {
+    protected void openReportFor(List<ProductId> productToSearchMap) throws IOException, FileNotFoundException {
         Window window = messageLabel.getScene().getWindow();
          Optional<ProductId> result = new ProductDialog(productToSearchMap,window).showAndWait();
          if (result.isPresent()) {
@@ -281,11 +279,12 @@ public class MainController {
     	openReportFor(filterBeef(productIdMap));
     }
 
-    public static Map<Integer, ProductId> filterBeef(TreeMap<Integer, ProductId> pidMap) {
-        var productToSearchMap = pidMap.entrySet()
-    	     		.stream()
-    	    		.filter(entry -> isBeef(entry.getValue().productGroup())) 
-    	    		.collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue() ));
+    public static List<ProductId> filterBeef(TreeMap<Integer, ProductId> pidMap) {
+        var productToSearchMap = pidMap.values()
+    	     		.stream()    	
+    	    		.filter(entry -> isBeef(entry.productGroup())) 
+    	    		.sorted((e1,e2) -> sortProducts(e1,e2))
+    	    		.collect(Collectors.toList());
         return productToSearchMap;
     }
     
