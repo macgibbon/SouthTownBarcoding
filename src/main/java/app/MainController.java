@@ -102,7 +102,7 @@ public class MainController {
         tableView.setItems(model.productLabels);
 
         tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        final int printedColumn = 3;
+        final int printedColumn = 4;
         List<TableColumn<ProductLabel, ?>> tcList = Stream.of(ProductLabel.class.getFields())
                 .limit(printedColumn)
                 .map(rc -> rc.getName())

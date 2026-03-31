@@ -10,7 +10,7 @@ import java.nio.file.Path;
 import app.InventoryReport;
 import app.Model;
 
-class ReadInventoryReport {
+class ReadInventoryReport2 {
 
 	static Path worksheetsPath = Path.of("spreadsheets");
 
@@ -22,7 +22,7 @@ class ReadInventoryReport {
 					.findFirst()
 					.get()
 					.toFile();
-			firstworksheet = new File(worksheetsPath.toFile(),"Southtown Chicken 3.31.26.xls");
+			firstworksheet = new File(worksheetsPath.toFile(),"south town 1.xls");
 			System.out.println("Reading " + firstworksheet.getName());
 			
 			Model model = Model.getInstance();
