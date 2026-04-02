@@ -47,6 +47,7 @@ import javafx.stage.Window;
 
 public class MainController {
 
+    private static final String DEFAULT_PRODUCTS002_CSV = "defaultProducts002.csv";
     public static final String LAST_USED_FOLDER = "lastUsedFolder";
     public static final String COMMA_DELIMITER = ",";
  
@@ -173,7 +174,7 @@ public class MainController {
     
     @FXML
     private void editProductsClicked(ActionEvent event) throws IOException {
-        File defaultProductsFile = new File(currentDefaults, "defaultProducts001.csv");
+        File defaultProductsFile = new File(currentDefaults, DEFAULT_PRODUCTS002_CSV);
         Window window = messageLabel.getScene().getWindow();
         new CsvEditor().showCsvEditorDialog(window, defaultProductsFile);    
     }
@@ -386,7 +387,7 @@ public class MainController {
 
     public void setCurrentDefaults(File currentDefaults) throws IOException {
     	this.currentDefaults = currentDefaults;
-        File defaultProductsFile = new File(currentDefaults, "defaultProducts001.csv");
+        File defaultProductsFile = new File(currentDefaults, DEFAULT_PRODUCTS002_CSV);
         productIdMap = loadDefaultProductFiles(defaultProductsFile);     
     }
     
