@@ -8,11 +8,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.TreeMap;
-import java.util.LinkedHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -400,6 +397,8 @@ public class MainController {
                 String line;
                 while ((line = br.readLine()) != null) {
                     String dequotedLine = line.replaceAll("['\"]", "");
+                    if (dequotedLine.trim().length() == 0)
+                        continue;
                     String[] values = dequotedLine.split(COMMA_DELIMITER);
                     int id = Integer.parseUnsignedInt(values[0]);
                     String group = values[1].replace(' ', '_');
