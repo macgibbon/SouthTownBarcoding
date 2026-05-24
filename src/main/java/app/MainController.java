@@ -14,6 +14,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.print.PrintException;
+import javax.print.PrintService;
+import javax.print.PrintServiceLookup;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
@@ -24,8 +26,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.print.PrinterJob;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Tab;
@@ -38,6 +45,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -47,6 +55,7 @@ public class MainController {
     private static final String DEFAULT_PRODUCTS002_CSV = "defaultProducts002.csv";
     public static final String LAST_USED_FOLDER = "lastUsedFolder";
     public static final String COMMA_DELIMITER = ",";
+    public static final String PREF_PRINTER = "selected_printer";
  
     @FXML
     private Label messageLabel, contentLabel;
@@ -89,10 +98,10 @@ public class MainController {
     private FileChooser fileChooser;
  
 
-    private static final String PRINTER_NAME = "Zebra"; // <- change to part or full name of your printer
+  
   
     TreeMap<Integer, ProductId> productIdMap;
-    final Printer printer = new Printer(PRINTER_NAME);
+  
 	private File currentDefaults;
 
     @FXML
@@ -144,7 +153,7 @@ public class MainController {
                 String weight = weightField.getText();
                 Platform.runLater(() -> weightField.requestFocus());
                 Platform.runLater(() -> weightField.clear());
-                Platform.runLater(() -> printer.print(barcode, group, weight + " lb", description));
+                Platform.runLater(() -> printer().print(barcode, group, weight + " lb", description));
             }
         });    
     }
@@ -293,7 +302,7 @@ public class MainController {
             .limit(20)       
             .forEach(label -> {                
                 Barcode barcodeWithWeight = new Barcode(label.weight.get(), label.productId.get());               
-                 printer.print(barcodeWithWeight.content(), label.group.get().toString(), label.weight.get() + " lb", label.description.get());
+                 printer().print(barcodeWithWeight.content(), label.group.get().toString(), label.weight.get() + " lb", label.description.get());
                  label.printed.setValue(true);
             });
     }
@@ -305,7 +314,7 @@ public class MainController {
         .limit(40)       
         .forEach(label -> {                
             Barcode barcodeWithWeight = new Barcode(label.weight.get(), label.productId.get());               
-             printer.print(barcodeWithWeight.content(), label.group.get().toString(), label.weight.get() + " lb", label.description.get());
+             printer().print(barcodeWithWeight.content(), label.group.get().toString(), label.weight.get() + " lb", label.description.get());
              label.printed.setValue(true);
         });
     }
@@ -316,7 +325,7 @@ public class MainController {
         .filter(label -> !label.getPrinted())     
         .forEach(label -> {                
             Barcode barcodeWithWeight = new Barcode(label.weight.get(), label.productId.get());               
-             printer.print(barcodeWithWeight.content(), label.group.get().toString(), label.weight.get() + " lb", label.description.get());
+             printer().print(barcodeWithWeight.content(), label.group.get().toString(), label.weight.get() + " lb", label.description.get());
              label.printed.setValue(true);
         });
     }
@@ -347,7 +356,7 @@ public class MainController {
             .forEach(selected -> {
                 ProductLabel label = tableView.getItems().get(selected);
                 Barcode barcodeWithWeight = new Barcode(label.weight.get(), label.productId.get());
-                printer.print(barcodeWithWeight.content(), label.group.get().toString(), label.weight.get() + " lb", label.description.get());
+                printer().print(barcodeWithWeight.content(), label.group.get().toString(), label.weight.get() + " lb", label.description.get());
                 label.printed.setValue(true);
             });
     }
@@ -358,7 +367,7 @@ public class MainController {
         String weightStr = weightField.getText() + "lb";
         String productStr = "Product " + productCodeField.getText();
         String group = "Unknown";
-        printer.print(content, group, weightStr, productStr);
+        printer().print(content, group, weightStr, productStr);
     }
 
     private void handleUPCEmbedded(Barcode bc) throws WriterException {
@@ -415,5 +424,75 @@ public class MainController {
             }
         }
         return productMap;
+    }
+    
+    public void selectPrinter() {
+        Dialog<String> dialog = new Dialog<>();
+        dialog.setTitle("Select Printer");
+        dialog.setHeaderText("Available Printers");
+
+        // Get all available printers
+        PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
+
+        if (printServices.length == 0) {
+            showAlert("No Printers", "No printers found on this system.");
+            return;
+        }
+
+        // Create ComboBox with printer names
+        ComboBox<String> printerCombo = new ComboBox<>();
+        for (PrintService service : printServices) {
+            printerCombo.getItems().add(service.getName());
+        }
+
+        // Set previously selected printer as default
+        String savedPrinter = model.preferences.get(PREF_PRINTER, null);
+        if (savedPrinter != null) {
+            if (printerCombo.getItems().contains(savedPrinter))
+                printerCombo.setValue(savedPrinter);
+        } 
+        /*
+        else if (!printerCombo.getItems().isEmpty()) {
+            printerCombo.getSelectionModel().selectFirst();
+        }
+        */
+
+        // Layout
+        VBox dialogContent = new VBox(10);
+        dialogContent.setPadding(new Insets(15));
+        dialogContent.getChildren().addAll(
+            new Label("Choose a printer:"),
+            printerCombo
+        );
+
+        dialog.getDialogPane().setContent(dialogContent);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        // Handle OK button
+        dialog.setResultConverter(buttonType -> {
+            if (buttonType == ButtonType.OK) {
+                return printerCombo.getValue();
+            }
+            return null;
+        });
+
+        // Show dialog and save selection
+        dialog.showAndWait().ifPresent(selectedPrinter -> {
+            model.preferences.put(PREF_PRINTER, selectedPrinter);
+            System.out.println("Printer saved: " + selectedPrinter);
+        });
+    }
+    
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+    
+    private Printer printer() {
+        String printerName= model.preferences.get(PREF_PRINTER, "Zebra");
+        return new app.Printer(printerName);
     }
 }

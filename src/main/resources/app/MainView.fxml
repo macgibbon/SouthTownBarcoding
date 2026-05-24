@@ -37,6 +37,8 @@
 							onAction="#openReportFor1Pork"
 							text="Open Inventory Report for 1 Non Beef Product" />
 
+						<MenuItem fx:id="selectPrinter" mnemonicParsing="false"
+							onAction="#selectPrinter" text="Select Zebra Compatible Label Printer" />
 
 					</items>
 				</Menu>
