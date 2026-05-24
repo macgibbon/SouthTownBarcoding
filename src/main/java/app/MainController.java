@@ -427,21 +427,26 @@ public class MainController {
     }
     
     public void selectPrinter() {
+        PrintService[] availablePrinters = getAvailablePrinters();
+        showSelectPrinterDialog(availablePrinters);
+    }
+
+    public void showSelectPrinterDialog(PrintService[] availablePrinters) {
+        if (availablePrinters.length == 0) {
+            showAlert("No Printers", "No printers found on this system.");
+            return;
+        }
         Dialog<String> dialog = new Dialog<>();
         dialog.setTitle("Select Printer");
         dialog.setHeaderText("Available Printers");
 
-        // Get all available printers
-        PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
+      
 
-        if (printServices.length == 0) {
-            showAlert("No Printers", "No printers found on this system.");
-            return;
-        }
 
         // Create ComboBox with printer names
         ComboBox<String> printerCombo = new ComboBox<>();
-        for (PrintService service : printServices) {
+        printerCombo.setId("printercombo");
+        for (PrintService service : availablePrinters) {
             printerCombo.getItems().add(service.getName());
         }
 
@@ -481,6 +486,12 @@ public class MainController {
             model.preferences.put(PREF_PRINTER, selectedPrinter);
             System.out.println("Printer saved: " + selectedPrinter);
         });
+    }
+
+    protected PrintService[] getAvailablePrinters() {
+        // Get all available printers
+        PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
+        return printServices;
     }
     
     private void showAlert(String title, String message) {

@@ -14,6 +14,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.prefs.BackingStoreException;
 
 import javax.print.PrintService;
 
@@ -35,6 +36,7 @@ import app.Printer;
 import app.ProductGroup;
 import app.ProductId;
 import app.ProductLabel;
+import javafx.application.Platform;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
@@ -65,16 +67,38 @@ public class GuiTest extends MainApp {
     }
 
     @Test
-    public void testAll(FxRobot robot) {
-        testEditProducts(robot);
+    public void testAll(FxRobot robot)  {
+        testPrinterPreferences(robot);
+        testSelectPrinter(robot);
+        testEditProducts(robot);       
         testBatchMode(robot);
         testBatchModeSingleProduct(robot);
         testManualModeButtons(robot);
         testManualModeKeypadEntry(robot);
         testBadDefaultFolder(robot);
-        testSpecialCasesForCodeCoverage();
+        testSpecialCasesForCodeCoverage(robot);
     }
   
+    private void testSelectPrinter(FxRobot robot) {
+        robot.clickOn("File");
+        delay(2);
+        robot.clickOn("Select Zebra Compatible Label Printer");
+        robot.clickOn("#printercombo");
+        robot.clickOn("Zdesigner");
+     //   robot.press(KeyCode.ENTER);
+        robot.clickOn("OK");
+        delay(2);
+        robot.clickOn("File");
+        delay(2);
+        robot.clickOn("Select Zebra Compatible Label Printer");
+        robot.clickOn("#printercombo");
+        robot.clickOn("Zebra");
+
+        delay(2);
+        robot.clickOn("Cancel");
+        delay(2);
+    }
+
     private void testEditProducts(FxRobot robot) {
         robot.clickOn("File");
         robot.clickOn("Edit Product List");
@@ -112,7 +136,7 @@ public class GuiTest extends MainApp {
     }
 
     @SuppressWarnings("unused")
-    public void testSpecialCasesForCodeCoverage() {
+    public void testSpecialCasesForCodeCoverage(FxRobot robot)  {
         Exception exc = null;
         try {
             MainController.loadDefaultProductFiles(new File("notThere.csv"));
@@ -120,8 +144,8 @@ public class GuiTest extends MainApp {
             exc = e;
         }
         assertTrue(exc == null, "No exception on missing default products file!");
-        
-       exc = null;
+
+        exc = null;
         try {
             MainController.loadDefaultProductFiles(new File("badProducts.csv"));
         } catch (Exception e) {
@@ -154,8 +178,7 @@ public class GuiTest extends MainApp {
             expected = e;
         }
         assertTrue(expected != null, "Did not fail on null group!");
-        
-     
+
         Barcode minusbarcode = new Barcode("-11.0", "00123456");
         expected = null;
         try {
@@ -180,7 +203,7 @@ public class GuiTest extends MainApp {
         } catch (Exception e) {
             expected = e;
         }
-        
+
         expected = null;
         try {
             Barcode tobigbarcode = new Barcode("1.0", "00123456");
@@ -189,8 +212,7 @@ public class GuiTest extends MainApp {
             expected = e;
         }
         assertTrue(expected == null, "failed on tobig product id rather than truncating to 6 digits!");
-          
-        
+
         Barcode badIdcode = new Barcode("1.0", "ABCD");
         expected = null;
         try {
@@ -220,20 +242,20 @@ public class GuiTest extends MainApp {
         }
         assertTrue(expected != null, "Did not fail on imaginary path!");
 
-        ProductId id = ProductId.createProductId(1, "chicken tenders");  
+        ProductId id = ProductId.createProductId(1, "chicken tenders");
         assertTrue(id.productGroup().equals(ProductGroup.__));
         TreeMap<Integer, ProductId> testMap = new TreeMap<>();
         testMap.put(1, new ProductId(1, ProductGroup.Beef, "sticks"));
         var emptyList = new ArrayList<List<String>>();
-        
+
         expected = null;
         InventoryReport report = null;
         try {
             report = new InventoryReport(new File("spreadsheets/test.xls"));
         } catch (Exception e) {
-            assertTrue(expected == null,"Failed to open spreadsheet/test.xls");
-        } 
-   
+            assertTrue(expected == null, "Failed to open spreadsheet/test.xls");
+        }
+
         expected = null;
         try {
             ArrayList<ProductLabel> labels = report.getProductLabels(testMap, emptyList);
@@ -241,58 +263,75 @@ public class GuiTest extends MainApp {
         } catch (Exception e) {
             expected = e;
         }
-       
+
         assertTrue(expected != null, "Did not fail on Inventory report size mismatch!");
         try {
-        InventoryReport report2 = new InventoryReport(new File("spreadsheets/test2.xls"));
+            InventoryReport report2 = new InventoryReport(new File("spreadsheets/test2.xls"));
         } catch (Exception e) {
             expected = e;
         }
         assertTrue(expected != null);
-        
+
         try {
             InventoryReport report3 = new InventoryReport(new File("./spreadsheets/Test2.xls"));
         } catch (RuntimeException e) {
             expected = e;
-        }   
-        catch (IOException ioe) {
-           fail(ioe);
-        }  
-        
+        } catch (IOException ioe) {
+            fail(ioe);
+        }
+
         expected = null;
         try {
             InventoryReport report4 = new InventoryReport(new File("./spreadsheets/Test3.xls"));
         } catch (RuntimeException e) {
             expected = e;
-        }
-        catch (IOException ioe) {
+        } catch (IOException ioe) {
             fail(ioe);
-         }  
+        }
         assertTrue(expected != null);
-        
+
         expected = null;
         try {
             InventoryReport report5 = new InventoryReport(new File("./spreadsheets/Test4.xls"));
         } catch (RuntimeException e) {
             expected = e;
-        }  catch (IOException ioe) {
+        } catch (IOException ioe) {
             fail(ioe);
-         }  
+        }
         assertTrue(expected != null);
-        
+
         expected = null;
         try {
             InventoryReport report6 = new InventoryReport(new File("./spreadsheets/Test5.xls"));
         } catch (RuntimeException e) {
             expected = e;
-        }
-        catch (IOException ioe) {
+        } catch (IOException ioe) {
             fail(ioe);
-         }  
-        assertTrue(expected == null);  
-     
-        
-        
+        }
+        assertTrue(expected == null);
+    }
+
+    protected void testPrinterPreferences(FxRobot robot) {
+        Platform.runLater(() -> controller.showSelectPrinterDialog(new PrintService[0]));
+        delay(2);
+        robot.clickOn("OK");
+        String savedPrinter = model.preferences.get(MainController.PREF_PRINTER, null);
+        try {
+            Platform.runLater(() -> {   
+                model.preferences.remove(MainController.PREF_PRINTER);
+                controller.selectPrinter();
+            });
+            delay(5);
+            robot.clickOn("Cancel");           
+            Platform.runLater(() -> {   
+                model.preferences.put(MainController.PREF_PRINTER, "NotAPrinter");
+                controller.selectPrinter();
+            });
+            delay(5);
+            robot.clickOn("Cancel");
+        } finally {
+            model.preferences.put(MainController.PREF_PRINTER, savedPrinter);           
+        }
     }
 
     public void testManualModeKeypadEntry(FxRobot robot) {
@@ -510,6 +549,8 @@ public class GuiTest extends MainApp {
         } finally {
             model.preferences.put(MainController.LAST_USED_FOLDER, currentLastFolder);
         }
+        
+     
     }
 
 }
