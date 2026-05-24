@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>SouthTown</groupId>
 	<artifactId>barcoding</artifactId>
-	<version>1.0.11</version>
+	<version>1.0.12</version>
 	<name>SouthTown Barcoder</name>
 	<description>This project creates weight embedded barcodes.</description>
 	<properties>
