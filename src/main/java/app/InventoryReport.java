@@ -120,10 +120,10 @@ public class InventoryReport {
 		try {
 			final List<Row> worksheetRows = getFirstWorksheetRows(wb);
 			TreeMap<Integer, ProductId> productHeaderPositions = getProductHeaderRowPositions(worksheetRows);
+			int lastProductRow = productHeaderPositions.lastKey();
 			List<ProductInterval> productIntervals = getProductWeightRowIntervals(productHeaderPositions);
-			// special case for last product interval terminated by last worksheet row
-			if (!productIntervals.isEmpty())
-				productIntervals.add(new ProductInterval(productIntervals.getLast().endExclusive(), worksheetRows.size()));
+			productIntervals.add(new ProductInterval(lastProductRow, worksheetRows.size()));			
+			// special case for last product interval terminated by last worksheet row			
 			List<List<String>> productWeights = productIntervals.stream()
 					.map(pi -> getProductRows(worksheetRows.subList(pi.beginInclusive(), pi.endExclusive())))
 					.toList();			
