@@ -288,7 +288,7 @@ public class GuiTest extends MainApp {
         } catch (IOException ioe) {
             fail(ioe);
         }
-        assertTrue(expected != null);
+        assertTrue(expected == null);
 
         expected = null;
         try {
@@ -298,7 +298,7 @@ public class GuiTest extends MainApp {
         } catch (IOException ioe) {
             fail(ioe);
         }
-        assertTrue(expected != null);
+        assertTrue(expected == null);
 
         expected = null;
         try {

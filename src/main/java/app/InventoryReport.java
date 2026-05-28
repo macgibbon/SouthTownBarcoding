@@ -115,22 +115,28 @@ public class InventoryReport {
 		return true;
 	}
 
-	public InventoryReport(File firstworksheet) throws IOException, FileNotFoundException {
-		HSSFWorkbook wb = new HSSFWorkbook(new FileInputStream(firstworksheet));
-		try {
-			final List<Row> worksheetRows = getFirstWorksheetRows(wb);
-			TreeMap<Integer, ProductId> productHeaderPositions = getProductHeaderRowPositions(worksheetRows);
-			int lastProductRow = productHeaderPositions.lastKey();
-			List<ProductInterval> productIntervals = getProductWeightRowIntervals(productHeaderPositions);
-			productIntervals.add(new ProductInterval(lastProductRow, worksheetRows.size()));			
-			// special case for last product interval terminated by last worksheet row			
-			List<List<String>> productWeights = productIntervals.stream()
-					.map(pi -> getProductRows(worksheetRows.subList(pi.beginInclusive(), pi.endExclusive())))
-					.toList();			
-			productLabels = getProductLabels(productHeaderPositions, productWeights);
-		} finally {
-			wb.close();
-		}
-	}
+    public InventoryReport(File firstworksheet) throws IOException, FileNotFoundException {
+        HSSFWorkbook wb = new HSSFWorkbook(new FileInputStream(firstworksheet));
+        try {
+            final List<Row> worksheetRows = getFirstWorksheetRows(wb);
+            TreeMap<Integer, ProductId> productHeaderPositions = getProductHeaderRowPositions(worksheetRows);
+            List<ProductInterval> productIntervals = getProductWeightRowIntervals(productHeaderPositions);
+            if (!productIntervals.isEmpty())
+                // special case for last product interval terminated by last worksheet row
+                productIntervals.add(new ProductInterval(productIntervals.getLast().endExclusive(), worksheetRows.size()));
+            else {
+                // special case for only single product in spreadsheet
+                if (productHeaderPositions.size() > 0) {
+                    int lastProductRow = productHeaderPositions.lastKey();
+                    productIntervals.add(new ProductInterval(lastProductRow, worksheetRows.size()));
+                }
+            }
+            List<List<String>> productWeights = productIntervals.stream()
+                    .map(pi -> getProductRows(worksheetRows.subList(pi.beginInclusive(), pi.endExclusive()))).toList();
+            productLabels = getProductLabels(productHeaderPositions, productWeights);
+        } finally {
+            wb.close();
+        }
+    }
 
 }
