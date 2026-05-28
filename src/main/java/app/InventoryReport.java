@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.TreeMap;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -126,10 +127,10 @@ public class InventoryReport {
                 productIntervals.add(new ProductInterval(productIntervals.getLast().endExclusive(), worksheetRows.size()));
             else {
                 // special case for only single product in spreadsheet
-                if (productHeaderPositions.size() > 0) {
-                    int lastProductRow = productHeaderPositions.lastKey();
-                    productIntervals.add(new ProductInterval(lastProductRow, worksheetRows.size()));
-                }
+                Optional<Integer> maybelastElement = productHeaderPositions.keySet().stream()
+                        .skip(productHeaderPositions.size() - 1)
+                        .findFirst();
+                maybelastElement.ifPresent(last -> productIntervals.add(new ProductInterval(last, worksheetRows.size())));
             }
             List<List<String>> productWeights = productIntervals.stream()
                     .map(pi -> getProductRows(worksheetRows.subList(pi.beginInclusive(), pi.endExclusive()))).toList();
